@@ -18,4 +18,6 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(name = "member_login_id", nullable = false)
+    private String loginId;
 }

@@ -5,6 +5,7 @@ import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.BoardCreateDto;
+import goormcoder.webide.dto.response.BoardFindAllDto;
 import goormcoder.webide.exception.NotFoundException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -12,6 +13,9 @@ import goormcoder.webide.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,4 +38,11 @@ public class BoardService {
 
         boardRepository.save(Board.of(boardCreateDto, member, question));
     }
+
+    //게시글 조회
+    public List<BoardFindAllDto> getAllBoards() {
+        return BoardFindAllDto.listOf(boardRepository.findAll());
+    }
+
+
 }

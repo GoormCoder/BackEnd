@@ -18,4 +18,8 @@ public class Question {
 
     @Column(name = "quest_num", nullable = false)
     private int questionNum;
+
+    @Column(name = "quest_content", nullable = false)
+    @Lob
+    private String content;
 }
