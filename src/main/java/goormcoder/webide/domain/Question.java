@@ -15,4 +15,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quest_id")
     private Long id;
+
+    @Column(name = "quest_num", nullable = false)
+    private int questionNum;
 }
