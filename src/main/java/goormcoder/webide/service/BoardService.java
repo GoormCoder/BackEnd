@@ -21,7 +21,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final QuestionRepository questionRepository;
 
-
     // 게시글 생성
     @Transactional
     public void createBoard(BoardCreateDto boardCreateDto) {
@@ -30,7 +29,7 @@ public class BoardService {
         Question question = null;
         if(boardCreateDto.questionNum() != null) {
             question = questionRepository.findByQuestionNum(boardCreateDto.questionNum())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.MEMBER_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.QUESTION_NOT_FOUND));
         }
 
         boardRepository.save(Board.of(boardCreateDto, member, question));
