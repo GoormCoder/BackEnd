@@ -21,7 +21,7 @@ public class BoardController {
 
     //게시글 등록
     @PostMapping("/board")
-    public ResponseEntity<?> createBoard(@RequestBody BoardCreateDto boardCreateDto) {
+    public ResponseEntity<?> createBoard(@Valid @RequestBody BoardCreateDto boardCreateDto) {
         boardService.createBoard(boardCreateDto);
         return ResponseEntity.status(HttpStatus.OK).body("게시글이 생성되었습니다.");
     }
