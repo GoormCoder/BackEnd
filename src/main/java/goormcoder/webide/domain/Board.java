@@ -2,8 +2,11 @@ package goormcoder.webide.domain;
 
 import goormcoder.webide.domain.enums.BoardType;
 import goormcoder.webide.dto.request.BoardCreateDto;
+import goormcoder.webide.dto.request.BoardUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -52,5 +55,12 @@ public class Board extends BaseTimeEntity{
         this.content = content;
         this.member = member;
         this.question = question;
+    }
+
+    public void patch(BoardUpdateDto boardUpdateDto) {
+        if(!Objects.equals(this.title, boardUpdateDto.title()) || !Objects.equals(this.content, boardUpdateDto.content())) {
+            this.title = boardUpdateDto.title();
+            this.content = boardUpdateDto.content();
+        }
     }
 }

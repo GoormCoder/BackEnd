@@ -1,9 +1,11 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BoardCreateDto;
+import goormcoder.webide.dto.request.BoardUpdateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
 import goormcoder.webide.dto.response.BoardFindDto;
 import goormcoder.webide.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +36,12 @@ public class BoardController {
     @GetMapping("/board/{boardId}")
     public ResponseEntity<BoardFindDto> getBoard(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId));
+    }
+
+    //게시글 수정
+    @PatchMapping("/board/{boardId}")
+    public ResponseEntity<?> updateBoard(@PathVariable Long boardId, @Valid @RequestBody BoardUpdateDto boardUpdateDto) {
+        boardService.updateBoard(boardId, boardUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 수정이 완료되었습니다.");
     }
 }
