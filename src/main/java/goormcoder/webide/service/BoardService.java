@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,12 @@ public class BoardService {
     public void updateBoard(Long boardId, BoardUpdateDto boardUpdateDto) {
         Board board = boardRepository.findByIdOrThrow(boardId);
         board.patch(boardUpdateDto);
-        boardRepository.save(board);
+    }
+
+    //게시글 삭제
+    @Transactional
+    public void deleteBoard(Long boardId) {
+        Board board = boardRepository.findByIdOrThrow(boardId);
+        board.markAsDeleted(LocalDateTime.now());
     }
 }

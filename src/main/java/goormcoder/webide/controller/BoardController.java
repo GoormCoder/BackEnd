@@ -44,4 +44,11 @@ public class BoardController {
         boardService.updateBoard(boardId, boardUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("게시글 수정이 완료되었습니다.");
     }
+
+    //게시글 삭제
+    @DeleteMapping("/board/{boardId}")
+    public ResponseEntity<?> deleteBoard(@PathVariable Long boardId) {
+        boardService.deleteBoard(boardId);
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 삭제가 완료되었습니다.");
+    }
 }
