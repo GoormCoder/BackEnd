@@ -6,6 +6,7 @@ import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
+import goormcoder.webide.dto.response.BoardFindDto;
 import goormcoder.webide.exception.NotFoundException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -40,9 +41,14 @@ public class BoardService {
     }
 
     //게시글 조회
+    @Transactional(readOnly = true)
     public List<BoardFindAllDto> getAllBoards() {
         return BoardFindAllDto.listOf(boardRepository.findAll());
     }
 
-
+    //게시글 열람
+    @Transactional(readOnly = true)
+    public BoardFindDto getBoard(Long boardId) {
+        return BoardFindDto.from(boardRepository.findByIdOrThrow(boardId));
+    }
 }

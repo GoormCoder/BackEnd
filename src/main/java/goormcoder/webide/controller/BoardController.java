@@ -2,14 +2,12 @@ package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
+import goormcoder.webide.dto.response.BoardFindDto;
 import goormcoder.webide.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +28,11 @@ public class BoardController {
     @GetMapping("/board/all")
     public ResponseEntity<List<BoardFindAllDto>> getAllBoards() {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoards());
+    }
+
+    //게시글 열람
+    @GetMapping("/board/{boardId}")
+    public ResponseEntity<BoardFindDto> getBoard(@PathVariable Long boardId) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId));
     }
 }
