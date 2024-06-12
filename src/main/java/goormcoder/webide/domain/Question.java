@@ -2,20 +2,17 @@ package goormcoder.webide.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "t_member")
+@Table(name = "t_quest")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode
-public class Member {
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "quest_id")
     private Long id;
-
 }
