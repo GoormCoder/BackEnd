@@ -1,6 +1,7 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.CommentCreateDto;
+import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
 import goormcoder.webide.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,12 @@ public class CommentController {
     @GetMapping("/boards/{boardId}/comments")
     public ResponseEntity<List<CommentFindAllDto>> getComments(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getComments(boardId));
+    }
+
+    //댓글 수정
+    @PatchMapping("/comments/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDto commentUpdateDto) {
+        commentService.updateComment(commentId, commentUpdateDto);
+        return ResponseEntity.status(HttpStatus.OK).body("댓글 수정이 완료되었습니다.");
     }
 }

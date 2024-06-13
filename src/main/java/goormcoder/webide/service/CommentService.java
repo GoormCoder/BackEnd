@@ -4,6 +4,7 @@ import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Comment;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.CommentCreateDto;
+import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.CommentRepository;
@@ -34,4 +35,14 @@ public class CommentService {
         return CommentFindAllDto.listOf(comments);
     }
 
+    //댓글 수정
+    public void updateComment(Long commentId, CommentUpdateDto commentUpdateDto) {
+        Comment comment = commentRepository.findByIdOrThrow(commentId);
+
+        //jwt 이후 추가 예정
+//        if(!memberId.equals(comment.getMember().getId())) {
+//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_MEMBER_ACCESS);
+//        }
+        comment.patch(commentUpdateDto);
+    }
 }

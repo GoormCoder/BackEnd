@@ -1,11 +1,14 @@
 package goormcoder.webide.domain;
 
 import goormcoder.webide.dto.request.CommentCreateDto;
+import goormcoder.webide.dto.request.CommentUpdateDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -42,5 +45,11 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
         this.board = board;
         this.member = member;
+    }
+
+    public void patch(CommentUpdateDto commentUpdateDto) {
+        if (Objects.equals(this.content, commentUpdateDto.content())) {
+            this.content = commentUpdateDto.content();
+        }
     }
 }
