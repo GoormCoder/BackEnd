@@ -57,6 +57,8 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(
                 HeadersConfigurer.FrameOptionsConfig::sameOrigin
         ));
+        
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), JwtAuthenticationFilter.class);
 
         http.addFilterAt(
                 new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtProvider),
