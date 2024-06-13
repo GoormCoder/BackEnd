@@ -1,4 +1,4 @@
-package goormcoder.webide.domain.enums;
+package goormcoder.webide.domain.enumeration;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

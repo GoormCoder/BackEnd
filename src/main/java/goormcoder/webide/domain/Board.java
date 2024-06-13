@@ -1,6 +1,6 @@
 package goormcoder.webide.domain;
 
-import goormcoder.webide.domain.enums.BoardType;
+import goormcoder.webide.domain.enumeration.BoardType;
 import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.request.BoardUpdateDto;
 import jakarta.persistence.*;

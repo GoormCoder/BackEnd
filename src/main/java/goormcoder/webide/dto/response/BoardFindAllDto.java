@@ -1,8 +1,6 @@
 package goormcoder.webide.dto.response;
 
 import goormcoder.webide.domain.Board;
-import goormcoder.webide.domain.enums.BoardType;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;

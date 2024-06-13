@@ -1,6 +1,6 @@
 package goormcoder.webide.dto.request;
 
-import goormcoder.webide.domain.enums.BoardType;
+import goormcoder.webide.domain.enumeration.BoardType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 

@@ -1,7 +1,7 @@
 package goormcoder.webide.dto.response;
 
 import goormcoder.webide.domain.Board;
-import goormcoder.webide.domain.enums.BoardType;
+import goormcoder.webide.domain.enumeration.BoardType;
 
 import java.time.LocalDateTime;
 
