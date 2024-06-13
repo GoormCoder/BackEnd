@@ -4,6 +4,7 @@ import goormcoder.webide.dto.request.CommentCreateDto;
 import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
 import goormcoder.webide.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class CommentController {
 
     //댓글 생성
     @PostMapping("/boards/{boardId}/comments")
-    public ResponseEntity<?> createComment(@PathVariable Long boardId, @RequestBody CommentCreateDto commentCreateDto) {
+    public ResponseEntity<?> createComment(@PathVariable Long boardId, @Valid @RequestBody CommentCreateDto commentCreateDto) {
         commentService.createComment(boardId, commentCreateDto);
         return ResponseEntity.status(HttpStatus.OK).body("댓글이 생성되었습니다.");
     }
@@ -32,7 +33,7 @@ public class CommentController {
 
     //댓글 수정
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDto commentUpdateDto) {
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @Valid @RequestBody CommentUpdateDto commentUpdateDto) {
         commentService.updateComment(commentId, commentUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("댓글 수정이 완료되었습니다.");
     }
