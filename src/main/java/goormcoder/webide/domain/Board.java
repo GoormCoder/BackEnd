@@ -12,7 +12,6 @@ import java.util.Objects;
 @Getter
 @Table(name = "t_board")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Board extends BaseTimeEntity{
 
     @Id

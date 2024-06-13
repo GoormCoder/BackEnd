@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public record BoardFindDto(
 
+        Long boarId,
         BoardType boardType,
         String title,
         String content,
@@ -16,6 +17,7 @@ public record BoardFindDto(
 ) {
     public static BoardFindDto from(Board board) {
         return new BoardFindDto(
+                board.getId(),
                 board.getBoardType(),
                 board.getTitle(),
                 board.getContent(),
