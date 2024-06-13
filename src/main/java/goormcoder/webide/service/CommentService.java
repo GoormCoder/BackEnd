@@ -11,7 +11,9 @@ import goormcoder.webide.repository.CommentRepository;
 import goormcoder.webide.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +25,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
     //댓글 생성
+    @Transactional
     public void createComment(Long boardId, CommentCreateDto commentCreateDto) {
         Board board = boardRepository.findByIdOrThrow(boardId);
         Member member = memberRepository.findByIdOrThrow(commentCreateDto.memberId()); //나중에 수정해야함
@@ -30,12 +33,14 @@ public class CommentService {
     }
 
     //댓글 조회
+    @Transactional(readOnly = true)
     public List<CommentFindAllDto> getComments(Long boardId) {
         List<Comment> comments = commentRepository.findAllByBoardId(boardId);
         return CommentFindAllDto.listOf(comments);
     }
 
     //댓글 수정
+    @Transactional
     public void updateComment(Long commentId, CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findByIdOrThrow(commentId);
 
@@ -44,5 +49,17 @@ public class CommentService {
 //            throw new ForbiddenException(ErrorMessage.FORBIDDEN_MEMBER_ACCESS);
 //        }
         comment.patch(commentUpdateDto);
+    }
+
+    //댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findByIdOrThrow(commentId);
+
+        //jwt 이후 추가 예정
+//        if(!memberId.equals(comment.getMember().getId())) {
+//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_MEMBER_ACCESS);
+//        }
+        comment.markAsDeleted(LocalDateTime.now());
     }
 }
