@@ -3,7 +3,6 @@ package goormcoder.webide.config;
 import goormcoder.webide.jwt.JwtProvider;
 import goormcoder.webide.util.filter.CustomAccessDeniedHandler;
 import goormcoder.webide.util.filter.CustomAuthenticationEntryPointHandler;
-import goormcoder.webide.util.filter.JwtAuthenticationFilter;
 import goormcoder.webide.util.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +29,6 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login"};
 
     private final JwtProvider jwtProvider;
-    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -67,10 +65,6 @@ public class SecurityConfig {
         ));
         
         http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterAt(
-                new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtProvider),
-                UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
