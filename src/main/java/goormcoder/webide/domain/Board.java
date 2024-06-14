@@ -67,4 +67,8 @@ public class Board extends BaseTimeEntity{
             this.content = boardUpdateDto.content();
         }
     }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
 }
