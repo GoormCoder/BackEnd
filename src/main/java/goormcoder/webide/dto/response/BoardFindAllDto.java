@@ -10,6 +10,7 @@ public record BoardFindAllDto(
         Long boarId,
         String title,
         LocalDateTime createdAt,
+        int likeCount,
         MemberFindDto member,
         QuestionFindDto question
 ) {
@@ -20,6 +21,7 @@ public record BoardFindAllDto(
                         board.getId(),
                         board.getTitle(),
                         board.getCreatedAt(),
+                        board.getLikeCount(),
                         MemberFindDto.from(board.getMember()),
                         QuestionFindDto.of(board.getQuestion())
                 )).toList();
