@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -40,7 +41,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             );
             return authenticationManager.authenticate(token);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse authentication request body", e);
+            handleJsonParsingException(response);
+            log.error("Failed to parse authentication request body");
+            return null;
+        }
+    }
+
+    private void handleJsonParsingException(HttpServletResponse response) {
+        try {
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(ErrorMessage.INTERNAL_SERVER_ERROR.getMessage());
+        } catch (IOException e) {
+            log.error("Failed to write JSON response", e);
         }
     }
 
@@ -62,11 +75,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.info("[JwtAuthenticationFilter] login fail");
+        log.error("Login Fail - {}", failed.getClass());
+
+        String errorMessage;
+
+        if(failed instanceof BadCredentialsException) {
+            errorMessage = ErrorMessage.JWT_BAD_CREDENTIAL_EXCEPTION.getMessage();
+        } else {
+            errorMessage = ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage();
+        }
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
+        response.getWriter().write(errorMessage);
     }
 
 }

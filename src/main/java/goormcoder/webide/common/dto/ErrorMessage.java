@@ -14,6 +14,9 @@ public enum ErrorMessage {
     COMMENT_NOT_FOUND("해당하는 댓글이 존재하지 않습니다."),
     JWT_UNAUTHORIZED_EXCEPTION("사용자 검증을 실패하였습니다."),
     JWT_FORBIDDEN_ACCESS("접근 권한이 없습니다."),
+    JWT_USER_NOT_FOUND_EXCEPTION("존재하지 않는 사용자입니다."),
+    JWT_BAD_CREDENTIAL_EXCEPTION("아이디 또는 비밀번호가 잘못 되었습니다."),
+    INTERNAL_SERVER_ERROR("서버 오류입니다."),
     ;
 
     private final String message;
