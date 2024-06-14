@@ -11,6 +11,7 @@ import goormcoder.webide.repository.LikeRepository;
 import goormcoder.webide.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class LikeService {
     private final BoardRepository boardRepository;
 
     //좋아요 생성
+    @Transactional
     public void createLike(Long memberId, Long boardId) {
         Member member = memberRepository.findByIdOrThrow(memberId);
         Board board = boardRepository.findByIdOrThrow(boardId);
@@ -35,6 +37,7 @@ public class LikeService {
     }
 
     //좋아요 삭제
+    @Transactional
     public void deleteLike(Long memberId, Long boardId) {
         Member member = memberRepository.findByIdOrThrow(memberId);
         Board board = boardRepository.findByIdOrThrow(boardId);
