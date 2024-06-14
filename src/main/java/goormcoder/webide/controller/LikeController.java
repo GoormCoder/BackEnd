@@ -22,4 +22,11 @@ public class LikeController {
         likeService.createLike(memberId, boardId);
         return ResponseEntity.status(HttpStatus.OK).body("게시글 좋아요가 완료되었습니다.");
     }
+
+    //좋아요 삭제
+    @PostMapping("/boards/{boardId}/unlike")
+    public ResponseEntity<?> unLike(@RequestParam Long memberId, @PathVariable Long boardId) {
+        likeService.deleteLike(memberId, boardId);
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 좋아요가 취소되었습니다.");
+    }
 }
