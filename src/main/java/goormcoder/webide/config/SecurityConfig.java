@@ -1,6 +1,8 @@
 package goormcoder.webide.config;
 
 import goormcoder.webide.jwt.JwtProvider;
+import goormcoder.webide.util.filter.CustomAccessDeniedHandler;
+import goormcoder.webide.util.filter.CustomAuthenticationEntryPointHandler;
 import goormcoder.webide.util.filter.JwtAuthenticationFilter;
 import goormcoder.webide.util.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
+
+        http
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(new CustomAuthenticationEntryPointHandler());
+                    exception.accessDeniedHandler(new CustomAccessDeniedHandler());
+                });;
 
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(TEST_WHITE_LIST).permitAll()

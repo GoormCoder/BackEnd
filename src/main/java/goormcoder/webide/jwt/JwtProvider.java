@@ -2,10 +2,7 @@ package goormcoder.webide.jwt;
 
 import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.security.MemberDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +45,21 @@ public class JwtProvider {
 
     public String issueRefreshToken(final Authentication authentication) {
         return generateToken(authentication, REFRESH_TOKEN_EXPIRATION_TIME);
+    }
+
+    public JwtValidation validateToken(String token) {
+        try {
+            getClaims(token);
+            return JwtValidation.JWT_VALID;
+        } catch (ExpiredJwtException e) {
+            return JwtValidation.JWT_EXPIRED;
+        } catch (UnsupportedJwtException e) {
+            return JwtValidation.JWT_UNSUPPORTED;
+        } catch (MalformedJwtException e) {
+            return JwtValidation.JWT_INVALID;
+        } catch (IllegalArgumentException e) {
+            return JwtValidation.JWT_EMPTY;
+        }
     }
 
     private String generateToken(Authentication authentication, long expirationTime) {

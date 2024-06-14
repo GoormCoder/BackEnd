@@ -1,6 +1,7 @@
 package goormcoder.webide.util.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.response.JwtToken;
 import goormcoder.webide.jwt.JwtProvider;
@@ -65,7 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + failed.getMessage() + "\"}");
+        response.getWriter().write(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
     }
 
 }

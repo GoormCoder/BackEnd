@@ -13,6 +13,7 @@ public enum ErrorMessage {
     BOARD_NOT_FOUND("해당하는 게시글이 존재하지 않습니다."),
     COMMENT_NOT_FOUND("해당하는 댓글이 존재하지 않습니다."),
     JWT_UNAUTHORIZED_EXCEPTION("사용자 검증을 실패하였습니다."),
+    JWT_FORBIDDEN_ACCESS("접근 권한이 없습니다."),
     ;
 
     private final String message;
