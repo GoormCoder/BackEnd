@@ -1,10 +1,8 @@
 package goormcoder.webide.jwt;
 
-import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.security.MemberDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -13,7 +11,6 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtProvider {
 

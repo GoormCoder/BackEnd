@@ -59,8 +59,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        log.info("[JwtAuthenticationFilter] login success");
-
         String loginId = ((MemberDetails) authResult.getPrincipal()).getUsername();
 
         String accessToken = jwtProvider.issueAccessToken(authResult);
