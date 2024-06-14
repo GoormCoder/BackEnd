@@ -4,6 +4,7 @@ import goormcoder.webide.domain.enumeration.Gender;
 import goormcoder.webide.domain.enumeration.MemberRole;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@NoArgsConstructor
 @Getter
+@Table(name = "t_member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
 public class Member {
 
