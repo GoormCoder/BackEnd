@@ -13,11 +13,9 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "quest_id")
+    @Column(name = "quest_id", nullable = false)
     private Long id;
 
-    @Column(name = "quest_num", nullable = false)
-    private int questionNum;
 
     @Column(name = "quest_content", nullable = false)
     @Lob

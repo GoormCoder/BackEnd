@@ -34,8 +34,8 @@ public class BoardService {
         Member member = memberRepository.findByIdOrThrow(boardCreateDto.memberId());
 
         Question question = null;
-        if(boardCreateDto.questionNum() != null) {
-            question = questionRepository.findByQuestionNum(boardCreateDto.questionNum())
+        if(boardCreateDto.questionId() != null) {
+            question = questionRepository.findById(boardCreateDto.questionId())
                     .orElseThrow(() -> new NotFoundException(ErrorMessage.QUESTION_NOT_FOUND));
         }
 
