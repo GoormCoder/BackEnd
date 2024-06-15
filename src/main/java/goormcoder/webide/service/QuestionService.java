@@ -16,11 +16,11 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public Question createQuestion(QuestionCreateDto createDto) {
+    public Question create(QuestionCreateDto createDto) {
         Question question = new Question(
                 createDto.title(),
-                createDto.content(),
-                createDto.level()
+                createDto.level(),
+                createDto.content()
         );
         questionRepository.save(question);
         return question;
@@ -33,7 +33,7 @@ public class QuestionService {
 
     public Question update(Long id, int level, String title, String content) {
         Question question = this.findById(id);
-        question.update(title, content, level);
+        question.update(title, level, content);
         questionRepository.save(question);
         return question;
     }

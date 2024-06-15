@@ -26,30 +26,30 @@ public class Question {
     @Column(name = "quest_title", nullable = false)
     private String title;
 
-    @NotBlank
-    @Column(name = "quest_content", nullable = false)
-    @Lob
-    private String content;
-
     @Min(value = MIN_LEVEL)
     @Max(value = MAX_LEVEL)
     @Column(name = "quest_level", nullable = false)
     private Integer level;
 
-    public Question(String title, String content, int level) {
+    @NotBlank
+    @Column(name = "quest_content", nullable = false)
+    @Lob
+    private String content;
+
+    public Question(String title, int level, String content) {
         this.title = title;
-        this.content = content;
         this.level = level;
+        this.content = content;
     }
 
     public String getFormattedTitle() {
         return String.format("#%d [Lv.%d] %s", id, level, title);
     }
 
-    public void update(String title, String content, int level) {
+    public void update(String title, int level, String content) {
         this.title = title;
-        this.content = content;
         this.level = level;
+        this.content = content;
     }
 
 }
