@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "t_quest")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+public class Question extends BaseTimeEntity {
 
     private static final int MIN_LEVEL = 0;
     private static final int MAX_LEVEL = 3;

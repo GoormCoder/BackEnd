@@ -26,4 +26,12 @@ public abstract class BaseTimeEntity {
         this.deletedAt = deletedAt;
     }
 
+    public boolean isActive () {
+        return deletedAt == null;
+    }
+
+    public boolean isDeleted () {
+        return deletedAt != null;
+    }
+
 }
