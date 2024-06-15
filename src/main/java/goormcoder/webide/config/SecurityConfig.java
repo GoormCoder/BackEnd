@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private static final String TEST_WHITE_LIST = "/h2-console/**";
+    private static final String[] SWAGGER = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     private static final String ADMIN = "/admin/**";
     private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login"};
@@ -48,6 +49,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests((auth) -> auth
+                .requestMatchers(SWAGGER).permitAll()
                 .requestMatchers(TEST_WHITE_LIST).permitAll()
                 .requestMatchers(WHITE_LIST).permitAll()
                 .requestMatchers(ADMIN).hasRole("ADMIN")
