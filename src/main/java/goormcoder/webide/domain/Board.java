@@ -29,6 +29,9 @@ public class Board extends BaseTimeEntity{
     @Column(name = "board_content", nullable = false)
     private String content;
 
+    @Column(name = "board_likeCount", nullable = false)
+    private int likeCount = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -44,16 +47,18 @@ public class Board extends BaseTimeEntity{
                 .content(boardCreateDto.content())
                 .member(member)
                 .question(question)
+                .likeCount(0)
                 .build();
     }
 
     @Builder
-    private Board(final BoardType boardType, final String title, final String content, final Member member, final Question question) {
+    private Board(final BoardType boardType, final String title, final String content, final Member member, final Question question, final int likeCount) {
         this.boardType = boardType;
         this.title = title;
         this.content = content;
         this.member = member;
         this.question = question;
+        this.likeCount = likeCount;
     }
 
     public void patch(BoardUpdateDto boardUpdateDto) {
@@ -61,5 +66,13 @@ public class Board extends BaseTimeEntity{
             this.title = boardUpdateDto.title();
             this.content = boardUpdateDto.content();
         }
+    }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void removeLikeCount() {
+        this.likeCount--;
     }
 }
