@@ -3,7 +3,6 @@ package goormcoder.webide.util.filter;
 import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.enumeration.MemberRole;
-import goormcoder.webide.exception.UnauthorizedException;
 import goormcoder.webide.jwt.JwtProvider;
 import goormcoder.webide.jwt.JwtValidation;
 import goormcoder.webide.security.MemberDetails;
@@ -12,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (Exception e) {
-            throw new UnauthorizedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION);
+            throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
         }
 
         filterChain.doFilter(request, response);

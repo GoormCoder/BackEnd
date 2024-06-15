@@ -1,8 +1,8 @@
 package goormcoder.webide.jwt;
 
 import goormcoder.webide.common.dto.ErrorMessage;
-import goormcoder.webide.exception.UnauthorizedException;
 import goormcoder.webide.security.MemberDetails;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class PrincipalHandler {
             return (MemberDetails) authentication.getPrincipal();
         }
 
-        throw new UnauthorizedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION);
+        throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
     }
 
     public String getMemberLoginId() {

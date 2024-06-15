@@ -1,13 +1,13 @@
 package goormcoder.webide.jwt;
 
 import goormcoder.webide.common.dto.ErrorMessage;
-import goormcoder.webide.exception.UnauthorizedException;
 import goormcoder.webide.security.MemberDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +41,7 @@ class PrincipalHandlerTest {
     void testGetMemberDetails_Unauthorized() {
         SecurityContextHolder.clearContext();
 
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> {
+        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
             principalHandler.getMemberLoginId();
         });
 

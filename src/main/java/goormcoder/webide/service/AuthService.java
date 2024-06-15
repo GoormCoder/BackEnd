@@ -3,10 +3,10 @@ package goormcoder.webide.service;
 import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.response.JwtToken;
-import goormcoder.webide.exception.UnauthorizedException;
 import goormcoder.webide.jwt.JwtProvider;
 import goormcoder.webide.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,9 +34,9 @@ public class AuthService {
             return JwtToken.of(loginId, accessToken, refreshToken);
         } catch (AuthenticationException e) {
             if(e instanceof BadCredentialsException) {
-                throw new UnauthorizedException(ErrorMessage.JWT_BAD_CREDENTIAL_EXCEPTION);
+                throw new AccessDeniedException(ErrorMessage.JWT_BAD_CREDENTIAL_EXCEPTION.getMessage());
             } else {
-                throw new UnauthorizedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION);
+                throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
             }
         }
     }
