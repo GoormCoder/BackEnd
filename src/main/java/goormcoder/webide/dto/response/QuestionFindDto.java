@@ -4,14 +4,15 @@ import goormcoder.webide.domain.Question;
 
 public record QuestionFindDto(
         Long id,
-        String questionTitle
+        Integer level,
+        String title,
+        String content
 ) {
     public static QuestionFindDto of(Question question) {
-        if (question == null) {
-            return null;
-        }
         return new QuestionFindDto(
                 question.getId(),
+                question.getLevel(),
+                question.getTitle(),
                 question.getContent()
         );
     }

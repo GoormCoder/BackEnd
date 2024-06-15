@@ -1,8 +1,10 @@
 package goormcoder.webide.service;
 
+import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.repository.QuestionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,11 @@ public class QuestionService {
         );
         questionRepository.save(question);
         return question;
+    }
+
+    public Question findById(Long id) {
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
     }
 
 }
