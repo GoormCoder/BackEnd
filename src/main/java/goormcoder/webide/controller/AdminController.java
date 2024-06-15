@@ -25,7 +25,7 @@ public class AdminController {
 
     @Operation(summary = "문제 생성")
     @PostMapping("/questions")
-    public ResponseEntity<String> createQuestion(@Valid @RequestBody QuestionCreateDto createDto) {
+    public ResponseEntity<String> createQuestion(@RequestBody QuestionCreateDto createDto) {
         Question question = questionService.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(question.getFormattedTitle());
