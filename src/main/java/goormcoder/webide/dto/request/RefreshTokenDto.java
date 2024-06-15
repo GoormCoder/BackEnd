@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record RefreshTokenDto(
 
-        @NotNull
+        @NotNull(message = "Token 정보가 없습니다.")
         String token
 
 ) {

@@ -23,7 +23,7 @@ public class MemberController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    @Operation(summary = "로그인", description = "로그인 성공 시 JWT을 발행합니다.")
+    @Operation(summary = "로그인", description = "로그인 성공 시 JWT을 발급합니다.")
     public ResponseEntity<JwtTokenDto> login(@Valid @RequestBody MemberLoginDto loginDto) {
         return ResponseEntity.status(HttpStatus.OK).body(authService.authenticate(loginDto));
     }
