@@ -30,20 +30,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
-            if(jwtProvider.validateToken(token) == JwtValidation.JWT_VALID) {
-                String loginId = jwtProvider.getUsername(token);
-                String role = jwtProvider.getRole(token);
-
-                Member data = Member.builder()
-                        .loginId(loginId)
-                        .password("password")
-                        .role(MemberRole.valueOf(role.toUpperCase()))
-                        .build();
-
-                MemberDetails memberDetails = new MemberDetails(data);
-
-                Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if(isValidToken(token)) {
+                setAuthenticationContext(token);
             }
         } catch (Exception e) {
             throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
@@ -58,6 +46,25 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return null;
         }
         return authorization.split(" ")[1];
+    }
+
+    private boolean isValidToken(String token) {
+        return jwtProvider.validateToken(token) == JwtValidation.JWT_VALID;
+    }
+
+    private void setAuthenticationContext(String token) {
+        String loginId = jwtProvider.getUsername(token);
+        String role = jwtProvider.getRole(token);
+
+        Member data = Member.builder()
+                .loginId(loginId)
+                .password("password")
+                .role(MemberRole.valueOf(role.toUpperCase()))
+                .build();
+
+        MemberDetails memberDetails = new MemberDetails(data);
+        Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
 }

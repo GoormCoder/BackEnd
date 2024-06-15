@@ -1,7 +1,7 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.MemberLoginDto;
-import goormcoder.webide.dto.response.JwtToken;
+import goormcoder.webide.dto.response.JwtTokenDto;
 import goormcoder.webide.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +24,7 @@ public class MemberController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "로그인 성공 시 JWT을 발행합니다.")
-    public ResponseEntity<JwtToken> login(@Valid @RequestBody MemberLoginDto loginDto) {
+    public ResponseEntity<JwtTokenDto> login(@Valid @RequestBody MemberLoginDto loginDto) {
         return ResponseEntity.status(HttpStatus.OK).body(authService.authenticate(loginDto));
     }
 
