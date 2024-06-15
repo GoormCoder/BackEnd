@@ -46,4 +46,10 @@ public class Question {
         return String.format("#%d [Lv.%d] %s", id, level, title);
     }
 
+    public void update(String title, String content, int level) {
+        this.title = title;
+        this.content = content;
+        this.level = level;
+    }
+
 }

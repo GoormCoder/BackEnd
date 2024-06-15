@@ -31,4 +31,11 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
     }
 
+    public Question update(Long id, int level, String title, String content) {
+        Question question = this.findById(id);
+        question.update(title, content, level);
+        questionRepository.save(question);
+        return question;
+    }
+
 }
