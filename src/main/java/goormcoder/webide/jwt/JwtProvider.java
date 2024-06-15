@@ -1,9 +1,12 @@
 package goormcoder.webide.jwt;
 
+import goormcoder.webide.domain.Member;
+import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.security.MemberDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -48,15 +51,22 @@ public class JwtProvider {
         try {
             getClaims(token);
             return JwtValidation.JWT_VALID;
-        } catch (ExpiredJwtException e) {
-            return JwtValidation.JWT_EXPIRED;
-        } catch (UnsupportedJwtException e) {
-            return JwtValidation.JWT_UNSUPPORTED;
-        } catch (MalformedJwtException e) {
+        } catch (Exception e) {
             return JwtValidation.JWT_INVALID;
-        } catch (IllegalArgumentException e) {
-            return JwtValidation.JWT_EMPTY;
         }
+    }
+
+    public Authentication getAuthenticationFromToken(String token) {
+        String loginId = getUsername(token);
+        String role = getRole(token);
+
+        MemberDetails memberDetails = new MemberDetails(Member.builder()
+                .loginId(loginId)
+                .password("password")
+                .role(MemberRole.valueOf(role.toUpperCase()))
+                .build());
+
+        return new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
     }
 
     private String generateToken(Authentication authentication, long expirationTime) {
