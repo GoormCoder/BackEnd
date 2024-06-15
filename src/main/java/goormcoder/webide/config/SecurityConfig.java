@@ -26,7 +26,7 @@ public class SecurityConfig {
     private static final String TEST_WHITE_LIST = "/h2-console/**";
 
     private static final String ADMIN = "/admin/**";
-    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login"};
+    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login", "/auth/refresh"};
 
     private final JwtProvider jwtProvider;
 

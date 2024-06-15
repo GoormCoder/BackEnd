@@ -17,6 +17,8 @@ public enum ErrorMessage {
     JWT_USER_NOT_FOUND_EXCEPTION("존재하지 않는 사용자입니다."),
     JWT_BAD_CREDENTIAL_EXCEPTION("아이디 또는 비밀번호가 잘못 되었습니다."),
     INTERNAL_SERVER_ERROR("서버 오류입니다."),
+    TOKEN_NOT_FOUND("존재하지 않는 토큰입니다."),
+    TOKEN_EXPIRED("만료된 토큰입니다."),
     ;
 
     private final String message;
