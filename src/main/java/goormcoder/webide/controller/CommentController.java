@@ -5,6 +5,7 @@ import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
 import goormcoder.webide.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Comment", description = "댓글 관련 API")
 @RequiredArgsConstructor
 public class CommentController {
 
