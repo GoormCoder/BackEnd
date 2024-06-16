@@ -12,6 +12,7 @@ public record BoardFindDto(
         String title,
         String content,
         LocalDateTime createdAt,
+        int LikeCount,
         MemberFindDto member,
         QuestionFindDto question
 ) {
@@ -22,6 +23,7 @@ public record BoardFindDto(
                 board.getTitle(),
                 board.getContent(),
                 board.getCreatedAt(),
+                board.getLikeCount(),
                 MemberFindDto.from(board.getMember()),
                 QuestionFindDto.of(board.getQuestion())
         );
