@@ -3,8 +3,7 @@ package goormcoder.webide.dto.response;
 import goormcoder.webide.domain.Question;
 
 public record QuestionFindDto(
-        Long id,
-        int questionNum,
+        Long questionNum,
         String questionTitle
 ) {
     public static QuestionFindDto of(Question question) {
@@ -12,7 +11,6 @@ public record QuestionFindDto(
             return null;
         }
         return new QuestionFindDto(
-                question.getId(),
                 question.getQuestionNum(),
                 question.getContent()
         );

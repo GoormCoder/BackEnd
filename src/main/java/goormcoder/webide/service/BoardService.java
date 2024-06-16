@@ -12,6 +12,7 @@ import goormcoder.webide.exception.NotFoundException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.repository.QuestionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +36,7 @@ public class BoardService {
 
         Question question = null;
         if(boardCreateDto.questionNum() != null) {
-            question = questionRepository.findByQuestionNum(boardCreateDto.questionNum())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.QUESTION_NOT_FOUND));
+            question = questionRepository.findByQuestionNumOrThrow(boardCreateDto.questionNum());
         }
 
         boardRepository.save(Board.of(boardCreateDto, member, question));
