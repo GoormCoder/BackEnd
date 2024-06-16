@@ -3,6 +3,7 @@ package goormcoder.webide.controller;
 import goormcoder.webide.dto.request.CommentCreateDto;
 import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
+import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,12 +21,13 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final PrincipalHandler principalHandler;
 
     //댓글 생성
     @PostMapping("/boards/{boardId}/comments")
     @Operation(summary = "댓글 생성", description = "댓글을 생성합니다.")
     public ResponseEntity<?> createComment(@PathVariable Long boardId, @Valid @RequestBody CommentCreateDto commentCreateDto) {
-        commentService.createComment(boardId, commentCreateDto);
+        commentService.createComment(boardId, principalHandler.getMemberLoginId(), commentCreateDto);
         return ResponseEntity.status(HttpStatus.OK).body("댓글이 생성되었습니다.");
     }
 
@@ -40,7 +42,7 @@ public class CommentController {
     @PatchMapping("/comments/{commentId}")
     @Operation(summary = "댓글 수정", description = "특정 댓글을 수정합니다.")
     public ResponseEntity<?> updateComment(@PathVariable Long commentId, @Valid @RequestBody CommentUpdateDto commentUpdateDto) {
-        commentService.updateComment(commentId, commentUpdateDto);
+        commentService.updateComment(principalHandler.getMemberLoginId(), commentId, commentUpdateDto);
         return ResponseEntity.status(HttpStatus.OK).body("댓글 수정이 완료되었습니다.");
     }
 
@@ -48,7 +50,7 @@ public class CommentController {
     @DeleteMapping("/comments/{commentId}")
     @Operation(summary = "댓글 삭제", description = "특정 댓글을 삭제합니다.")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(principalHandler.getMemberLoginId(), commentId);
         return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제가 완료되었습니다.");
     }
 }

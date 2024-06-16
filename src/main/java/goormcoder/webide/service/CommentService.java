@@ -1,11 +1,14 @@
 package goormcoder.webide.service;
 
+import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Comment;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.CommentCreateDto;
 import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
+import goormcoder.webide.exception.ForbiddenException;
+import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.CommentRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -26,9 +29,9 @@ public class CommentService {
 
     //댓글 생성
     @Transactional
-    public void createComment(Long boardId, CommentCreateDto commentCreateDto) {
+    public void createComment(Long boardId, String loginId, CommentCreateDto commentCreateDto) {
         Board board = boardRepository.findByIdOrThrow(boardId);
-        Member member = memberRepository.findByIdOrThrow(commentCreateDto.memberId()); //나중에 수정해야함
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
         commentRepository.save(Comment.of(commentCreateDto.content(), board, member));
     }
 
@@ -41,25 +44,25 @@ public class CommentService {
 
     //댓글 수정
     @Transactional
-    public void updateComment(Long commentId, CommentUpdateDto commentUpdateDto) {
+    public void updateComment(String loginId, Long commentId, CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findByIdOrThrow(commentId);
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
-        //jwt 이후 추가 예정
-//        if(!memberId.equals(comment.getMember().getId())) {
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_MEMBER_ACCESS);
-//        }
+        if(!member.getId().equals(comment.getMember().getId())) {
+            throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
+        }
         comment.patch(commentUpdateDto);
     }
 
     //댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(String loginId, Long commentId) {
         Comment comment = commentRepository.findByIdOrThrow(commentId);
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
-        //jwt 이후 추가 예정
-//        if(!memberId.equals(comment.getMember().getId())) {
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_MEMBER_ACCESS);
-//        }
+        if(!member.getId().equals(comment.getMember().getId())) {
+            throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
+        }
         comment.markAsDeleted(LocalDateTime.now());
     }
 }
