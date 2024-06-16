@@ -51,7 +51,7 @@ public class CommentService {
         if(!member.getId().equals(comment.getMember().getId())) {
             throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
         }
-        comment.patch(commentUpdateDto);
+        comment.patch(commentUpdateDto.content());
     }
 
     //댓글 삭제

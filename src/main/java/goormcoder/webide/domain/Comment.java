@@ -47,9 +47,13 @@ public class Comment extends BaseTimeEntity {
         this.member = member;
     }
 
-    public void patch(CommentUpdateDto commentUpdateDto) {
-        if (!Objects.equals(this.content, commentUpdateDto.content())) {
-            this.content = commentUpdateDto.content();
+    public void patch(String content) {
+        if (isModified(content)) {
+            this.content = content;
         }
+    }
+
+    private boolean isModified(String content) {
+        return !Objects.equals(this.content, content);
     }
 }

@@ -61,11 +61,15 @@ public class Board extends BaseTimeEntity{
         this.likeCount = likeCount;
     }
 
-    public void patch(BoardUpdateDto boardUpdateDto) {
-        if(!Objects.equals(this.title, boardUpdateDto.title()) || !Objects.equals(this.content, boardUpdateDto.content())) {
-            this.title = boardUpdateDto.title();
-            this.content = boardUpdateDto.content();
+    public void patch(String title, String content) {
+        if (isModified(title, content)) {
+            this.title = title;
+            this.content = content;
         }
+    }
+
+    private boolean isModified(String title, String content) {
+        return !Objects.equals(this.title, title) || !Objects.equals(this.content, content);
     }
 
     public void addLikeCount() {

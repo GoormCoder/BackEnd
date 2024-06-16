@@ -61,7 +61,7 @@ public class BoardService {
         if(!member.getId().equals(board.getMember().getId())) {
             throw new ForbiddenException(ErrorMessage.FORBIDDEN_COMMENT_ACCESS);
         }
-        board.patch(boardUpdateDto);
+        board.patch(boardUpdateDto.title(), boardUpdateDto.content());
     }
 
     //게시글 삭제
