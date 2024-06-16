@@ -40,11 +40,11 @@ public class Board extends BaseTimeEntity{
     @JoinColumn(name = "quest_id")
     private Question question;
 
-    public static Board of(final BoardCreateDto boardCreateDto, final Member member, final Question question) {
+    public static Board of(final BoardType boardType, final String title, String content, final Member member, final Question question) {
         return Board.builder()
-                .boardType(boardCreateDto.boardType())
-                .title(boardCreateDto.title())
-                .content(boardCreateDto.content())
+                .boardType(boardType)
+                .title(title)
+                .content(content)
                 .member(member)
                 .question(question)
                 .likeCount(0)

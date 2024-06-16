@@ -39,7 +39,7 @@ public class BoardService {
             question = questionRepository.findByQuestionNumOrThrow(boardCreateDto.questionNum());
         }
 
-        boardRepository.save(Board.of(boardCreateDto, member, question));
+        boardRepository.save(Board.of(boardCreateDto.boardType(), boardCreateDto.title(), boardCreateDto.content(), member, question));
     }
 
     //게시글 조회

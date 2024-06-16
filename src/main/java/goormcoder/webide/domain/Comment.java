@@ -32,9 +32,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static Comment of(final CommentCreateDto commentCreateDto, final Board board, final Member member) {
+    public static Comment of(final String content, final Board board, final Member member) {
         return Comment.builder()
-                .content(commentCreateDto.content())
+                .content(content)
                 .board(board)
                 .member(member)
                 .build();

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     default Question findByQuestionNumOrThrow(Integer questionNum) {
-        return findByQuestionNum(questionNum).orElseThrow(() -> new EntityNotFoundException(ErrorMessage.BOARD_NOT_FOUND.getMessage()));
+        return findByQuestionNum(questionNum).orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
     }
 
     Optional<Question> findByQuestionNum(Integer questionNum);

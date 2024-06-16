@@ -29,7 +29,7 @@ public class CommentService {
     public void createComment(Long boardId, CommentCreateDto commentCreateDto) {
         Board board = boardRepository.findByIdOrThrow(boardId);
         Member member = memberRepository.findByIdOrThrow(commentCreateDto.memberId()); //나중에 수정해야함
-        commentRepository.save(Comment.of(commentCreateDto, board, member));
+        commentRepository.save(Comment.of(commentCreateDto.content(), board, member));
     }
 
     //댓글 조회
