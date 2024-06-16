@@ -5,10 +5,10 @@ import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Like;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.exception.ConflictException;
-import goormcoder.webide.exception.NotFoundException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.LikeRepository;
 import goormcoder.webide.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +23,8 @@ public class LikeService {
 
     //좋아요 생성
     @Transactional
-    public void createLike(Long memberId, Long boardId) {
-        Member member = memberRepository.findByIdOrThrow(memberId);
+    public void createLike(String loginId, Long boardId) {
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
         Board board = boardRepository.findByIdOrThrow(boardId);
 
         likeRepository.findByMemberAndBoard(member, board)
@@ -38,12 +38,12 @@ public class LikeService {
 
     //좋아요 삭제
     @Transactional
-    public void deleteLike(Long memberId, Long boardId) {
-        Member member = memberRepository.findByIdOrThrow(memberId);
+    public void deleteLike(String loginId, Long boardId) {
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
         Board board = boardRepository.findByIdOrThrow(boardId);
 
         Like like = likeRepository.findByMemberAndBoard(member, board)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.LIKE_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.LIKE_NOT_FOUND.getMessage()));
 
         board.removeLikeCount();
         likeRepository.delete(like);

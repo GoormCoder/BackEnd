@@ -4,9 +4,9 @@ import goormcoder.webide.common.dto.ErrorMessage;
 import lombok.Getter;
 
 @Getter
-public class NotFoundException extends BusinessException {
+public class ForbiddenException extends BusinessException {
 
-    public NotFoundException(ErrorMessage errorMessage) {
+    public ForbiddenException(ErrorMessage errorMessage) {
         super(errorMessage);
     }
 }

@@ -32,9 +32,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static Comment of(final CommentCreateDto commentCreateDto, final Board board, final Member member) {
+    public static Comment of(final String content, final Board board, final Member member) {
         return Comment.builder()
-                .content(commentCreateDto.content())
+                .content(content)
                 .board(board)
                 .member(member)
                 .build();
@@ -47,9 +47,13 @@ public class Comment extends BaseTimeEntity {
         this.member = member;
     }
 
-    public void patch(CommentUpdateDto commentUpdateDto) {
-        if (!Objects.equals(this.content, commentUpdateDto.content())) {
-            this.content = commentUpdateDto.content();
+    public void patch(String content) {
+        if (isModified(content)) {
+            this.content = content;
         }
+    }
+
+    private boolean isModified(String content) {
+        return !Objects.equals(this.content, content);
     }
 }
