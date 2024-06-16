@@ -4,6 +4,7 @@ import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Comment;
 import goormcoder.webide.exception.NotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     default Comment findByIdOrThrow(final Long commentId) {
-        return findByIdAndDeletedAtIsNull(commentId).orElseThrow(() -> new NotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
+        return findByIdAndDeletedAtIsNull(commentId).orElseThrow(() -> new EntityNotFoundException(ErrorMessage.COMMENT_NOT_FOUND.getMessage()));
     }
 
     Optional<Comment> findByIdAndDeletedAtIsNull(Long commentId);
