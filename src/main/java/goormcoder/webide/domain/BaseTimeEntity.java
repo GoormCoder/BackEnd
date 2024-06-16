@@ -22,8 +22,8 @@ public abstract class BaseTimeEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public void markAsDeleted(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

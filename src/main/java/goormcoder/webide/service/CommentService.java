@@ -63,6 +63,6 @@ public class CommentService {
         if(!member.getId().equals(comment.getMember().getId())) {
             throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
         }
-        comment.markAsDeleted(LocalDateTime.now());
+        comment.markAsDeleted();
     }
 }
