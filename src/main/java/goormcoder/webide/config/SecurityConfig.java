@@ -27,7 +27,7 @@ public class SecurityConfig {
     private static final String[] SWAGGER = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     private static final String ADMIN = "/admin/**";
-    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login", "/auth/refresh"};
+    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login", "/auth/refresh", "/questions/**"};
 
     private final JwtProvider jwtProvider;
 
