@@ -60,7 +60,7 @@ public class BoardService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(board.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessages.FORBIDDEN_COMMENT_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
         }
         board.patch(boardUpdateDto.title(), boardUpdateDto.content());
     }
@@ -72,7 +72,7 @@ public class BoardService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(board.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessages.FORBIDDEN_COMMENT_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
         }
         board.markAsDeleted();
     }

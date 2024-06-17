@@ -47,7 +47,7 @@ public class CommentService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(comment.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessages.FORBIDDEN_BOARD_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
         }
         comment.patch(commentUpdateDto.content());
     }
@@ -59,7 +59,7 @@ public class CommentService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(comment.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessages.FORBIDDEN_BOARD_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
         }
         comment.markAsDeleted();
     }
