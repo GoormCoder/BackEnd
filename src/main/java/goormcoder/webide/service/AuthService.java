@@ -9,6 +9,7 @@ import goormcoder.webide.jwt.JwtProvider;
 import goormcoder.webide.repository.RefreshTokenRepository;
 import goormcoder.webide.security.MemberDetails;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -69,7 +70,15 @@ public class AuthService {
         } catch (Exception e) {
             return AccessTokenDto.of(true, ErrorMessages.INTERNAL_SERVER_ERROR.getMessage(), null, null);
         }
+    }
 
+    @Transactional
+    public void deleteRefreshToken(String refreshToken) {
+        if(!refreshTokenRepository.existsByToken(refreshToken)) {
+            throw new EntityNotFoundException(ErrorMessages.TOKEN_NOT_FOUND.getMessage());
+        }
+
+        refreshTokenRepository.deleteByToken(refreshToken);
     }
 
     private void saveRefreshToken(String refreshToken) {
