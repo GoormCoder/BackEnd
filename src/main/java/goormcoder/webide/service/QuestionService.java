@@ -3,12 +3,16 @@ package goormcoder.webide.service;
 import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.QuestionCreateDto;
+import goormcoder.webide.dto.response.QuestionFindAllDto;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +20,11 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
+    @Transactional(readOnly = true)
+    public List<QuestionFindAllDto> getAllQuestions() {
+        return QuestionFindAllDto.listOf(questionRepository.findAll());
+    }
+  
     @Transactional
     public Question create(QuestionCreateDto createDto) {
         Question question = new Question(
