@@ -23,7 +23,8 @@ public class TestCaseService {
     }
 
     @Transactional
-    public TestCase update(TestCase testCase, String input, String output) {
+    public TestCase update(Long id, String input, String output) {
+        TestCase testCase = this.findById(id);
         testCase.update(input, output);
         testCaseRepository.save(testCase);
         return testCase;

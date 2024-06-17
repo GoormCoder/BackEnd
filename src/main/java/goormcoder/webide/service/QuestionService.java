@@ -3,7 +3,9 @@ package goormcoder.webide.service;
 import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.QuestionCreateDto;
+import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.response.QuestionFindAllDto;
+import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +26,10 @@ public class QuestionService {
     public List<QuestionFindAllDto> getAllQuestions() {
         return QuestionFindAllDto.listOf(questionRepository.findAll());
     }
-  
+
     @Transactional
     public Question create(QuestionCreateDto createDto) {
-        Question question = new Question(
-                createDto.title(),
-                createDto.level(),
-                createDto.content()
-        );
+        Question question = new Question(createDto.title(), createDto.level(), createDto.content());
         questionRepository.save(question);
         return question;
     }
@@ -42,17 +40,27 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
     }
 
-    public Question update(Long id, int level, String title, String content) {
+    @Transactional
+    public Question update(Long id, QuestionUpdateDto updateDto) {
         Question question = this.findById(id);
-        question.update(title, level, content);
+        question.update(updateDto.title(), updateDto.level(), updateDto.content());
         questionRepository.save(question);
         return question;
     }
 
+    @Transactional
     public void delete(Long id) {
         Question question = this.findById(id);
         question.markAsDeleted();
         questionRepository.save(question);
+    }
+
+    public List<TestCaseFindDto> findAllTestCasesById(Long id) {
+        return this.findById(id)
+                .getTestCases()
+                .stream()
+                .map(TestCaseFindDto::of)
+                .toList();
     }
 
 }
