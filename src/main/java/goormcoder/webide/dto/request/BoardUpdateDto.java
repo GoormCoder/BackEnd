@@ -1,14 +1,15 @@
 package goormcoder.webide.dto.request;
 
+import goormcoder.webide.constants.BoardConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record BoardUpdateDto(
 
-        @NotBlank(message = "게시글 제목은 필수로 입력해야 합니다.")
-        @Size(max = 300, message = "게시글 제목이 최대 글자 수(300자)를 초과했습니다.")
+        @NotBlank(message = BoardConstants.TITLE_IS_BLANK)
+        @Size(max = BoardConstants.TITLE_MAX_LENGTH, message = BoardConstants.TITLE_OVER_LENGTH)
         String title,
-        @NotBlank(message = "게시글 내용은 필수로 입력해야 합니다.")
+        @NotBlank(message = BoardConstants.CONTENT_IS_BLANK)
         String content
 ) {
 }
