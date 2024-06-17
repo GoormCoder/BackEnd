@@ -1,9 +1,12 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.domain.Question;
+import goormcoder.webide.domain.TestCase;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
+import goormcoder.webide.dto.request.TestCaseCreateDto;
 import goormcoder.webide.service.QuestionService;
+import goormcoder.webide.service.TestCaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final QuestionService questionService;
+    private final TestCaseService testCaseService;
 
     @Operation(summary = "문제 생성")
     @PostMapping("/questions")
@@ -54,4 +58,11 @@ public class AdminController {
         return ResponseEntity.ok("deleted");
     }
 
+    @Operation(summary = "테스트케이스 추가")
+    @PostMapping("/questions/{questionId}/testcases")
+    public ResponseEntity<String> createTestCase(@PathVariable Long questionId, @RequestBody TestCaseCreateDto createDto) {
+        Question question = questionService.findById(questionId);
+        TestCase testCase = testCaseService.create(question, createDto.input(), createDto.output());
+        return ResponseEntity.status(HttpStatus.CREATED).body(testCase.toString());
+    }
 }
