@@ -1,12 +1,14 @@
 package goormcoder.webide.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import java.util.ArrayList;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -30,6 +32,11 @@ public class Question extends BaseTimeEntity {
     @Column(name = "quest_content", nullable = false)
     @Lob
     private String content;
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<TestCase> testCases = new ArrayList<>();
 
     public Question(String title, int level, String content) {
         this.title = title;
