@@ -26,7 +26,7 @@ public class AdminController {
 
     @Operation(summary = "문제 생성")
     @PostMapping("/questions")
-    public ResponseEntity<String> createQuestion(@RequestBody QuestionCreateDto createDto) {
+    public ResponseEntity<String> createQuestion(@RequestBody @Valid QuestionCreateDto createDto) {
         Question question = questionService.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(question.getFormattedTitle());
@@ -35,8 +35,8 @@ public class AdminController {
     @Operation(summary = "문제 수정")
     @PatchMapping("/questions/{questionId}")
     public ResponseEntity<String> updateQuestion(
-            @PathVariable Long questionId,
-            @Valid @RequestBody QuestionUpdateDto updateDto
+            @PathVariable @Valid Long questionId,
+            @RequestBody @Valid QuestionUpdateDto updateDto
     ) {
         Question question = questionService.update(
                 questionId,
