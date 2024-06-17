@@ -5,7 +5,7 @@ import goormcoder.webide.domain.Member;
 public record MemberFindDto(
         Long id,
         String longinId,
-        String nickanme
+        String nickname
 ) {
     public static MemberFindDto from(Member member) {
         return new MemberFindDto(
