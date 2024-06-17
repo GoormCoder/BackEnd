@@ -1,10 +1,11 @@
 package goormcoder.webide.dto.request;
 
+import goormcoder.webide.constants.AuthConstants;
 import jakarta.validation.constraints.NotNull;
 
 public record RefreshTokenDto(
 
-        @NotNull(message = "Token 정보가 없습니다.")
+        @NotNull(message = AuthConstants.TOKEN_IS_NULL)
         String token
 
 ) {

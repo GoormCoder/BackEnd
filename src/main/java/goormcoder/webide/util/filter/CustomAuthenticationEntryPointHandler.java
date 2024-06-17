@@ -1,6 +1,6 @@
 package goormcoder.webide.util.filter;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class CustomAuthenticationEntryPointHandler implements AuthenticationEntr
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
+        response.getWriter().write(ErrorMessages.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
     }
 
 }

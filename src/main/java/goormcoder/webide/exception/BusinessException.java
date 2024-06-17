@@ -1,11 +1,11 @@
 package goormcoder.webide.exception;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 
 public class BusinessException extends RuntimeException {
-    private ErrorMessage errorMessage;
-    public BusinessException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
-        this.errorMessage = errorMessage;
+    private ErrorMessages errorMessagess;
+    public BusinessException(ErrorMessages errorMessagess) {
+        super(errorMessagess.getMessage());
+        this.errorMessagess = errorMessagess;
     }
 }

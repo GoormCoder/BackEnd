@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Like;
 import goormcoder.webide.domain.Member;
@@ -29,7 +29,7 @@ public class LikeService {
 
         likeRepository.findByMemberAndBoard(member, board)
                 .ifPresent(b -> {
-                    throw new ConflictException(ErrorMessage.LIKE_CONFLICT);
+                    throw new ConflictException(ErrorMessages.LIKE_CONFLICT);
                 });
 
         board.addLikeCount();
@@ -43,7 +43,7 @@ public class LikeService {
         Board board = boardRepository.findByIdOrThrow(boardId);
 
         Like like = likeRepository.findByMemberAndBoard(member, board)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.LIKE_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.LIKE_NOT_FOUND.getMessage()));
 
         board.removeLikeCount();
         likeRepository.delete(like);

@@ -1,12 +1,11 @@
-package goormcoder.webide.common.dto;
+package goormcoder.webide.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorMessage {
+public enum ErrorMessages {
 
     //404 NOT_FOUND
     MEMBER_NOT_FOUND("해당하는 사용자가 존재하지 않습니다."),
@@ -32,4 +31,5 @@ public enum ErrorMessage {
     ;
 
     private final String message;
+
 }

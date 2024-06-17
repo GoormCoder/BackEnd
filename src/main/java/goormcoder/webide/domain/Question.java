@@ -1,6 +1,7 @@
 package goormcoder.webide.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import goormcoder.webide.constants.QuestionConstants;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import jakarta.validation.constraints.NotBlank;
@@ -21,14 +22,14 @@ public class Question extends BaseTimeEntity {
     @Column(name = "quest_id", nullable = false)
     private Long id;
 
-    @NotBlank(message = "제목은 공백일 수 없습니다.")
+    @NotBlank(message = QuestionConstants.TITLE_IS_BLANK)
     @Column(name = "quest_title", nullable = false)
     private String title;
 
     @Column(name = "quest_level", nullable = false)
     private Integer level;
 
-    @NotBlank(message = "본문은 공백일 수 없습니다.")
+    @NotBlank(message = QuestionConstants.CONTENT_IS_BLANK)
     @Column(name = "quest_content", nullable = false)
     @Lob
     private String content;
