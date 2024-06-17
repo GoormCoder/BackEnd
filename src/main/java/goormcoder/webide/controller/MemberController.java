@@ -1,6 +1,7 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.MemberLoginDto;
+import goormcoder.webide.dto.request.RefreshTokenDto;
 import goormcoder.webide.dto.response.JwtTokenDto;
 import goormcoder.webide.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,13 @@ public class MemberController {
     @Operation(summary = "로그인", description = "로그인 성공 시 JWT을 발급합니다.")
     public ResponseEntity<JwtTokenDto> login(@Valid @RequestBody MemberLoginDto loginDto) {
         return ResponseEntity.status(HttpStatus.OK).body(authService.authenticate(loginDto));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 시 Refresh Token을 삭제합니다.")
+    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenDto tokenDto) {
+        authService.deleteRefreshToken(tokenDto.token());
+        return ResponseEntity.status(HttpStatus.OK).body("로그아웃이 성공적으로 완료되었습니다.");
     }
 
 }
