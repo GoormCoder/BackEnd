@@ -1,6 +1,6 @@
 package goormcoder.webide.util.filter;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.jwt.JwtProvider;
@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 setAuthenticationContext(token);
             }
         } catch (Exception e) {
-            throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
+            throw new AccessDeniedException(ErrorMessages.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
         }
 
         filterChain.doFilter(request, response);
