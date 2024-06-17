@@ -5,14 +5,17 @@ import goormcoder.webide.domain.TestCase;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.request.TestCaseCreateDto;
+import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.TestCaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,5 +67,16 @@ public class AdminController {
         Question question = questionService.findById(questionId);
         TestCase testCase = testCaseService.create(question, createDto.input(), createDto.output());
         return ResponseEntity.status(HttpStatus.CREATED).body(testCase.toString());
+    }
+
+    @Operation(summary = "테스트케이스 전체 조회")
+    @GetMapping("/questions/{questionId}/testcases")
+    public ResponseEntity<List<TestCaseFindDto>> findTestCases(@PathVariable Long questionId) {
+        Question question = questionService.findById(questionId);
+        List<TestCaseFindDto> response = question.getTestCases()
+                .stream()
+                .map(TestCaseFindDto::of)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 }
