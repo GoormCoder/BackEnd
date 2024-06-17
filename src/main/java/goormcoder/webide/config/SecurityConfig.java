@@ -1,7 +1,8 @@
 package goormcoder.webide.config;
 
 import goormcoder.webide.jwt.JwtProvider;
-import goormcoder.webide.util.filter.JwtAuthenticationFilter;
+import goormcoder.webide.util.filter.CustomAccessDeniedHandler;
+import goormcoder.webide.util.filter.CustomAuthenticationEntryPointHandler;
 import goormcoder.webide.util.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,10 +27,9 @@ public class SecurityConfig {
     private static final String[] SWAGGER = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     private static final String ADMIN = "/admin/**";
-    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login"};
+    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login", "/auth/refresh"};
 
     private final JwtProvider jwtProvider;
-    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -48,6 +48,12 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
+        http
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(new CustomAuthenticationEntryPointHandler());
+                    exception.accessDeniedHandler(new CustomAccessDeniedHandler());
+                });;
+
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(SWAGGER).permitAll()
                 .requestMatchers(TEST_WHITE_LIST).permitAll()
@@ -60,11 +66,7 @@ public class SecurityConfig {
                 HeadersConfigurer.FrameOptionsConfig::sameOrigin
         ));
         
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), JwtAuthenticationFilter.class);
-
-        http.addFilterAt(
-                new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtProvider),
-                UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

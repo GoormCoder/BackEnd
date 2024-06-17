@@ -1,14 +1,12 @@
 package goormcoder.webide.jwt;
 
+import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.security.MemberDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +14,10 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtProvider {
 
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 10 * 60 * 1000L; // 10분
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000L; // 30분
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000L * 7; // 7일
 
     private final SecretKey secretKey;
@@ -48,6 +45,28 @@ public class JwtProvider {
 
     public String issueRefreshToken(final Authentication authentication) {
         return generateToken(authentication, REFRESH_TOKEN_EXPIRATION_TIME);
+    }
+
+    public JwtValidation validateToken(String token) {
+        try {
+            getClaims(token);
+            return JwtValidation.JWT_VALID;
+        } catch (Exception e) {
+            return JwtValidation.JWT_INVALID;
+        }
+    }
+
+    public Authentication getAuthenticationFromToken(String token) {
+        String loginId = getUsername(token);
+        String role = getRole(token);
+
+        MemberDetails memberDetails = new MemberDetails(Member.builder()
+                .loginId(loginId)
+                .password("password")
+                .role(MemberRole.valueOf(role.toUpperCase()))
+                .build());
+
+        return new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
     }
 
     private String generateToken(Authentication authentication, long expirationTime) {

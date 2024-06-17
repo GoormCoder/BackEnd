@@ -29,6 +29,9 @@ public class Board extends BaseTimeEntity{
     @Column(name = "board_content", nullable = false)
     private String content;
 
+    @Column(name = "board_likeCount", nullable = false)
+    private int likeCount = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -37,29 +40,43 @@ public class Board extends BaseTimeEntity{
     @JoinColumn(name = "quest_id")
     private Question question;
 
-    public static Board of(final BoardCreateDto boardCreateDto, final Member member, final Question question) {
+    public static Board of(final BoardType boardType, final String title, String content, final Member member, final Question question) {
         return Board.builder()
-                .boardType(boardCreateDto.boardType())
-                .title(boardCreateDto.title())
-                .content(boardCreateDto.content())
+                .boardType(boardType)
+                .title(title)
+                .content(content)
                 .member(member)
                 .question(question)
+                .likeCount(0)
                 .build();
     }
 
     @Builder
-    private Board(final BoardType boardType, final String title, final String content, final Member member, final Question question) {
+    private Board(final BoardType boardType, final String title, final String content, final Member member, final Question question, final int likeCount) {
         this.boardType = boardType;
         this.title = title;
         this.content = content;
         this.member = member;
         this.question = question;
+        this.likeCount = likeCount;
     }
 
-    public void patch(BoardUpdateDto boardUpdateDto) {
-        if(!Objects.equals(this.title, boardUpdateDto.title()) || !Objects.equals(this.content, boardUpdateDto.content())) {
-            this.title = boardUpdateDto.title();
-            this.content = boardUpdateDto.content();
+    public void patch(String title, String content) {
+        if (isModified(title, content)) {
+            this.title = title;
+            this.content = content;
         }
+    }
+
+    private boolean isModified(String title, String content) {
+        return !Objects.equals(this.title, title) || !Objects.equals(this.content, content);
+    }
+
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    public void removeLikeCount() {
+        this.likeCount--;
     }
 }

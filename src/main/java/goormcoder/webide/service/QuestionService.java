@@ -42,7 +42,7 @@ public class QuestionService {
 
     public void delete(Long id) {
         Question question = this.findById(id);
-        question.markAsDeleted(LocalDateTime.now());
+        question.markAsDeleted();
         questionRepository.save(question);
     }
 
