@@ -16,7 +16,13 @@ public class Question {
     @Column(name = "quest_num", nullable = false)
     private Long questionNum;
 
+    @Column(name = "quest_title")
+    private String questionTitle;
+
     @Column(name = "quest_content", nullable = false)
     @Lob
     private String content;
+
+    @Column(name = "quest_level")
+    private int questionLevel;
 }
