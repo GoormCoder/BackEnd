@@ -42,6 +42,7 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
     }
 
+    @Transactional
     public Question update(Long id, int level, String title, String content) {
         Question question = this.findById(id);
         question.update(title, level, content);
@@ -49,6 +50,7 @@ public class QuestionService {
         return question;
     }
 
+    @Transactional
     public void delete(Long id) {
         Question question = this.findById(id);
         question.markAsDeleted();
