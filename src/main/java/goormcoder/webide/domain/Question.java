@@ -44,10 +44,6 @@ public class Question extends BaseTimeEntity {
         this.content = content;
     }
 
-    public String getFormattedTitle() {
-        return String.format("#%d [Lv.%d] %s", id, level, title);
-    }
-
     public void update(String title, int level, String content) {
         this.title = title;
         this.level = level;
