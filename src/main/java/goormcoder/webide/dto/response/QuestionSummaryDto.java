@@ -2,16 +2,16 @@ package goormcoder.webide.dto.response;
 
 import goormcoder.webide.domain.Question;
 
-public record QuestionDto(
+public record QuestionSummaryDto(
         Long id,
         Integer level,
         String title
 ) {
-    public static QuestionDto of(Question question) {
+    public static QuestionSummaryDto of(Question question) {
         if (question == null) {
             return null;
         }
-        return new QuestionDto(
+        return new QuestionSummaryDto(
                 question.getId(),
                 question.getLevel(),
                 question.getTitle()
