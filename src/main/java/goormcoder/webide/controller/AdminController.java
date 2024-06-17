@@ -37,14 +37,14 @@ public class AdminController {
     public ResponseEntity<String> createQuestion(@RequestBody @Valid QuestionCreateDto createDto) {
         Question question = questionService.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(question.getFormattedTitle());
+                .body(question.toString());
     }
 
     @Operation(summary = "문제 수정")
     @PatchMapping("/questions/{questionId}")
     public ResponseEntity<String> updateQuestion(@PathVariable @Valid Long questionId, @RequestBody @Valid QuestionUpdateDto updateDto) {
         Question question = questionService.update(questionId, updateDto);
-        return ResponseEntity.ok(question.getFormattedTitle());
+        return ResponseEntity.ok(question.toString());
     }
 
     @Operation(summary = "문제 삭제")

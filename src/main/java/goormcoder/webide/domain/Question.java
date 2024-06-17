@@ -44,7 +44,8 @@ public class Question extends BaseTimeEntity {
         this.content = content;
     }
 
-    public String getFormattedTitle() {
+    @Override
+    public String toString() {
         return String.format("#%d [Lv.%d] %s", id, level, title);
     }
 
