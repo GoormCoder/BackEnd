@@ -5,6 +5,7 @@ import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.response.QuestionFindAllDto;
+import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,10 +28,10 @@ public class QuestionService {
     }
 
     @Transactional
-    public Question create(QuestionCreateDto createDto) {
+    public QuestionSummaryDto create(QuestionCreateDto createDto) {
         Question question = new Question(createDto.title(), createDto.level(), createDto.content());
         questionRepository.save(question);
-        return question;
+        return QuestionSummaryDto.of(question);
     }
 
     public Question findById(Long id) {
@@ -40,11 +41,11 @@ public class QuestionService {
     }
 
     @Transactional
-    public Question update(Long id, QuestionUpdateDto updateDto) {
+    public QuestionSummaryDto update(Long id, QuestionUpdateDto updateDto) {
         Question question = this.findById(id);
         question.update(updateDto.title(), updateDto.level(), updateDto.content());
         questionRepository.save(question);
-        return question;
+        return QuestionSummaryDto.of(question);
     }
 
     @Transactional

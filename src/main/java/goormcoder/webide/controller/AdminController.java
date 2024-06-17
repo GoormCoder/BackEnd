@@ -6,6 +6,7 @@ import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.request.TestCaseCreateDto;
 import goormcoder.webide.dto.request.TestCaseUpdateDto;
+import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.TestCaseService;
@@ -34,17 +35,14 @@ public class AdminController {
 
     @Operation(summary = "문제 생성")
     @PostMapping("/questions")
-    public ResponseEntity<String> createQuestion(@RequestBody @Valid QuestionCreateDto createDto) {
-        Question question = questionService.create(createDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(question.toString());
+    public ResponseEntity<QuestionSummaryDto> createQuestion(@RequestBody @Valid QuestionCreateDto createDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.create(createDto));
     }
 
     @Operation(summary = "문제 수정")
     @PatchMapping("/questions/{questionId}")
-    public ResponseEntity<String> updateQuestion(@PathVariable @Valid Long questionId, @RequestBody @Valid QuestionUpdateDto updateDto) {
-        Question question = questionService.update(questionId, updateDto);
-        return ResponseEntity.ok(question.toString());
+    public ResponseEntity<QuestionSummaryDto> updateQuestion(@PathVariable @Valid Long questionId, @RequestBody @Valid QuestionUpdateDto updateDto) {
+        return ResponseEntity.ok(questionService.update(questionId, updateDto));
     }
 
     @Operation(summary = "문제 삭제")

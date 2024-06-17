@@ -14,7 +14,7 @@ public record BoardFindDto(
         LocalDateTime createdAt,
         int LikeCount,
         MemberFindDto member,
-        QuestionFindDto question
+        QuestionSummaryDto question
 ) {
     public static BoardFindDto from(Board board) {
         return new BoardFindDto(
@@ -25,7 +25,7 @@ public record BoardFindDto(
                 board.getCreatedAt(),
                 board.getLikeCount(),
                 MemberFindDto.from(board.getMember()),
-                QuestionFindDto.of(board.getQuestion())
+                QuestionSummaryDto.of(board.getQuestion())
         );
     }
 }
