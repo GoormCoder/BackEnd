@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ForbiddenException extends BusinessException {
 
-    public ForbiddenException(ErrorMessages errorMessages) {
-        super(errorMessages);
+    public ForbiddenException(ErrorMessages errorMessagess) {
+        super(errorMessagess);
     }
 }
