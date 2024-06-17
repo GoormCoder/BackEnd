@@ -1,12 +1,12 @@
 package goormcoder.webide.exception;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import lombok.Getter;
 
 @Getter
 public class ConflictException extends BusinessException {
 
-    public ConflictException(ErrorMessage errorMessage) {
-        super(errorMessage);
+    public ConflictException(ErrorMessages errorMessages) {
+        super(errorMessages);
     }
 }

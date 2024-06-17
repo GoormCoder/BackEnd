@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.TestCase;
 import goormcoder.webide.repository.TestCaseRepository;
@@ -32,7 +32,7 @@ public class TestCaseService {
 
     public TestCase findById(Long id) {
         return testCaseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.TESTCASE_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.TESTCASE_NOT_FOUND.getMessage()));
     }
 
     @Transactional

@@ -55,11 +55,7 @@ public class SecurityConfig {
                 });;
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers(SWAGGER).permitAll()
-                .requestMatchers(TEST_WHITE_LIST).permitAll()
-                .requestMatchers(WHITE_LIST).permitAll()
-                .requestMatchers(ADMIN).hasRole("ADMIN")
-                .anyRequest().authenticated());
+                .anyRequest().permitAll());
 
         // for using H2
         http.headers(headers -> headers.frameOptions(

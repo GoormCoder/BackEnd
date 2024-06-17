@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Comment;
 import goormcoder.webide.domain.Member;
@@ -8,7 +8,6 @@ import goormcoder.webide.dto.request.CommentCreateDto;
 import goormcoder.webide.dto.request.CommentUpdateDto;
 import goormcoder.webide.dto.response.CommentFindAllDto;
 import goormcoder.webide.exception.ForbiddenException;
-import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.CommentRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -49,7 +47,7 @@ public class CommentService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(comment.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_BOARD_ACCESS);
         }
         comment.patch(commentUpdateDto.content());
     }
@@ -61,7 +59,7 @@ public class CommentService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(comment.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN_BOARD_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_BOARD_ACCESS);
         }
         comment.markAsDeleted();
     }

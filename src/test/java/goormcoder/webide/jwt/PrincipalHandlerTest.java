@@ -1,6 +1,6 @@
 package goormcoder.webide.jwt;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.security.MemberDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class PrincipalHandlerTest {
             principalHandler.getMemberLoginId();
         });
 
-        assertEquals(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage(), exception.getMessage());
+        assertEquals(ErrorMessages.JWT_UNAUTHORIZED_EXCEPTION.getMessage(), exception.getMessage());
     }
 
     private void setSecurityContext(MemberDetails memberDetails) {

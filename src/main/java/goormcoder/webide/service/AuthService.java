@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.RefreshToken;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.response.AccessTokenDto;
@@ -44,9 +44,9 @@ public class AuthService {
             return JwtTokenDto.of(loginId, accessToken, refreshToken);
         } catch (AuthenticationException e) {
             if(e instanceof BadCredentialsException) {
-                throw new AccessDeniedException(ErrorMessage.JWT_BAD_CREDENTIAL_EXCEPTION.getMessage());
+                throw new AccessDeniedException(ErrorMessages.JWT_BAD_CREDENTIAL_EXCEPTION.getMessage());
             } else {
-                throw new AccessDeniedException(ErrorMessage.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
+                throw new AccessDeniedException(ErrorMessages.JWT_UNAUTHORIZED_EXCEPTION.getMessage());
             }
         }
     }
@@ -55,7 +55,7 @@ public class AuthService {
     public AccessTokenDto reissueToken(String refreshToken) {
         try {
             if(!refreshTokenRepository.existsByToken(refreshToken)) {
-                return AccessTokenDto.of(true, ErrorMessage.TOKEN_NOT_FOUND.getMessage(), null, null);
+                return AccessTokenDto.of(true, ErrorMessages.TOKEN_NOT_FOUND.getMessage(), null, null);
             }
 
             Authentication auth = jwtProvider.getAuthenticationFromToken(refreshToken);
@@ -65,9 +65,9 @@ public class AuthService {
             return AccessTokenDto.of(false, null, loginId, newAccessToken);
         } catch (ExpiredJwtException e) {
             refreshTokenRepository.deleteByToken(refreshToken);
-            return AccessTokenDto.of(true, ErrorMessage.TOKEN_EXPIRED.getMessage(), null, null);
+            return AccessTokenDto.of(true, ErrorMessages.TOKEN_EXPIRED.getMessage(), null, null);
         } catch (Exception e) {
-            return AccessTokenDto.of(true, ErrorMessage.INTERNAL_SERVER_ERROR.getMessage(), null, null);
+            return AccessTokenDto.of(true, ErrorMessages.INTERNAL_SERVER_ERROR.getMessage(), null, null);
         }
 
     }

@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.Question;
@@ -35,7 +35,7 @@ public class BoardService {
         Question question = null;
         if(boardCreateDto.questionId() != null) {
             question = questionRepository.findById(boardCreateDto.questionId())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage()));
         }
 
         boardRepository.save(Board.of(boardCreateDto.boardType(), boardCreateDto.title(), boardCreateDto.content(), member, question));
@@ -60,7 +60,7 @@ public class BoardService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(board.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN_COMMENT_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_COMMENT_ACCESS);
         }
         board.patch(boardUpdateDto.title(), boardUpdateDto.content());
     }
@@ -72,7 +72,7 @@ public class BoardService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         if(!member.getId().equals(board.getMember().getId())) {
-            throw new ForbiddenException(ErrorMessage.FORBIDDEN_COMMENT_ACCESS);
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_COMMENT_ACCESS);
         }
         board.markAsDeleted();
     }

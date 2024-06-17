@@ -1,6 +1,6 @@
 package goormcoder.webide.repository;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     default Board findByIdOrThrow(final Long boardId) {
-        return findByIdAndDeletedAtIsNull(boardId).orElseThrow(() -> new EntityNotFoundException(ErrorMessage.BOARD_NOT_FOUND.getMessage()));
+        return findByIdAndDeletedAtIsNull(boardId).orElseThrow(() -> new EntityNotFoundException(ErrorMessages.BOARD_NOT_FOUND.getMessage()));
     }
 
     Optional<Board> findByIdAndDeletedAtIsNull(Long boardId);

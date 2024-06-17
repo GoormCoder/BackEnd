@@ -1,6 +1,6 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.security.MemberDetails;
@@ -19,7 +19,7 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         Member member = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.JWT_USER_NOT_FOUND_EXCEPTION.getMessage()));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessages.JWT_USER_NOT_FOUND_EXCEPTION.getMessage()));
         return new MemberDetails(member);
     }
 
