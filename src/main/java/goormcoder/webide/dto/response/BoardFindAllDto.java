@@ -12,7 +12,7 @@ public record BoardFindAllDto(
         LocalDateTime createdAt,
         int likeCount,
         MemberFindDto member,
-        QuestionDto question
+        QuestionSummaryDto question
 ) {
     public static List<BoardFindAllDto> listOf(List<Board> boards) {
         return boards
@@ -23,7 +23,7 @@ public record BoardFindAllDto(
                         board.getCreatedAt(),
                         board.getLikeCount(),
                         MemberFindDto.from(board.getMember()),
-                        QuestionDto.of(board.getQuestion())
+                        QuestionSummaryDto.of(board.getQuestion())
                 )).toList();
     }
 }
