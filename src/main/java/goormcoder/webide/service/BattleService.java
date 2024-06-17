@@ -5,9 +5,12 @@ import goormcoder.webide.domain.BattleWait;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
 import goormcoder.webide.dto.response.BattleWaitFindDto;
+import goormcoder.webide.dto.response.BattleWaitSimpleDto;
 import goormcoder.webide.exception.ConflictException;
+import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.BattleWaitRepository;
 import goormcoder.webide.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ public class BattleService {
 
     //대기방 등록
     @Transactional
-    public BattleWaitFindDto createBattleWait(String memberLoginId, BattleWaitCreateDto battleWaitCreateDto) {
+    public BattleWaitSimpleDto createBattleWait(String memberLoginId, BattleWaitCreateDto battleWaitCreateDto) {
         List<BattleWait> availableRooms = battleWaitRepository.findByLevelAndLanguageAndIsFullFalseOrderByCreatedAtAsc(
                 battleWaitCreateDto.level(),
                 battleWaitCreateDto.language()
@@ -38,12 +41,27 @@ public class BattleService {
 
             Member receivedMember = memberRepository.findByLoginIdOrThrow(memberLoginId);
             room.joinMember(receivedMember);
-            return BattleWaitFindDto.of(room.getId(), room.isFull());
+            return BattleWaitSimpleDto.of(room.getId(), room.isFull());
         } else {
             Member givenMember = memberRepository.findByLoginIdOrThrow(memberLoginId);
             BattleWait newRoom = BattleWait.of(battleWaitCreateDto.level(), battleWaitCreateDto.language(), givenMember);
             battleWaitRepository.save(newRoom);
-            return BattleWaitFindDto.of(newRoom.getId(), newRoom.isFull());
+            return BattleWaitSimpleDto.of(newRoom.getId(), newRoom.isFull());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public BattleWaitFindDto findBattleWait(String memberLoginId, Long roomId) {
+        BattleWait battleWait = battleWaitRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.BATTLE_WAIT_NOT_FOUND.getMessage()));
+
+        Member member = memberRepository.findByLoginIdOrThrow(memberLoginId);
+
+        if (!member.getId().equals(battleWait.getGivenMember().getId()) &&
+                (battleWait.getReceivedMember() == null || !member.getId().equals(battleWait.getReceivedMember().getId()))) {
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
+        }
+
+        return BattleWaitFindDto.of(battleWait.getId(), battleWait.getGivenMember(), battleWait.getReceivedMember(), battleWait.isFull());
     }
 }

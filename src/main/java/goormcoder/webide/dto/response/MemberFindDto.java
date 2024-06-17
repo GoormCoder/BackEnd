@@ -8,6 +8,9 @@ public record MemberFindDto(
         String nickname
 ) {
     public static MemberFindDto from(Member member) {
+        if (member == null) {
+            return null;
+        }
         return new MemberFindDto(
                 member.getId(),
                 member.getLoginId(),
