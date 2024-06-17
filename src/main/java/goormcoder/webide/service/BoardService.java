@@ -12,11 +12,11 @@ import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.repository.QuestionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,8 +33,9 @@ public class BoardService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
 
         Question question = null;
-        if(boardCreateDto.questionNum() != null) {
-            question = questionRepository.findByQuestionNumOrThrow(boardCreateDto.questionNum());
+        if(boardCreateDto.questionId() != null) {
+            question = questionRepository.findById(boardCreateDto.questionId())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.QUESTION_NOT_FOUND.getMessage()));
         }
 
         boardRepository.save(Board.of(boardCreateDto.boardType(), boardCreateDto.title(), boardCreateDto.content(), member, question));

@@ -26,4 +26,12 @@ public abstract class BaseTimeEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public boolean isActive () {
+        return deletedAt == null;
+    }
+
+    public boolean isDeleted () {
+        return deletedAt != null;
+    }
+
 }

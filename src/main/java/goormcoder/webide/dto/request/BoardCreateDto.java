@@ -12,6 +12,6 @@ public record BoardCreateDto(
         String title,
         @NotBlank(message = "게시글 내용은 필수로 입력해야 합니다.")
         String content,
-        Integer questionNum
+        Long questionId
 ) {
 }
