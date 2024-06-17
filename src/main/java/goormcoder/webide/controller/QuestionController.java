@@ -28,6 +28,7 @@ public class QuestionController {
     @Operation(summary = "문제 조회", description = "전체 문제를 조회합니다.")
     public ResponseEntity<List<QuestionFindAllDto>> getAllQuestions() {
         return ResponseEntity.status(HttpStatus.OK).body(questionService.getAllQuestions());
+    }
 
     @Operation(summary = "문제 열람")
     @GetMapping("/{questionId}")
