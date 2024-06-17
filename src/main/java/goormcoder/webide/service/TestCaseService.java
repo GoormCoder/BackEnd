@@ -1,8 +1,10 @@
 package goormcoder.webide.service;
 
+import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.TestCase;
 import goormcoder.webide.repository.TestCaseRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,11 @@ public class TestCaseService {
         testCase.update(input, output);
         testCaseRepository.save(testCase);
         return testCase;
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        testCaseRepository.deleteById(id);
     }
 
 }

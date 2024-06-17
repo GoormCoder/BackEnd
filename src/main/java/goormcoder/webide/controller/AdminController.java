@@ -69,6 +69,13 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(testCase.toString());
     }
 
+    @Operation(summary = "테스트케이스 삭제")
+    @DeleteMapping("/questions/{questionId}/testcases/{testcaseId}")
+    public ResponseEntity<String> deleteTestCase(@PathVariable Long questionId, @PathVariable Long testcaseId) {
+        testCaseService.deleteById(testcaseId);
+        return ResponseEntity.ok("deleted");
+    }
+
     @Operation(summary = "테스트케이스 전체 조회")
     @GetMapping("/questions/{questionId}/testcases")
     public ResponseEntity<List<TestCaseFindDto>> findTestCases(@PathVariable Long questionId) {
