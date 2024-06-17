@@ -42,16 +42,8 @@ public class AdminController {
 
     @Operation(summary = "문제 수정")
     @PatchMapping("/questions/{questionId}")
-    public ResponseEntity<String> updateQuestion(
-            @PathVariable @Valid Long questionId,
-            @RequestBody @Valid QuestionUpdateDto updateDto
-    ) {
-        Question question = questionService.update(
-                questionId,
-                updateDto.level(),
-                updateDto.title(),
-                updateDto.content()
-        );
+    public ResponseEntity<String> updateQuestion(@PathVariable @Valid Long questionId, @RequestBody @Valid QuestionUpdateDto updateDto) {
+        Question question = questionService.update(questionId, updateDto);
         return ResponseEntity.ok(question.getFormattedTitle());
     }
 
@@ -77,8 +69,7 @@ public class AdminController {
             @PathVariable Long testcaseId,
             @RequestBody TestCaseUpdateDto updateDto
     ) {
-        TestCase testCase = testCaseService.findById(testcaseId);
-        testCaseService.update(testCase, updateDto.input(), updateDto.output());
+        TestCase testCase = testCaseService.update(testcaseId, updateDto.input(), updateDto.output());
         return ResponseEntity.ok(testCase.toString());
     }
 
@@ -90,13 +81,9 @@ public class AdminController {
     }
 
     @Operation(summary = "테스트케이스 전체 조회")
-    @GetMapping("/questions/{questionId}/testcases")
-    public ResponseEntity<List<TestCaseFindDto>> findTestCases(@PathVariable Long questionId) {
-        Question question = questionService.findById(questionId);
-        List<TestCaseFindDto> response = question.getTestCases()
-                .stream()
-                .map(TestCaseFindDto::of)
-                .toList();
+    @GetMapping("/questions/{questionId}/testcases/all")
+    public ResponseEntity<List<TestCaseFindDto>> findAllTestCases(@PathVariable Long questionId) {
+        List<TestCaseFindDto> response = questionService.findAllTestCasesById(questionId);
         return ResponseEntity.ok(response);
     }
 }
