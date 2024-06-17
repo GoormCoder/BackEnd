@@ -41,6 +41,11 @@ public class TestCase {
         this.output = output;
     }
 
+    public void update(String input, String output) {
+        this.input = input;
+        this.output = output;
+    }
+
     @Override
     public String toString() {
         return String.format("[입력]\n%s\n\n[출력]\n%s", input, output);

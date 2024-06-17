@@ -29,6 +29,11 @@ public class TestCaseService {
         return testCase;
     }
 
+    public TestCase findById(Long id) {
+        return testCaseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.TESTCASE_NOT_FOUND.getMessage()));
+    }
+
     @Transactional
     public void deleteById(Long id) {
         testCaseRepository.deleteById(id);
