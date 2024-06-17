@@ -14,24 +14,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
-    private static final int MIN_LEVEL = 0;
-    private static final int MAX_LEVEL = 3;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quest_id", nullable = false)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "제목은 공백일 수 없습니다.")
     @Column(name = "quest_title", nullable = false)
     private String title;
 
-    @Min(value = MIN_LEVEL)
-    @Max(value = MAX_LEVEL)
     @Column(name = "quest_level", nullable = false)
     private Integer level;
 
-    @NotBlank
+    @NotBlank(message = "본문은 공백일 수 없습니다.")
     @Column(name = "quest_content", nullable = false)
     @Lob
     private String content;
