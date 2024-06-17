@@ -17,6 +17,7 @@ public enum ErrorMessages {
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
+    BATTLE_MEMBER_CONFLICT("같은 사용자가 두 명의 역할을 맡을 수 없습니다."),
   
     JWT_UNAUTHORIZED_EXCEPTION("사용자 검증에 실패했습니다."),
     JWT_FORBIDDEN_ACCESS("접근 권한이 없습니다."),
