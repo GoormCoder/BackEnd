@@ -5,6 +5,7 @@ import goormcoder.webide.dto.response.QuestionFindDto;
 import goormcoder.webide.dto.response.QuestionFindAllDto;
 import goormcoder.webide.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 
 @RestController
+@Tag(name = "Question", description = "문제 관련 API")
 @RequiredArgsConstructor
 @RequestMapping("/questions")
 @CrossOrigin(origins = "http://localhost:3000")
