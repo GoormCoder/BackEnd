@@ -12,9 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
-    default FriendRequest findByIdOrThrow(final Long requestId) {
-        return findByIdAndRequestResult(requestId, 'F').orElseThrow(() -> new EntityNotFoundException(ErrorMessages.FRIEND_REQUEST_NOT_FOUND.getMessage()));
+    default FriendRequest findByIdAndRequesterIdOrThrow(final Long requestId, final Member requester) {
+        return findByIdAndRequestIdAndRequestResult(requestId, requester, 'F').orElseThrow(() -> new EntityNotFoundException(ErrorMessages.FRIEND_REQUEST_NOT_FOUND.getMessage()));
     }
-    Optional<FriendRequest> findByIdAndRequestResult(Long requestId, Character requestResult);
-    List<FriendRequest> findByRequestIdAndReceivedId(Member requestId, Member receivedId);
+    Optional<FriendRequest> findByIdAndRequestIdAndRequestResult(Long requestId, Member requester, Character requestResult);
+    List<FriendRequest> findByRequestIdAndReceivedId(Member requester, Member receiver);
+    List<FriendRequest> findAllByReceivedIdAndRequestResult(Member receiver, Character requestResult);
 }

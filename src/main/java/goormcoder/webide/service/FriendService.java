@@ -5,6 +5,7 @@ import goormcoder.webide.domain.*;
 import goormcoder.webide.dto.request.FriendCreateDto;
 import goormcoder.webide.dto.request.FriendRequestCreatDto;
 import goormcoder.webide.dto.response.FriendFindAllDto;
+import goormcoder.webide.dto.response.FriendRequestFindAllDto;
 import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.FriendRepository;
 import goormcoder.webide.repository.FriendRequestRepository;
@@ -38,25 +39,26 @@ public class FriendService {
         return true;
     }
 
+    //친구요청 조회
+    @Transactional
+    public List<FriendRequestFindAllDto> getAllFriendRequests(String loginId){
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
+        return FriendRequestFindAllDto.listOf(friendRequestRepository.findAllByReceivedIdAndRequestResult(member, 'F'));
+    }
+
     // 친구 추가
     @Transactional
     public void createFriend(String loginId, FriendCreateDto friendCreateDto) {
-        updateFriendRequestResult(loginId, friendCreateDto.requestId());
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
         Member friend = memberRepository.findByLoginIdOrThrow(friendCreateDto.friendLoginId());
-        friendRepository.save(Friend.of(member, friend));
-        friendRepository.save(Friend.of(friend, member));
-    }
-
-    // 요청 상태 업데이트
-    @Transactional
-    public void updateFriendRequestResult(String loginId, Long requestId) {
-        FriendRequest request = friendRequestRepository.findByIdOrThrow(requestId);
-        Member member = memberRepository.findByLoginIdOrThrow(loginId);
+        FriendRequest request = friendRequestRepository.findByIdAndRequesterIdOrThrow(friendCreateDto.requestId(), friend);
 
         if(!member.getId().equals(request.getReceivedId().getId())) {
             throw new ForbiddenException(ErrorMessages.FORBIDDEN_FRIEND_REQUEST_ACCESS);
         }
+
+        friendRepository.save(Friend.of(member, friend));
+        friendRepository.save(Friend.of(friend, member));
         request.patch();
     }
 

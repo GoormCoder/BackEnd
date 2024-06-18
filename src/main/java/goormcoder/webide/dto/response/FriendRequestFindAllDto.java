@@ -6,16 +6,14 @@ import java.util.List;
 
 public record FriendRequestFindAllDto(
         Long requestId,
-        MemberFindDto requester,
-        MemberFindDto receiver
+        MemberFindDto requester
 ) {
     public static List<FriendRequestFindAllDto> listOf(List<FriendRequest> requests) {
         return requests
                 .stream()
                 .map(request -> new FriendRequestFindAllDto(
                         request.getId(),
-                        MemberFindDto.from(request.getRequestId()),
-                        MemberFindDto.from(request.getReceivedId())
+                        MemberFindDto.from(request.getRequestId())
                 )).toList();
     }
 }
