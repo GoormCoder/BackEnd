@@ -52,7 +52,7 @@ public class Member {
     @Column(name = "member_gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "member_praise", nullable = false)
+    @Column(name = "praise_score", nullable = false)
     private int praiseScore = 0;
 
     @Column(name = "battle_score", nullable = false)
@@ -90,4 +90,11 @@ public class Member {
                 .build();
     }
 
+    public void incrementPraiseScore() {
+        this.praiseScore += 5;
+    }
+
+    public void decrementPraiseScore() {
+        this.praiseScore -= 5;
+    }
 }
