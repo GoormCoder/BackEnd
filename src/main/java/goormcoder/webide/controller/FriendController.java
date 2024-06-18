@@ -3,6 +3,7 @@ package goormcoder.webide.controller;
 import goormcoder.webide.dto.request.FriendCreateDto;
 import goormcoder.webide.dto.request.FriendRequestCreatDto;
 import goormcoder.webide.dto.response.FriendFindAllDto;
+import goormcoder.webide.dto.response.FriendRequestFindAllDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,18 +31,23 @@ public class FriendController {
     public ResponseEntity<String> requestFriend(@PathVariable String loginId, @Valid @RequestBody FriendRequestCreatDto friendRequestCreateDto) {
         if(friendService.requestFriend(loginId, friendRequestCreateDto)){
             return ResponseEntity.status(HttpStatus.OK).body("친구요청이 완료되었습니다");
-        } //중복 체크 할것
+        }
         return ResponseEntity.status(HttpStatus.OK).body("이미 요청한 멤버입니다");
+    }
+
+    //친구 요청 조회
+    @GetMapping("/request/{loginId}")
+    @Operation(summary = "친구요청 내역 조회")
+    public ResponseEntity<List<FriendRequestFindAllDto>> getAllFriendRequests(@PathVariable String loginId) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendService.getAllFriendRequests(loginId));
     }
 
     //친구 추가
     @PostMapping("/add/{loginId}")
-    @Operation(summary = "친구추가")
+    @Operation(summary = "친구추가(수락)")
     public ResponseEntity<String> createFriend(@PathVariable String loginId, @Valid @RequestBody FriendCreateDto friendCreateDto) {
-        if(friendService.createFriend(loginId, friendCreateDto)){
-            return ResponseEntity.status(HttpStatus.OK).body("친구추가가 완료되었습니다.");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("이미 추가된 친구입니다."); // 요청 중복 체크하면 필요없음
+        friendService.createFriend(loginId, friendCreateDto);
+        return ResponseEntity.status(HttpStatus.OK).body("친구추가가 완료되었습니다.");
     }
 
     //친구 조회

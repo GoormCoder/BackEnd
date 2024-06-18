@@ -27,6 +27,13 @@ public class FriendRequest {
     @Column(name = "request_result", nullable = false)
     private Character requestResult;
 
+    @PrePersist
+    protected void onPrePersist() {
+        if (requestResult == null) {
+            requestResult = 'F';
+        }
+    }
+
     @Builder
     private FriendRequest(Member requestId, Member receivedId) {
         this.requestId = requestId;
@@ -40,10 +47,8 @@ public class FriendRequest {
                 .build();
     }
 
-    @PrePersist
-    protected void onPrePersist() {
-        if (requestResult == null) {
-            requestResult = 'F';
-        }
+    public void patch() {
+            this.requestResult = 'T';
     }
+
 }

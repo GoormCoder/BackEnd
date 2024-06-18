@@ -1,6 +1,7 @@
 package goormcoder.webide.dto.request;
 
 public record FriendCreateDto(
-        String friendLoginId
+        String friendLoginId,
+        Long requestId
 ) {
 }
