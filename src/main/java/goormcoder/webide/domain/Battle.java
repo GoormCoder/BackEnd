@@ -12,15 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "t_battle")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Battle {
+public class Battle extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "battle_id")
     private Long id;
-
-    @Column(name = "battled_at", nullable = false)
-    private LocalDateTime battledAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "battle_given_member_id")
@@ -38,19 +35,17 @@ public class Battle {
     @JoinColumn(name = "quest_id")
     private Question question;
 
-    public static Battle of(final LocalDateTime battledAt, final Member givenMember, final Member receivedMember, final Member winner, final Question question) {
+    public static Battle of(final Member givenMember, final Member receivedMember, final Question question) {
         return Battle.builder()
-                .battledAt(battledAt)
                 .givenMember(givenMember)
                 .receivedMember(receivedMember)
-                .winner(winner)
+                .winner(null)
                 .question(question)
                 .build();
     }
 
     @Builder
     private Battle(final LocalDateTime battledAt, final Member givenMember, final Member receivedMember, final Member winner, final Question question) {
-        this.battledAt = battledAt;
         this.givenMember = givenMember;
         this.receivedMember = receivedMember;
         this.winner = winner;

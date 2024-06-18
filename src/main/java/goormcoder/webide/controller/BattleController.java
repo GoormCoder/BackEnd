@@ -1,6 +1,7 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
+import goormcoder.webide.dto.response.BattleInfoDto;
 import goormcoder.webide.dto.response.BattleWaitFindDto;
 import goormcoder.webide.dto.response.BattleWaitSimpleDto;
 import goormcoder.webide.jwt.PrincipalHandler;
@@ -33,5 +34,12 @@ public class BattleController {
     @Operation(summary = "배틀 대기방 조회", description = "배틀 대기방 회원 목록 및 대결 준비 여부를 조회합니다.")
     public ResponseEntity<BattleWaitFindDto> findBattleWait(@PathVariable Long roomId) {
         return ResponseEntity.status(HttpStatus.OK).body(battleService.findBattleWait(principalHandler.getMemberLoginId(), roomId));
+    }
+
+    //배틀 시작
+    @PostMapping("/battles/start/{roomId}")
+    @Operation(summary = "배틀 시작", description = "대결할 회원이 다 모였으면 대결을 시작합니다.")
+    public ResponseEntity<BattleInfoDto> startBattle(@PathVariable Long roomId) {
+        return ResponseEntity.status(HttpStatus.OK).body(battleService.startBattle(principalHandler.getMemberLoginId(), roomId));
     }
 }
