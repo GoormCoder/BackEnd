@@ -1,27 +1,17 @@
 package goormcoder.webide.service;
 
-import goormcoder.webide.common.dto.ErrorMessage;
 import goormcoder.webide.domain.*;
-import goormcoder.webide.dto.request.BoardCreateDto;
-import goormcoder.webide.dto.request.BoardUpdateDto;
-import goormcoder.webide.dto.request.CommentCreateDto;
 import goormcoder.webide.dto.request.FriendCreateDto;
-import goormcoder.webide.dto.response.BoardFindAllDto;
-import goormcoder.webide.dto.response.BoardFindDto;
+import goormcoder.webide.dto.request.FriendRequestCreatDto;
 import goormcoder.webide.dto.response.FriendFindAllDto;
-import goormcoder.webide.exception.ForbiddenException;
-import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.FriendRepository;
+import goormcoder.webide.repository.FriendRequestRepository;
 import goormcoder.webide.repository.MemberRepository;
-import goormcoder.webide.repository.QuestionRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +19,22 @@ public class FriendService {
 
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
+    private final FriendRequestRepository friendRequestRepository;
+
+    // 친구요청
+    @Transactional
+    public boolean requestFriend(String loginId, FriendRequestCreatDto friendRequestCreateDto){
+        Member requestMember = memberRepository.findByLoginIdOrThrow(loginId);
+        Member receivedMember = memberRepository.findByLoginIdOrThrow(friendRequestCreateDto.receivedLoginId());
+        List<FriendRequest> requestDup = friendRequestRepository.findByRequestIdAndReceivedId(requestMember, receivedMember);
+        List<FriendRequest> receivedDup = friendRequestRepository.findByRequestIdAndReceivedId(receivedMember, requestMember);
+
+        if(requestDup.size() != 0 || receivedDup.size() != 0) {
+            return false;
+        }
+        friendRequestRepository.save(FriendRequest.of(requestMember, receivedMember));
+        return true;
+    }
 
     // 친구 추가
     @Transactional
