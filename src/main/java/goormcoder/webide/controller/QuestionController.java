@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ import java.util.List;
 @Tag(name = "Question", description = "문제 관련 API")
 @RequiredArgsConstructor
 @RequestMapping("/questions")
-@CrossOrigin(origins = "http://localhost:3000")
 public class QuestionController {
 
     private final QuestionService questionService;
