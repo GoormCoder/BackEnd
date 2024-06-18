@@ -2,7 +2,7 @@ package goormcoder.webide.constants;
 
 public final class BoardConstants {
 
-    public final static int TITLE_MAX_LENGTH = 3;
+    public final static int TITLE_MAX_LENGTH = 300;
 
     public final static String TITLE_OVER_LENGTH = "게시글 제목이 최대 글자 수(" + TITLE_MAX_LENGTH + ")를 초과했습니다.";
 
