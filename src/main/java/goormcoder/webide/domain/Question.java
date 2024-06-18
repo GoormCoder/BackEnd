@@ -1,5 +1,6 @@
 package goormcoder.webide.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import goormcoder.webide.constants.QuestionConstants;
 import jakarta.persistence.*;
@@ -38,6 +39,11 @@ public class Question extends BaseTimeEntity {
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<TestCase> testCases = new ArrayList<>();
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<Solve> solves = new ArrayList<>();
 
     public Question(String title, int level, String content) {
         this.title = title;
