@@ -93,7 +93,7 @@ public class BattleService {
         Battle battle = Battle.of(battleWait.getGivenMember(), battleWait.getReceivedMember(), randomQuestion);
         battleRepository.save(battle);
 
-        battleWaitRepository.delete(battleWait);
+        battleWait.markAsDeleted();
 
         return BattleInfoDto.of(battle, battle.getQuestion());
     }
