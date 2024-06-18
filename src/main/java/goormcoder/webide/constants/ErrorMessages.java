@@ -14,9 +14,11 @@ public enum ErrorMessages {
     COMMENT_NOT_FOUND("해당하는 댓글이 존재하지 않습니다."),
     LIKE_NOT_FOUND("해당하는 좋아요가 존재하지 않습니다."),
     TESTCASE_NOT_FOUND("해당하는 테스트케이스가 존재하지 않습니다."),
+    CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
+    CHATROOM_CONFLICT("해당 사용자와의 채팅방이 이미 존재합니다."),
   
     JWT_UNAUTHORIZED_EXCEPTION("사용자 검증에 실패했습니다."),
     JWT_FORBIDDEN_ACCESS("접근 권한이 없습니다."),
