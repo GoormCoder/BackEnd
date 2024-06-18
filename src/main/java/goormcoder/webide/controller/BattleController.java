@@ -2,6 +2,7 @@ package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
 import goormcoder.webide.dto.response.BattleInfoDto;
+import goormcoder.webide.dto.response.BattleRecordFindAllDto;
 import goormcoder.webide.dto.response.BattleWaitFindDto;
 import goormcoder.webide.dto.response.BattleWaitSimpleDto;
 import goormcoder.webide.jwt.PrincipalHandler;
@@ -42,4 +43,15 @@ public class BattleController {
     public ResponseEntity<BattleInfoDto> startBattle(@PathVariable Long roomId) {
         return ResponseEntity.status(HttpStatus.OK).body(battleService.startBattle(principalHandler.getMemberLoginId(), roomId));
     }
+
+    //풀이 제출 및 결과 확인
+
+
+    //사용자 배틀 전적 조회
+    @GetMapping("/battles/record")
+    @Operation(summary = "사용자 배틀 전적 조회", description = "사용자의 최근 배틀 전적을 조회합니다")
+    public ResponseEntity<BattleRecordFindAllDto> findBattleRecord() {
+        return ResponseEntity.status(HttpStatus.OK).body(battleService.findBattleRecord(principalHandler.getMemberLoginId()));
+    }
+
 }

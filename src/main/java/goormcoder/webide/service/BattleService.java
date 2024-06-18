@@ -7,6 +7,7 @@ import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
 import goormcoder.webide.dto.response.BattleInfoDto;
+import goormcoder.webide.dto.response.BattleRecordFindAllDto;
 import goormcoder.webide.dto.response.BattleWaitFindDto;
 import goormcoder.webide.dto.response.BattleWaitSimpleDto;
 import goormcoder.webide.exception.ConflictException;
@@ -17,6 +18,7 @@ import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,5 +110,24 @@ public class BattleService {
                 (battleWait.getReceivedMember() == null || !member.getId().equals(battleWait.getReceivedMember().getId()))) {
             throw new ForbiddenException(ErrorMessages.FORBIDDEN_ACCESS);
         }
+    }
+
+    //사용자 전적 조회
+    @Transactional(readOnly = true)
+    public BattleRecordFindAllDto findBattleRecord(String memberLoginId) {
+        Member member = memberRepository.findByLoginIdOrThrow(memberLoginId);
+
+        int totalCount = battleRepository.countByMember(member);
+        int winCount = battleRepository.countByWinner(member);
+        int loseCount = totalCount - winCount;
+
+        double winRate = (totalCount > 0) ? ((double) winCount / totalCount) * 100 : 0;
+
+        String totalResult = winCount + "승 " + loseCount + "패";
+        String winRateStr = String.format("%.2f", winRate) + "% 승률";
+
+        List<Battle> battles = battleRepository.findByMember(member, PageRequest.of(0, 5));
+
+        return BattleRecordFindAllDto.of(member, battles, totalResult, winRateStr);
     }
 }
