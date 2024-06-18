@@ -36,12 +36,10 @@ public class FriendController {
 
     //친구 추가
     @PostMapping("/add/{loginId}")
-    @Operation(summary = "친구추가")
+    @Operation(summary = "친구추가(수락)")
     public ResponseEntity<String> createFriend(@PathVariable String loginId, @Valid @RequestBody FriendCreateDto friendCreateDto) {
-        if(friendService.createFriend(loginId, friendCreateDto)){
-            return ResponseEntity.status(HttpStatus.OK).body("친구추가가 완료되었습니다.");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("이미 추가된 친구입니다."); // 요청 중복 체크하면 필요없음
+        friendService.createFriend(loginId, friendCreateDto);
+        return ResponseEntity.status(HttpStatus.OK).body("친구추가가 완료되었습니다.");
     }
 
     //친구 조회

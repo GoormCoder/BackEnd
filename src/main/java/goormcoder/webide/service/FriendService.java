@@ -1,9 +1,11 @@
 package goormcoder.webide.service;
 
+import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.*;
 import goormcoder.webide.dto.request.FriendCreateDto;
 import goormcoder.webide.dto.request.FriendRequestCreatDto;
 import goormcoder.webide.dto.response.FriendFindAllDto;
+import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.FriendRepository;
 import goormcoder.webide.repository.FriendRequestRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -38,17 +40,24 @@ public class FriendService {
 
     // 친구 추가
     @Transactional
-    public boolean createFriend(String loginId, FriendCreateDto friendCreateDto) {
+    public void createFriend(String loginId, FriendCreateDto friendCreateDto) {
+        updateFriendRequestResult(loginId, friendCreateDto.requestId());
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
         Member friend = memberRepository.findByLoginIdOrThrow(friendCreateDto.friendLoginId());
-        List<Friend> dup = friendRepository.findByMemberIdAndFriendId(member, friend);
+        friendRepository.save(Friend.of(member, friend));
+        friendRepository.save(Friend.of(friend, member));
+    }
 
-        if(dup.size() == 0) {
-            friendRepository.save(Friend.of(member, friend));
-            friendRepository.save(Friend.of(friend, member));
-            return true;
+    // 요청 상태 업데이트
+    @Transactional
+    public void updateFriendRequestResult(String loginId, Long requestId) {
+        FriendRequest request = friendRequestRepository.findByIdOrThrow(requestId);
+        Member member = memberRepository.findByLoginIdOrThrow(loginId);
+
+        if(!member.getId().equals(request.getReceivedId().getId())) {
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_FRIEND_REQUEST_ACCESS);
         }
-        return false;
+        request.patch();
     }
 
     //친구 조회
@@ -57,34 +66,4 @@ public class FriendService {
         Member member = memberRepository.findByLoginIdOrThrow(loginId);
         return FriendFindAllDto.listOf(friendRepository.findAllByMemberId(member));
     }
-
-//    //게시글 열람
-//    @Transactional(readOnly = true)
-//    public BoardFindDto getBoard(Long boardId) {
-//        return BoardFindDto.from(boardRepository.findByIdOrThrow(boardId));
-//    }
-//
-//    //게시글 수정
-//    @Transactional
-//    public void updateBoard(String loginId, Long boardId, BoardUpdateDto boardUpdateDto) {
-//        Board board = boardRepository.findByIdOrThrow(boardId);
-//        Member member = memberRepository.findByLoginIdOrThrow(loginId);
-//
-//        if(!member.getId().equals(board.getMember().getId())) {
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_COMMENT_ACCESS);
-//        }
-//        board.patch(boardUpdateDto.title(), boardUpdateDto.content());
-//    }
-//
-//    //게시글 삭제
-//    @Transactional
-//    public void deleteBoard(String loginId, Long boardId) {
-//        Board board = boardRepository.findByIdOrThrow(boardId);
-//        Member member = memberRepository.findByLoginIdOrThrow(loginId);
-//
-//        if(!member.getId().equals(board.getMember().getId())) {
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN_COMMENT_ACCESS);
-//        }
-//        board.markAsDeleted();
-//    }
 }
