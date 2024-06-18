@@ -1,5 +1,7 @@
 package goormcoder.webide.controller;
 
+import goormcoder.webide.domain.Member;
+import goormcoder.webide.dto.request.MemberJoinDto;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.request.RefreshTokenDto;
 import goormcoder.webide.dto.response.JwtTokenDto;
@@ -12,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 @Tag(name = "Member", description = "회원 관련 API")
+@CrossOrigin(origins = "http://localhost:3000") // React 개발 서버의 주소
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -44,5 +48,45 @@ public class MemberController {
     public ResponseEntity<List<MemberFindAllDto>> getMember(@PathVariable String keyword) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllMembersByLoginIdContaining(keyword));
     }
+
+    @PostMapping("/join")
+    @Operation(summary = "회원가입", description = "회원가입을 통해 새로운 사용자를 등록합니다.")
+    public ResponseEntity<?> registerMember(@Valid @RequestBody MemberJoinDto memberJoinDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        try {
+            Member registeredMember = memberService.registerMember(memberJoinDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(registeredMember);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(e.getMessage()));  // 구체적인 메시지 반환
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));  // 예외 메시지 반환
+        }
+    }
+
+    @GetMapping("/id-duplicated/{loginId}")
+    public ResponseEntity<?> checkLoginId(@PathVariable String loginId) {
+        boolean isDuplicated = memberService.isLoginIdDuplicated(loginId);
+        return new ResponseEntity<>(isDuplicated, HttpStatus.OK);
+    }
+
+    static class ErrorMessage {
+        private String message;
+
+        public ErrorMessage(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
 
 }
