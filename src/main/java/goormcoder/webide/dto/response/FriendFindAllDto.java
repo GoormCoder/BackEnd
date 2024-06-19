@@ -5,13 +5,13 @@ import goormcoder.webide.domain.Friend;
 import java.util.List;
 
 public record FriendFindAllDto(
-        MemberFindDto friend
+        FriendFindDto friend
 ) {
     public static List<FriendFindAllDto> listOf(List<Friend> friends) {
         return friends
                 .stream()
                 .map(friend -> new FriendFindAllDto(
-                        MemberFindDto.from(friend.getFriendId())
+                        FriendFindDto.from(friend.getFriendId())
                 )).toList();
     }
 }
