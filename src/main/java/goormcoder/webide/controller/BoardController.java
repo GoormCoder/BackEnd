@@ -1,5 +1,6 @@
 package goormcoder.webide.controller;
 
+import goormcoder.webide.domain.enumeration.BoardType;
 import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.request.BoardUpdateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
@@ -37,6 +38,13 @@ public class BoardController {
     @Operation(summary = "게시글 조회", description = "전체 게시글을 조회합니다.")
     public ResponseEntity<List<BoardFindAllDto>> getAllBoards() {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoards());
+    }
+
+    //게시글 유형별 조회
+    @GetMapping("/boards")
+    @Operation(summary = "게시글 유형별 조회", description = "게시글 유형(FREE_BOARD, QUESTION_BOARD)에 따라 조회합니다.")
+    public ResponseEntity<List<BoardFindAllDto>> getBoardsByType(@RequestParam BoardType boardType) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardsByType(boardType));
     }
 
     //게시글 열람
