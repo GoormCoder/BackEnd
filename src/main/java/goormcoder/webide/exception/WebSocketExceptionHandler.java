@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class WebSocketExceptionHandler {
 
     @MessageExceptionHandler
-    @SendTo("/pub/queue/errors")
+    @SendTo("/sub/queue/errors")
     public String handleException(Exception exception) {
         return exception.getMessage();
     }
