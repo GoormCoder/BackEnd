@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class SolveController {
 
     @PostMapping("/questions/{questionId}/solves")
     @Operation(summary = "풀이 생성")
-    public ResponseEntity<SolveSummaryDto> createSolve(@PathVariable Long questionId, SolveCreateDto createDto) {
+    public ResponseEntity<SolveSummaryDto> createSolve(@PathVariable Long questionId, @RequestBody SolveCreateDto createDto) {
         Member member = memberService.findByLoginId(principalHandler.getMemberLoginId());
         Question question = questionService.findById(questionId);
         Solve solve = solveService.create(question, member, createDto);
