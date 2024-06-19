@@ -32,8 +32,12 @@ public class LikeService {
                     throw new ConflictException(ErrorMessages.LIKE_CONFLICT);
                 });
 
-        board.addLikeCount();
         likeRepository.save(Like.of(member, board));
+
+        board.addLikeCount();
+
+        Member boardMember = board.getMember();
+        boardMember.incrementPraiseScore();
     }
 
     //좋아요 삭제
@@ -45,7 +49,11 @@ public class LikeService {
         Like like = likeRepository.findByMemberAndBoard(member, board)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.LIKE_NOT_FOUND.getMessage()));
 
-        board.removeLikeCount();
         likeRepository.delete(like);
+
+        board.removeLikeCount();
+
+        Member boardMember = board.getMember();
+        boardMember.decrementPraiseScore();
     }
 }
