@@ -72,10 +72,4 @@ public class MemberService {
         );
     }
 
-    public List<SolveSummaryDto> findSolvesById(Long id) {
-        return SolveSummaryDto.listOf(
-                this.findById(id).getSolves()
-        );
-    }
-
 }
