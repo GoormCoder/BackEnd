@@ -3,6 +3,8 @@ package goormcoder.webide.domain;
 import goormcoder.webide.domain.enumeration.Gender;
 import goormcoder.webide.domain.enumeration.MemberRole;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -10,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -51,6 +54,10 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name = "member_gender", nullable = false)
     private Gender gender;
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "member")
+    private List<Solve> solves = new ArrayList<>();
 
     @Builder
     private Member(String loginId, String password, String nick, String name, MemberRole role, LocalDate birth, String email, String info, Gender gender) {

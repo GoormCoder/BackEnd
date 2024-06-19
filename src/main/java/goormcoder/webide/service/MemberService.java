@@ -1,13 +1,16 @@
 package goormcoder.webide.service;
 
+import goormcoder.webide.constants.ErrorMessages;
+import goormcoder.webide.domain.Member;
+import goormcoder.webide.domain.Solve;
+import goormcoder.webide.dto.response.SolveSummaryDto;
+import goormcoder.webide.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import goormcoder.webide.domain.enumeration.MemberRole;
 import goormcoder.webide.dto.request.MemberJoinDto;
-import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.enumeration.Gender;
 import goormcoder.webide.dto.response.MemberFindAllDto;
-import goormcoder.webide.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
-    @Autowired
     private final MemberRepository memberRepository;
-
-
-    @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public Member findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+    }
 
     @Transactional
     public List<MemberFindAllDto> getAllMembersByLoginIdContaining(String keyword) {
@@ -56,4 +65,11 @@ public class MemberService {
     public boolean isLoginIdDuplicated(String loginId) {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
+
+    public List<SolveSummaryDto> findSolvesByLoginId(String loginId) {
+        return SolveSummaryDto.listOf(
+                this.findByLoginId(loginId).getSolves()
+        );
+    }
+
 }

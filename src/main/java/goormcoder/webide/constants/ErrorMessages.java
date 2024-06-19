@@ -14,10 +14,11 @@ public enum ErrorMessages {
     COMMENT_NOT_FOUND("해당하는 댓글이 존재하지 않습니다."),
     LIKE_NOT_FOUND("해당하는 좋아요가 존재하지 않습니다."),
     TESTCASE_NOT_FOUND("해당하는 테스트케이스가 존재하지 않습니다."),
+    SOLVE_NOT_FOUND("해당하는 제출이 존재하지 않습니다."),
     CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
     WRONG_INPUT_DATA("잘못된 입력입니다."),
-    
+
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
     CHATROOM_CONFLICT("해당 사용자와의 채팅방이 이미 존재합니다."),
@@ -34,10 +35,12 @@ public enum ErrorMessages {
     //403 FORBIDDEN
     FORBIDDEN_BOARD_ACCESS("해당 게시글에 대한 접근 권한이 없습니다."),
     FORBIDDEN_COMMENT_ACCESS("해당 게시글에 대한 접근 권한이 없습니다."),
+    FORBIDDEN_SOLVE_ACCESS("해당 제출에 대한 접근 권한이 없습니다."),
     FORBIDDEN_FRIEND_REQUEST_ACCESS("해당 친구 요청에 대한 접근 권한이 없습니다."),
 
     //400 BAD_REQUEST
     BAD_REQUEST_INVITED_ID("본인과의 채팅방은 생성할 수 없습니다."),
+    UNAVAILABLE_LANGUAGE("지원하지 않는 언어입니다."),
     ;
 
     private final String message;
