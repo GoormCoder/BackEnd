@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/solve")
-@Tag(name = "Solve", description = "제출 관련 API")
+@Tag(name = "Solve", description = "풀이 관련 API")
 public class SolveController {
 
     private final MemberService memberService;
@@ -33,7 +33,7 @@ public class SolveController {
     private final PrincipalHandler principalHandler;
 
     @PostMapping("/{questionId}")
-    @Operation(summary = "제출 생성")
+    @Operation(summary = "풀이 생성")
     public ResponseEntity<SolveSummaryDto> createSolve(@PathVariable Long questionId, SolveCreateDto createDto) {
         Member member = memberService.findByLoginId(principalHandler.getMemberLoginId());
         Question question = questionService.findById(questionId);
@@ -42,7 +42,7 @@ public class SolveController {
     }
 
     @GetMapping("/{solveId}")
-    @Operation(summary = "제출 열람", description = "본인 혹은 맞은 사람만 열람 가능")
+    @Operation(summary = "풀이 열람", description = "본인 혹은 맞은 사람만 열람 가능")
     public ResponseEntity<SolveResponseDto> getSolve(@PathVariable Long solveId) {
         Member member = memberService.findByLoginId(principalHandler.getMemberLoginId());
         Solve solve = solveService.findById(solveId);
@@ -51,19 +51,19 @@ public class SolveController {
     }
 
     @GetMapping("/{questionId}")
-    @Operation(summary = "문제의 제출 조회", description = "특정 문제에 제출된 모든 제출 조회")
+    @Operation(summary = "문제의 풀이 조회", description = "특정 문제에 제출된 모든 풀이 조회")
     public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByQuestion(@PathVariable Long questionId) {
         return ResponseEntity.ok(questionService.findSolvesById(questionId));
     }
 
     @GetMapping("/{memberId}")
-    @Operation(summary = "사용자의 제출 조회", description = "id로 조회")
+    @Operation(summary = "사용자의 풀이 조회", description = "id로 조회")
     public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMemberId(@PathVariable Long memberId) {
         return ResponseEntity.ok(memberService.findSolvesById(memberId));
     }
 
     @GetMapping("/{memberLoginId}")
-    @Operation(summary = "사용자의 제출 조회", description = "loginId로 조회")
+    @Operation(summary = "사용자의 풀이 조회", description = "loginId로 조회")
     public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMemberLoginId(@PathVariable String memberLoginId) {
         return ResponseEntity.ok(memberService.findSolvesByLoginId(memberLoginId));
     }
