@@ -16,6 +16,7 @@ public enum ErrorMessages {
     TESTCASE_NOT_FOUND("해당하는 테스트케이스가 존재하지 않습니다."),
     CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
+    WRONG_INPUT_DATA("잘못된 입력입니다."),
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
