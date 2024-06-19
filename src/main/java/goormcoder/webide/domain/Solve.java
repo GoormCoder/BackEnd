@@ -51,12 +51,12 @@ public class Solve {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public Solve(Question question, Member member, String code, Language language) {
+    public Solve(Question question, Member member, String code, Language language, SolveResult solveResult) {
         this.question = question;
         this.member = member;
         this.code = code;
         this.language = language;
-        this.solveResult = SolveResult.WRONG;    // todo: solveResult 판별 구현
+        this.solveResult = solveResult;
     }
 
 }
