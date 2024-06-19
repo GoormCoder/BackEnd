@@ -51,7 +51,7 @@ public class ChatController {
 
     @GetMapping("/chats/rooms")
     @Operation(summary = "채팅방 조회", description = "사용자가 참여하고 있는 전체 채팅방을 조회합니다.")
-    public ResponseEntity<?> getMyChatRooms() {
+    public ResponseEntity<List<ChatRoomFindAllDto>> getMyChatRooms() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(chatRoomService.getMyChatRooms(principalHandler.getMemberLoginId()));
     }
