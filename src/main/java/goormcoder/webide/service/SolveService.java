@@ -24,13 +24,20 @@ public class SolveService {
 
     @Transactional
     public Solve create(Question question, Member member, SolveCreateDto createDto) {
-        SolveResult solveResult = ScoringUtil.getSolveResult(
-                createDto.code(),
-                question.getTestCases()
-                        .stream()
-                        .map(TestCaseValueDto::of)
-                        .toList()
-        );
+        SolveResult solveResult;
+        switch (createDto.language()) {
+            case JAVA :
+                solveResult = ScoringUtil.getSolveResult(
+                    createDto.code(),
+                    question.getTestCases()
+                            .stream()
+                            .map(TestCaseValueDto::of)
+                            .toList()
+                );
+                break;
+
+            default : throw new IllegalArgumentException(ErrorMessages.UNAVAILABLE_LANGUAGE.getMessage());
+        }
 
         Solve solve = new Solve(
                 question,

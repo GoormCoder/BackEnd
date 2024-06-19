@@ -40,6 +40,7 @@ public enum ErrorMessages {
 
     //400 BAD_REQUEST
     BAD_REQUEST_INVITED_ID("본인과의 채팅방은 생성할 수 없습니다."),
+    UNAVAILABLE_LANGUAGE("지원하지 않는 언어입니다."),
     ;
 
     private final String message;
