@@ -34,6 +34,11 @@ public class ChatRoomService {
         Member guest = memberRepository.findByLoginId(chatRoomCreateDto.invitedMemberLoginId())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
 
+        // 로그인한 사용자와 초대된 사용자가 같은 경우
+        if(owner == guest) {
+            throw new IllegalArgumentException(ErrorMessages.BAD_REQUEST_INVITED_ID.getMessage());
+        }
+
         // 해당 사용자와의 채팅방이 이미 개설되어 있는 경우
         String uniqueKey = Stream.of(owner.getLoginId(), guest.getLoginId())
                 .sorted()
