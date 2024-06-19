@@ -28,7 +28,10 @@ public record MemberJoinDto(
         @Size(min = 6, message = AuthConstants.PASSWORD_IS_WRONG) 
         String password,
 
-        @NotBlank(message = AuthConstants.ADDRESS_IS_BLANK) 
-        String address
+        // @NotBlank(message = AuthConstants.ADDRESS_IS_BLANK) 
+        // String address
+
+        @NotBlank(message = AuthConstants.NICKNAME_IS_BLANK)
+        String nick
 ) {
 }

@@ -50,12 +50,12 @@ public class MemberService {
         Member member = Member.of(
                 memberJoinDto.loginId(),
                 encodedPassword,
-                memberJoinDto.loginId(), // nick 필드가 없으므로 loginId를 대체 사용
+                memberJoinDto.nick(), // nick 필드가 없으므로 loginId를 대체 사용
                 memberJoinDto.name(),
                 MemberRole.ROLE_USER, // 기본 역할 설정
                 LocalDate.now(), // 예시로 현재 날짜 사용
                 memberJoinDto.email(),
-                "", // info 필드에 대한 기본값 설정
+                "",
                 Gender.valueOf(memberJoinDto.gender().toUpperCase()) // Gender enum으로 변환
         );
 
