@@ -37,7 +37,7 @@ public class ChatController {
     public void sendMessage(@Payload ChatMessageSendDto chatMessageSendDto) {
         ChatMessage savedMessage = chatMessageService.saveMessage(chatMessageSendDto);
         messagingTemplate.convertAndSend(
-                "/pub/chats/room/" + savedMessage.getChatRoom().getId(),
+                "/sub/chats/room/" + savedMessage.getChatRoom().getId(),
                 savedMessage.getMessage()
         );
     }
