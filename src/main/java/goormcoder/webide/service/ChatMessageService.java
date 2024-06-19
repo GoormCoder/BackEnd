@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ChatMessageService {
@@ -41,6 +43,10 @@ public class ChatMessageService {
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
         chatRoomMember.setReadAt(chatMessage.getCreatedAt());
+    }
+
+    public Optional<ChatMessage> getLastMessage(Long chatRoomId) {
+        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId).stream().findFirst();
     }
 
 }

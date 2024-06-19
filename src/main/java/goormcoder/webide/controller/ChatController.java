@@ -45,4 +45,11 @@ public class ChatController {
         return ResponseEntity.status(HttpStatus.OK).body("채팅방이 생성되었습니다.");
     }
 
+    @GetMapping("/chats/rooms")
+    @Operation(summary = "채팅방 조회", description = "사용자가 참여하고 있는 전체 채팅방을 조회합니다.")
+    public ResponseEntity<?> getMyChatRooms() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(chatRoomService.getMyChatRooms(principalHandler.getMemberLoginId()));
+    }
+
 }

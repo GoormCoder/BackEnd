@@ -5,6 +5,8 @@ import goormcoder.webide.domain.ChatRoom;
 import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
+import goormcoder.webide.dto.response.ChatMessageFindDto;
+import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +25,7 @@ public class ChatRoomService {
 
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageService chatMessageService;
 
     @Transactional
     public void createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
@@ -45,6 +49,25 @@ public class ChatRoomService {
         chatRoom.addChatRoomMember(ChatRoomMember.of(guest, chatRoom));
 
         chatRoomRepository.save(chatRoom);
+    }
+
+    @Transactional
+    public List<ChatRoomFindAllDto> getMyChatRooms(String loginId) {
+        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByMemberLoginId(loginId);
+
+        return chatRooms.stream()
+                .map(chatRoom -> {
+                    // 채팅방 이름이 없는 경우 상대방 아이디로 지정
+                    String chatRoomName = chatRoom.getChatRoomName();
+                    if(chatRoomName == null || chatRoomName.trim().isEmpty()) {
+                        chatRoomName = chatRoomRepository.findChatRoomOtherMemberUsername(chatRoom.getId(), loginId);
+                    }
+                    ChatMessageFindDto lastMessageDto = chatMessageService.getLastMessage(chatRoom.getId())
+                            .map(lastMessage -> new ChatMessageFindDto(lastMessage.getMessage(), lastMessage.getCreatedAt()))
+                            .orElse(null);
+                    return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
+                })
+                .collect(Collectors.toList());
     }
 
 }
