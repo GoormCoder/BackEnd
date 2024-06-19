@@ -28,6 +28,10 @@ public class ChatRoomMember {
     @Column(name = "read_at", nullable = false)
     private LocalDateTime readAt;
 
+    @Setter
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Builder
     private ChatRoomMember(Member member, ChatRoom chatRoom, LocalDateTime readAt) {
         this.member = member;
@@ -41,6 +45,10 @@ public class ChatRoomMember {
                 .chatRoom(chatRoom)
                 .readAt(LocalDateTime.now())
                 .build();
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
     }
 
 }
