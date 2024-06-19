@@ -3,6 +3,8 @@ package goormcoder.webide.controller;
 import goormcoder.webide.domain.ChatMessage;
 import goormcoder.webide.dto.request.ChatMessageSendDto;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
+import goormcoder.webide.dto.response.ChatMessageFindDto;
+import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.ChatMessageService;
 import goormcoder.webide.service.ChatRoomService;
@@ -16,6 +18,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Tag(name = "Chat", description = "1:1 채팅 관련 API")
@@ -50,6 +54,13 @@ public class ChatController {
     public ResponseEntity<?> getMyChatRooms() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(chatRoomService.getMyChatRooms(principalHandler.getMemberLoginId()));
+    }
+
+    @GetMapping("/chats/rooms/{chatRoomId}")
+    @Operation(summary = "메시지 조회", description = "특정 채팅방의 메시지를 조회합니다. 메시지는 생성일 기준 내림차순 정렬되어있습니다.")
+    public ResponseEntity<List<ChatMessageFindDto>> getChatRoomMessages(@PathVariable Long chatRoomId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(chatMessageService.getChatRoomMessages(chatRoomId));
     }
 
 }

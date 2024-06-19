@@ -6,6 +6,7 @@ import goormcoder.webide.domain.ChatRoom;
 import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatMessageSendDto;
+import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.repository.ChatMessageRepository;
 import goormcoder.webide.repository.ChatRoomMemberRepository;
 import goormcoder.webide.repository.ChatRoomRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,13 +42,18 @@ public class ChatMessageService {
         return chatMessageRepository.save(chatMessage);
     }
 
+    @Transactional
+    public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId) {
+        return ChatMessageFindDto.listOf(chatMessageRepository.findMessageByChatRoomId(chatRoomId));
+    }
+
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
         chatRoomMember.setReadAt(chatMessage.getCreatedAt());
     }
 
     public Optional<ChatMessage> getLastMessage(Long chatRoomId) {
-        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId).stream().findFirst();
+        return chatMessageRepository.findMessageByChatRoomId(chatRoomId).stream().findFirst();
     }
 
 }
