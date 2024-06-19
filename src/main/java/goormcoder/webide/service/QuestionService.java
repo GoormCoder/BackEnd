@@ -6,6 +6,7 @@ import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.response.QuestionFindAllDto;
 import goormcoder.webide.dto.response.QuestionSummaryDto;
+import goormcoder.webide.dto.response.SolveSummaryDto;
 import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,6 +39,14 @@ public class QuestionService {
         return questionRepository.findById(id)
                 .filter(Question::isActive)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage()));
+    }
+
+    public List<SolveSummaryDto> findSolvesById(Long id) {
+        return this.findById(id)
+                .getSolves()
+                .stream()
+                .map(SolveSummaryDto::of)
+                .toList();
     }
 
     @Transactional

@@ -2,16 +2,13 @@ package goormcoder.webide.controller;
 
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.TestCase;
-import goormcoder.webide.dto.request.QuestionCreateDto;
-import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.request.TestCaseCreateDto;
 import goormcoder.webide.dto.request.TestCaseUpdateDto;
-import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.TestCaseService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,31 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Admin/TestCase", description = "테스트케이스 관련 API (어드민 전용)")
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class AdminController {
+public class AdminTestCaseController {
 
     private final QuestionService questionService;
     private final TestCaseService testCaseService;
-
-    @Operation(summary = "문제 생성")
-    @PostMapping("/questions")
-    public ResponseEntity<QuestionSummaryDto> createQuestion(@RequestBody @Valid QuestionCreateDto createDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.create(createDto));
-    }
-
-    @Operation(summary = "문제 수정")
-    @PatchMapping("/questions/{questionId}")
-    public ResponseEntity<QuestionSummaryDto> updateQuestion(@PathVariable @Valid Long questionId, @RequestBody @Valid QuestionUpdateDto updateDto) {
-        return ResponseEntity.ok(questionService.update(questionId, updateDto));
-    }
-
-    @Operation(summary = "문제 삭제")
-    @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<String> deleteQuestion(@PathVariable Long questionId) {
-        questionService.delete(questionId);
-        return ResponseEntity.ok("deleted");
-    }
 
     @Operation(summary = "테스트케이스 추가")
     @PostMapping("/questions/{questionId}/testcases")
@@ -61,27 +40,24 @@ public class AdminController {
     }
 
     @Operation(summary = "테스트케이스 수정")
-    @PatchMapping("/questions/{questionId}/testcases/{testcaseId}")
-    public ResponseEntity<String> updateTestCase(
-            @PathVariable Long questionId,
-            @PathVariable Long testcaseId,
-            @RequestBody TestCaseUpdateDto updateDto
-    ) {
+    @PatchMapping("/testcases/{testcaseId}")
+    public ResponseEntity<String> updateTestCase(@PathVariable Long testcaseId, @RequestBody TestCaseUpdateDto updateDto) {
         TestCase testCase = testCaseService.update(testcaseId, updateDto.input(), updateDto.output());
         return ResponseEntity.ok(testCase.toString());
     }
 
     @Operation(summary = "테스트케이스 삭제")
-    @DeleteMapping("/questions/{questionId}/testcases/{testcaseId}")
+    @DeleteMapping("/testcases/{testcaseId}")
     public ResponseEntity<String> deleteTestCase(@PathVariable Long questionId, @PathVariable Long testcaseId) {
         testCaseService.deleteById(testcaseId);
         return ResponseEntity.ok("deleted");
     }
 
     @Operation(summary = "테스트케이스 전체 조회")
-    @GetMapping("/questions/{questionId}/testcases/all")
+    @GetMapping("/questions/{questionId}/testcases")
     public ResponseEntity<List<TestCaseFindDto>> findAllTestCases(@PathVariable Long questionId) {
         List<TestCaseFindDto> response = questionService.findAllTestCasesById(questionId);
         return ResponseEntity.ok(response);
     }
+
 }
