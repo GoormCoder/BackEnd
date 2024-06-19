@@ -31,7 +31,7 @@ public class SolveController {
     private final SolveService solveService;
     private final PrincipalHandler principalHandler;
 
-    @PostMapping("/question/{questionId}/solve")
+    @PostMapping("/questions/{questionId}/solves")
     @Operation(summary = "풀이 생성")
     public ResponseEntity<SolveSummaryDto> createSolve(@PathVariable Long questionId, SolveCreateDto createDto) {
         Member member = memberService.findByLoginId(principalHandler.getMemberLoginId());
@@ -40,7 +40,7 @@ public class SolveController {
         return ResponseEntity.ok(SolveSummaryDto.of(solve));
     }
 
-    @GetMapping("/solve/{solveId}")
+    @GetMapping("/solves/{solveId}")
     @Operation(summary = "풀이 열람", description = "본인 혹은 맞은 사람만 열람 가능")
     public ResponseEntity<SolveResponseDto> getSolve(@PathVariable Long solveId) {
         Member member = memberService.findByLoginId(principalHandler.getMemberLoginId());
@@ -49,16 +49,16 @@ public class SolveController {
         return ResponseEntity.ok(SolveResponseDto.of(solve));
     }
 
-    @GetMapping("/question/{questionId}/solve")
+    @GetMapping("/questions/{questionId}/solves")
     @Operation(summary = "문제의 풀이 조회", description = "특정 문제에 제출된 모든 풀이 조회")
     public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByQuestion(@PathVariable Long questionId) {
         return ResponseEntity.ok(questionService.findSolvesById(questionId));
     }
 
-    @GetMapping("/member/{memberLoginId}/solve")
+    @GetMapping("/members/{loginId}/solves")
     @Operation(summary = "사용자의 풀이 조회", description = "loginId로 조회")
-    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMemberLoginId(@PathVariable String memberLoginId) {
-        return ResponseEntity.ok(memberService.findSolvesByLoginId(memberLoginId));
+    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMember(@PathVariable String loginId) {
+        return ResponseEntity.ok(memberService.findSolvesByLoginId(loginId));
     }
 
 }
