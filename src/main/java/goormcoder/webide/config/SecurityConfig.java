@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,9 +28,10 @@ public class SecurityConfig {
     private static final String[] SWAGGER = {"/swagger-ui/**", "/v3/api-docs/**"};
 
     private static final String ADMIN = "/admin/**";
-    private static final String[] WHITE_LIST = {"/", "/members/join", "/members/login", "/auth/refresh", "/questions/**"};
+    private static final String[] WHITE_LIST = {"/", "/members/**", "/auth/refresh", "/questions/**", "/friends/**"};
 
     private final JwtProvider jwtProvider;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -43,7 +45,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
+                .cors((cors) -> cors
+                        .configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
