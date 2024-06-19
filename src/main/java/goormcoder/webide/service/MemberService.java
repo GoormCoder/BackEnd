@@ -2,6 +2,8 @@ package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Member;
+import goormcoder.webide.domain.Solve;
+import goormcoder.webide.dto.response.SolveSummaryDto;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,11 @@ public class MemberService {
 
     public Member findByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
     }
 
@@ -58,4 +65,17 @@ public class MemberService {
     public boolean isLoginIdDuplicated(String loginId) {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
+
+    public List<SolveSummaryDto> findSolvesByLoginId(String loginId) {
+        return SolveSummaryDto.listOf(
+                this.findByLoginId(loginId).getSolves()
+        );
+    }
+
+    public List<SolveSummaryDto> findSolvesById(Long id) {
+        return SolveSummaryDto.listOf(
+                this.findById(id).getSolves()
+        );
+    }
+
 }

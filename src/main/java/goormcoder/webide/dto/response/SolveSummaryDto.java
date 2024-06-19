@@ -2,6 +2,7 @@ package goormcoder.webide.dto.response;
 
 import goormcoder.webide.domain.Solve;
 import goormcoder.webide.domain.enumeration.SolveResult;
+import java.util.List;
 
 public record SolveSummaryDto(
     QuestionSummaryDto questionSummaryDto,
@@ -14,5 +15,11 @@ public record SolveSummaryDto(
                 MemberSummaryDto.of(solve.getMember()),
                 solve.getSolveResult()
         );
+    }
+
+    public static List<SolveSummaryDto> listOf(List<Solve> solves) {
+        return solves.stream()
+                .map(SolveSummaryDto::of)
+                .toList();
     }
 }

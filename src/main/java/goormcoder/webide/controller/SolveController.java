@@ -51,9 +51,21 @@ public class SolveController {
     }
 
     @GetMapping("/{questionId}")
-    @Operation(summary = "제출 조회", description = "문제에 대한 모든 제출 조회")
-    public ResponseEntity<List<SolveSummaryDto>> getAllSolves(@PathVariable Long questionId) {
+    @Operation(summary = "문제의 제출 조회", description = "특정 문제에 제출된 모든 제출 조회")
+    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByQuestion(@PathVariable Long questionId) {
         return ResponseEntity.ok(questionService.findSolvesById(questionId));
+    }
+
+    @GetMapping("/{memberId}")
+    @Operation(summary = "사용자의 제출 조회", description = "id로 조회")
+    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMemberId(@PathVariable Long memberId) {
+        return ResponseEntity.ok(memberService.findSolvesById(memberId));
+    }
+
+    @GetMapping("/{memberLoginId}")
+    @Operation(summary = "사용자의 제출 조회", description = "loginId로 조회")
+    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMemberLoginId(@PathVariable String memberLoginId) {
+        return ResponseEntity.ok(memberService.findSolvesByLoginId(memberLoginId));
     }
 
 }
