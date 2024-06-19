@@ -7,6 +7,7 @@ import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
+import goormcoder.webide.dto.response.MessageSenderFindDto;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -68,8 +69,11 @@ public class ChatRoomService {
                         chatRoomName = chatRoomRepository.findChatRoomOtherMemberUsername(chatRoom.getId(), loginId);
                     }
                     ChatMessageFindDto lastMessageDto = chatMessageService.getLastMessage(chatRoom.getId())
-                            .map(lastMessage -> new ChatMessageFindDto(lastMessage.getMessage(), lastMessage.getCreatedAt()))
-                            .orElse(null);
+                            .map(lastMessage -> new ChatMessageFindDto(
+                                    lastMessage.getMessage(),
+                                    lastMessage.getCreatedAt(),
+                                    MessageSenderFindDto.from(lastMessage.getMember()))
+                            ).orElse(null);
                     return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
                 })
                 .collect(Collectors.toList());
