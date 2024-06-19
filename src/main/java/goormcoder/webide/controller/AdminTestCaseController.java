@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Admin/TestCase", description = "테스트케이스 관련 API (어드민 전용)")
-@RequestMapping("/admin/testcases")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminTestCaseController {
 
@@ -32,7 +32,7 @@ public class AdminTestCaseController {
     private final TestCaseService testCaseService;
 
     @Operation(summary = "테스트케이스 추가")
-    @PostMapping("/{questionId}")
+    @PostMapping("/questions/{questionId}/testcases")
     public ResponseEntity<String> createTestCase(@PathVariable Long questionId, @RequestBody TestCaseCreateDto createDto) {
         Question question = questionService.findById(questionId);
         TestCase testCase = testCaseService.create(question, createDto.input(), createDto.output());
@@ -40,21 +40,21 @@ public class AdminTestCaseController {
     }
 
     @Operation(summary = "테스트케이스 수정")
-    @PatchMapping("/{testcaseId}")
+    @PatchMapping("/testcases/{testcaseId}")
     public ResponseEntity<String> updateTestCase(@PathVariable Long testcaseId, @RequestBody TestCaseUpdateDto updateDto) {
         TestCase testCase = testCaseService.update(testcaseId, updateDto.input(), updateDto.output());
         return ResponseEntity.ok(testCase.toString());
     }
 
     @Operation(summary = "테스트케이스 삭제")
-    @DeleteMapping("/{testcaseId}")
+    @DeleteMapping("/testcases/{testcaseId}")
     public ResponseEntity<String> deleteTestCase(@PathVariable Long questionId, @PathVariable Long testcaseId) {
         testCaseService.deleteById(testcaseId);
         return ResponseEntity.ok("deleted");
     }
 
     @Operation(summary = "테스트케이스 전체 조회")
-    @GetMapping("/{questionId}/all")
+    @GetMapping("/questions/{questionId}/testcases")
     public ResponseEntity<List<TestCaseFindDto>> findAllTestCases(@PathVariable Long questionId) {
         List<TestCaseFindDto> response = questionService.findAllTestCasesById(questionId);
         return ResponseEntity.ok(response);
