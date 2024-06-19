@@ -27,6 +27,7 @@ public class ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
     public ChatMessage saveMessage(ChatMessageSendDto chatMessageSendDto) {
@@ -43,7 +44,10 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId) {
+    public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId, String loginId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
         return ChatMessageFindDto.listOf(chatMessageRepository.findMessageByChatRoomId(chatRoomId));
     }
 
