@@ -22,9 +22,15 @@ public class JwtProvider {
 
     private final SecretKey secretKey;
 
+    // 수정전
+    // public JwtProvider(@Value("${jwt.secret}") String secretKey) {
+    //     String encodeKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    //     this.secretKey = Keys.hmacShaKeyFor(encodeKey.getBytes());
+    // }
+
+    // 수정후
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
-        String encodeKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.secretKey = Keys.hmacShaKeyFor(encodeKey.getBytes());
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
     public String getUsername(String token) {

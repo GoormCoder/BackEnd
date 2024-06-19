@@ -4,6 +4,7 @@ import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.Question;
+import goormcoder.webide.domain.enumeration.BoardType;
 import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.request.BoardUpdateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
@@ -45,6 +46,12 @@ public class BoardService {
     @Transactional(readOnly = true)
     public List<BoardFindAllDto> getAllBoards() {
         return BoardFindAllDto.listOf(boardRepository.findAllByDeletedAtIsNull());
+    }
+
+    //게시글 유형별 조회
+    @Transactional(readOnly = true)
+    public List<BoardFindAllDto> getBoardsByType(BoardType boardType) {
+        return BoardFindAllDto.listOf(boardRepository.findAllByDeletedAtIsNullAndBoardType(boardType));
     }
 
     //게시글 열람
