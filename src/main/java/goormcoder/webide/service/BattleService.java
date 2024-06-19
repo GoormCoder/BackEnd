@@ -37,7 +37,7 @@ public class BattleService {
     //대기방 등록
     @Transactional
     public BattleWaitSimpleDto createBattleWait(String memberLoginId, BattleWaitCreateDto battleWaitCreateDto) {
-        List<BattleWait> availableRooms = battleWaitRepository.findByLevelAndLanguageAndIsFullFalseOrderByCreatedAtAsc(
+        List<BattleWait> availableRooms = battleWaitRepository.findByLevelAndLanguage(
                 battleWaitCreateDto.level(),
                 battleWaitCreateDto.language()
         );
