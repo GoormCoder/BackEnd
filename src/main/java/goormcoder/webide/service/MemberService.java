@@ -9,6 +9,7 @@ import goormcoder.webide.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,9 @@ public class MemberService {
     // @Autowired
     // private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private final BCryptPasswordEncoder passwordEncoder;
+
     @Transactional
     public List<MemberFindAllDto> getAllMembersByLoginIdContaining(String keyword) {
         return MemberFindAllDto.listOf(memberRepository.findAllByLoginIdContaining(keyword));
@@ -36,11 +40,11 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용중인 아이디입니다.");
         }
 
-        // String encodedPassword = passwordEncoder.encode(memberJoinDto.password());
+        String encodedPassword = passwordEncoder.encode(memberJoinDto.password());
 
         Member member = Member.of(
                 memberJoinDto.loginId(),
-                memberJoinDto.password(),
+                encodedPassword,
                 memberJoinDto.loginId(), // nick 필드가 없으므로 loginId를 대체 사용
                 memberJoinDto.name(),
                 MemberRole.ROLE_USER, // 기본 역할 설정
