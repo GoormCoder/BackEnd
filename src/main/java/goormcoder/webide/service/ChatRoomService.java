@@ -105,6 +105,7 @@ public class ChatRoomService {
 
         if(allMembersDeleted) {
             chatRoom.markAsDeleted();
+            chatRoom.deleteUniqueKey();
             chatRoomRepository.save(chatRoom);
         }
     }

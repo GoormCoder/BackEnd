@@ -55,6 +55,10 @@ public class ChatRoom extends BaseTimeEntity {
         chatMessages.add(chatMessage);
     }
 
+    public void deleteUniqueKey() {
+        this.uniqueKey = null;
+    }
+
     @Override
     public void markAsDeleted() {
         super.markAsDeleted();
