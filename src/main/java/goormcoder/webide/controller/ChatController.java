@@ -5,6 +5,7 @@ import goormcoder.webide.dto.request.ChatMessageSendDto;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
+import goormcoder.webide.dto.response.ChatRoomFindDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.ChatMessageService;
 import goormcoder.webide.service.ChatRoomMemberService;
@@ -45,9 +46,10 @@ public class ChatController {
 
     @PostMapping("/chats/rooms")
     @Operation(summary = "채팅방 생성", description = "채팅방을 생성합니다.")
-    public ResponseEntity<String> createChatRoom(@Valid @RequestBody ChatRoomCreateDto chatRoomCreateDto) {
-        chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto);
-        return ResponseEntity.status(HttpStatus.OK).body("채팅방이 생성되었습니다.");
+    public ResponseEntity<ChatRoomFindDto> createChatRoom(@Valid @RequestBody ChatRoomCreateDto chatRoomCreateDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto)
+        );
     }
 
     @GetMapping("/chats/rooms")

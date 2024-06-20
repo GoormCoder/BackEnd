@@ -7,6 +7,7 @@ import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
+import goormcoder.webide.dto.response.ChatRoomFindDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
 import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatRoomRepository;
@@ -31,7 +32,7 @@ public class ChatRoomService {
     private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
-    public void createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
+    public ChatRoomFindDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
         Member owner = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
         Member guest = memberRepository.findByLoginId(chatRoomCreateDto.invitedMemberLoginId())
@@ -57,6 +58,8 @@ public class ChatRoomService {
         chatRoom.addChatRoomMember(ChatRoomMember.of(guest, chatRoom));
 
         chatRoomRepository.save(chatRoom);
+
+        return ChatRoomFindDto.of(chatRoom);
     }
 
     @Transactional
