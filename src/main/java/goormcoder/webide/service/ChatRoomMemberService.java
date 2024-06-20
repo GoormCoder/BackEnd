@@ -2,21 +2,34 @@ package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.ChatRoom;
+import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.exception.ForbiddenException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomMemberService {
 
     public void checkChatRoomMember(ChatRoom chatRoom, String loginId) {
-        boolean isMember = chatRoom.getChatRoomMembers()
+        Optional<ChatRoomMember> roomMember = chatRoom.getChatRoomMembers()
                 .stream()
-                .anyMatch(member -> member.getMember().getLoginId().equals(loginId));
+                .filter(member -> member.getMember().getLoginId().equals(loginId))
+                .findFirst();
 
-        if (!isMember) {
+        boolean isMember = roomMember.isPresent();
+
+        boolean isDeleted = roomMember
+                .map(member -> member.getDeletedAt() != null)
+                .orElse(false);
+
+        if(!isMember) {
             throw new ForbiddenException(ErrorMessages.FORBIDDEN_CHATROOM_ACCESS);
+        } else if(isDeleted) {
+            throw new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage());
         }
     }
 

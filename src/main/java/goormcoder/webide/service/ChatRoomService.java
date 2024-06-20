@@ -28,6 +28,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
     public void createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
@@ -84,6 +85,8 @@ public class ChatRoomService {
     public void deleteMyChatRoom(Long chatRoomId, String loginId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+
+        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
 
         ChatRoomMember chatRoomMember = chatRoom.getChatRoomMembers().stream()
                 .filter(roomMember -> roomMember.getMember().getLoginId().equals(loginId))
