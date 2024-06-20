@@ -18,6 +18,7 @@ public enum ErrorMessages {
     SOLVE_NOT_FOUND("해당하는 제출이 존재하지 않습니다."),
     CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
+    TAG_NOT_FOUND("해당하는 태그가 존재하지 않습니다."),
     WRONG_INPUT_DATA("잘못된 입력입니다."),
     
     //409 CONFLICT

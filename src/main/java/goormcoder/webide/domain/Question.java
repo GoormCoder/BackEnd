@@ -65,4 +65,14 @@ public class Question extends BaseTimeEntity {
         this.content = content;
     }
 
+    public void addTag(QuestionTag tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(QuestionTag tag) {
+        tags = tags.stream()
+                .filter(t -> t != tag)
+                .toList();
+    }
+
 }
