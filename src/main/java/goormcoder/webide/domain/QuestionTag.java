@@ -29,6 +29,8 @@ public class QuestionTag {
     @ManyToMany(mappedBy = "tags")
     private List<Question> questions = new ArrayList<>();
 
-
+    public QuestionTag(String name) {
+        this.name = name;
+    }
 
 }
