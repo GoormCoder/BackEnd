@@ -53,7 +53,7 @@ public class ChatMessageService {
 
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
-        chatRoomMember.setReadAt(chatMessage.getCreatedAt());
+        chatRoomMember.markAsRead(chatMessage.getCreatedAt());
     }
 
     public Optional<ChatMessage> getLastMessage(Long chatRoomId) {

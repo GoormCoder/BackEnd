@@ -24,7 +24,6 @@ public class ChatRoomMember {
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @Setter
     @Column(name = "read_at", nullable = false)
     private LocalDateTime readAt;
 
@@ -52,6 +51,10 @@ public class ChatRoomMember {
 
     public void markAsDeleted() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void markAsRead(LocalDateTime readAt) {
+        this.readAt = readAt;
     }
 
 }
