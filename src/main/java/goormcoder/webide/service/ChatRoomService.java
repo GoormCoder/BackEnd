@@ -86,12 +86,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
 
-        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
-
-        ChatRoomMember chatRoomMember = chatRoom.getChatRoomMembers().stream()
-                .filter(roomMember -> roomMember.getMember().getLoginId().equals(loginId))
-                .findFirst()
-                .orElseThrow(() -> new ForbiddenException(ErrorMessages.FORBIDDEN_CHATROOM_ACCESS));
+        ChatRoomMember chatRoomMember = chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
 
         chatRoomMember.markAsDeleted();
         chatRoomRepository.save(chatRoom);

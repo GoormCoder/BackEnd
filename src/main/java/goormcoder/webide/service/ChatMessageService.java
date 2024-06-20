@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,8 @@ public class ChatMessageService {
     public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId, String loginId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
-        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
+        ChatRoomMember chatRoomMember = chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
+        chatRoomMember.markAsRead(LocalDateTime.now());
         return ChatMessageFindDto.listOf(chatMessageRepository.findMessageByChatRoomId(chatRoomId));
     }
 

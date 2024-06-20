@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatRoomMemberService {
 
-    public void checkChatRoomMember(ChatRoom chatRoom, String loginId) {
+    public ChatRoomMember checkChatRoomMember(ChatRoom chatRoom, String loginId) {
         Optional<ChatRoomMember> roomMember = chatRoom.getChatRoomMembers()
                 .stream()
                 .filter(member -> member.getMember().getLoginId().equals(loginId))
@@ -31,6 +31,8 @@ public class ChatRoomMemberService {
         } else if(isDeleted) {
             throw new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage());
         }
+
+        return roomMember.get();
     }
 
 }
