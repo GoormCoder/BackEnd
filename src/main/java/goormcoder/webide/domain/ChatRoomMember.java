@@ -24,9 +24,11 @@ public class ChatRoomMember {
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @Setter
     @Column(name = "read_at", nullable = false)
     private LocalDateTime readAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Builder
     private ChatRoomMember(Member member, ChatRoom chatRoom, LocalDateTime readAt) {
@@ -41,6 +43,18 @@ public class ChatRoomMember {
                 .chatRoom(chatRoom)
                 .readAt(LocalDateTime.now())
                 .build();
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void markAsRead(LocalDateTime readAt) {
+        this.readAt = readAt;
     }
 
 }

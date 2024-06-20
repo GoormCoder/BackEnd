@@ -37,6 +37,7 @@ public enum ErrorMessages {
     FORBIDDEN_ACCESS("해당 요청에 대한 접근 권한이 없습니다."),
     FORBIDDEN_SOLVE_ACCESS("해당 제출에 대한 접근 권한이 없습니다."),
     FORBIDDEN_FRIEND_REQUEST_ACCESS("해당 친구 요청에 대한 접근 권한이 없습니다."),
+    FORBIDDEN_CHATROOM_ACCESS("해당 채팅방에 대한 접근 권한이 없습니다."),
 
     //400 BAD_REQUEST
     BAD_REQUEST_INVITED_ID("본인과의 채팅방은 생성할 수 없습니다."),

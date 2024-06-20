@@ -7,7 +7,9 @@ import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
+import goormcoder.webide.dto.response.ChatRoomFindDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
+import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,9 +29,10 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
-    public void createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
+    public ChatRoomFindDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
         Member owner = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
         Member guest = memberRepository.findByLoginId(chatRoomCreateDto.invitedMemberLoginId())
@@ -55,6 +58,8 @@ public class ChatRoomService {
         chatRoom.addChatRoomMember(ChatRoomMember.of(guest, chatRoom));
 
         chatRoomRepository.save(chatRoom);
+
+        return ChatRoomFindDto.of(chatRoom);
     }
 
     @Transactional
@@ -77,6 +82,30 @@ public class ChatRoomService {
                     return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteMyChatRoom(Long chatRoomId, String loginId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+
+        ChatRoomMember chatRoomMember = chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
+
+        chatRoomMember.markAsDeleted();
+        chatRoomRepository.save(chatRoom);
+
+        deleteChatRoom(chatRoom);
+    }
+
+    private void deleteChatRoom(ChatRoom chatRoom) {
+        boolean allMembersDeleted = chatRoom.getChatRoomMembers().stream()
+                .allMatch(ChatRoomMember::isDeleted);
+
+        if(allMembersDeleted) {
+            chatRoom.markAsDeleted();
+            chatRoom.deleteUniqueKey();
+            chatRoomRepository.save(chatRoom);
+        }
     }
 
 }

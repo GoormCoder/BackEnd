@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ public class ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
     public ChatMessage saveMessage(ChatMessageSendDto chatMessageSendDto) {
@@ -43,13 +45,17 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId) {
+    public List<ChatMessageFindDto> getChatRoomMessages(Long chatRoomId, String loginId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+        ChatRoomMember chatRoomMember = chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
+        chatRoomMember.markAsRead(LocalDateTime.now());
         return ChatMessageFindDto.listOf(chatMessageRepository.findMessageByChatRoomId(chatRoomId));
     }
 
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
-        chatRoomMember.setReadAt(chatMessage.getCreatedAt());
+        chatRoomMember.markAsRead(chatMessage.getCreatedAt());
     }
 
     public Optional<ChatMessage> getLastMessage(Long chatRoomId) {
