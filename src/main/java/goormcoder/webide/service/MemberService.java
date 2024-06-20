@@ -14,6 +14,7 @@ import goormcoder.webide.dto.response.MemberFindAllDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,6 +71,27 @@ public class MemberService {
         return SolveSummaryDto.listOf(
                 this.findByLoginId(loginId).getSolves()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public String findLoginIdByEmailAndName(String email, String name) {
+        return memberRepository.findByEmailAndName(email, name)
+                .map(Member::getLoginId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
+    }
+
+    @Transactional
+    public boolean verifyEmailAndLoginId(String email, String loginId) {
+        Optional<Member> member = memberRepository.findByEmailAndLoginId(email, loginId);
+        return member.isPresent();
+    }
+
+    public void resetPassword(String userId, String newPassword) {
+        Member member = memberRepository.findByLoginId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 회원을 찾을 수 없습니다."));
+
+        member.updatePassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
     }
 
 }

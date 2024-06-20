@@ -105,4 +105,11 @@ public class Member {
     public void decrementPraiseScore() {
         this.praiseScore -= 5;
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+
+    
 }

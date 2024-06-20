@@ -2,7 +2,10 @@ package goormcoder.webide.controller;
 
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Member;
+import goormcoder.webide.dto.request.FindLoginIdDto;
+import goormcoder.webide.dto.request.FindPasswordDto;
 import goormcoder.webide.dto.request.MemberJoinDto;
+import goormcoder.webide.dto.request.ResetPasswordDto;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.request.RefreshTokenDto;
 import goormcoder.webide.dto.response.JwtTokenDto;
@@ -63,7 +66,7 @@ public class MemberController {
     }
 
     // 예외 처리메시지 상황별 수정 필요
-    // MEMVER_NOT_FOUND 수정필요
+    // 이메일 중복확인 추가 필요
     @PostMapping("/join")
     @Operation(summary = "회원가입", description = "회원가입을 통해 새로운 사용자를 등록합니다.")
     public ResponseEntity<?> registerMember(@Valid @RequestBody MemberJoinDto memberJoinDto, BindingResult bindingResult) {
@@ -83,11 +86,72 @@ public class MemberController {
         }
     }
 
+    //에러메시지 수정
+    @PostMapping("/findId")
+    @Operation(summary = "로그인 아이디 찾기", description = "이메일과 이름을 이용해 로그인 아이디를 찾습니다.")
+    public ResponseEntity<?> findLoginId(@Valid @RequestBody FindLoginIdDto findLoginIdDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        try {
+            String loginId = memberService.findLoginIdByEmailAndName(findLoginIdDto.getEmail(), findLoginIdDto.getName());
+            return ResponseEntity.status(HttpStatus.OK).body(loginId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorMessage(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+        }
+    }
+
+    @PostMapping("/findPw")
+    @Operation(summary = "비밀번호 찾기", description = "이메일과 로그인 아이디를 이용해 비밀번호 찾기 요청을 합니다.")
+    public ResponseEntity<?> findPassword(@Valid @RequestBody FindPasswordDto findPasswordDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        try {
+            boolean exists = memberService.verifyEmailAndLoginId(findPasswordDto.getEmail(), findPasswordDto.getLoginId());
+            if (exists) {
+                return ResponseEntity.status(HttpStatus.OK).body("이메일과 아이디가 유효합니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorMessage(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorMessage(ErrorMessages.INTERNAL_SERVER_ERROR.getMessage()));
+        }
+    }
+
+    @PostMapping("/resetPw/{userId}")
+    @Operation(summary = "비밀번호 재설정", description = "회원의 비밀번호를 재설정합니다.")
+    public ResponseEntity<?> resetPassword(@PathVariable String userId, @Valid @RequestBody ResetPasswordDto resetPasswordDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        try {
+            memberService.resetPassword(userId, resetPasswordDto.getPassword());
+            return ResponseEntity.status(HttpStatus.OK).body("비밀번호가 성공적으로 변경되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorMessage(ErrorMessages.INTERNAL_SERVER_ERROR.getMessage()));
+        }
+    }
+
+
+
     @GetMapping("/id-duplicated/{loginId}")
     public ResponseEntity<?> checkLoginId(@PathVariable String loginId) {
         boolean isDuplicated = memberService.isLoginIdDuplicated(loginId);
         return new ResponseEntity<>(isDuplicated, HttpStatus.OK);
     }
+
+    
 
     static class ErrorMessage {
         private String message;
