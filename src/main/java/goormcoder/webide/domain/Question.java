@@ -75,4 +75,8 @@ public class Question extends BaseTimeEntity {
                 .toList();
     }
 
+    public void replaceTags(List<QuestionTag> tags) {
+        this.tags = tags;
+    }
+
 }

@@ -22,6 +22,12 @@ public class QuestionTagService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.TAG_NOT_FOUND.getMessage()));
     }
 
+    public List<QuestionTag> findAllByIds(List<Long> ids) {
+        return ids.stream()
+                .map(this::findById)
+                .toList();
+    }
+
     @Transactional
     public QuestionTagSummaryDto create(QuestionTagCreateDto createDto) {
         QuestionTag tag = new QuestionTag(createDto.name());

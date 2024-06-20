@@ -3,6 +3,7 @@ package goormcoder.webide.controller;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
+import goormcoder.webide.dto.request.QuestionTagsUpdateDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.QuestionTagService;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +57,22 @@ public class AdminQuestionTagController {
         Question question = questionService.findById(questionId);
         QuestionTag tag = questionTagService.findById(tagId);
         question.removeTag(tag);
+        return ResponseEntity.ok(
+                QuestionTagSummaryDto.listOf(
+                        question.getTags()
+                )
+        );
+    }
+
+    @Operation(summary = "문제 태그 수정")
+    @PatchMapping("/questions/{questionId}/tags")
+    public ResponseEntity<List<QuestionTagSummaryDto>> modifyQuestionTags(
+            @PathVariable Long questionId,
+            @RequestBody QuestionTagsUpdateDto updateDto
+    ) {
+        Question question = questionService.findById(questionId);
+        List<QuestionTag> newTags = questionTagService.findAllByIds(updateDto.tagIds());
+        question.replaceTags(newTags);
         return ResponseEntity.ok(
                 QuestionTagSummaryDto.listOf(
                         question.getTags()
