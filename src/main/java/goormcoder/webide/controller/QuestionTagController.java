@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,19 @@ public class QuestionTagController {
         Question question = questionService.findById(questionId);
         QuestionTag tag = questionTagService.findById(tagId);
         question.addTag(tag);
+        return ResponseEntity.ok(
+                QuestionTagSummaryDto.listOf(
+                        question.getTags()
+                )
+        );
+    }
+
+    @Operation(summary = "문제에서 태그 삭제")
+    @DeleteMapping("/questions/{questionId}/tags/{tagId}")
+    public ResponseEntity<List<QuestionTagSummaryDto>> removeTagFromQuestion(@PathVariable Long questionId, @PathVariable Long tagId) {
+        Question question = questionService.findById(questionId);
+        QuestionTag tag = questionTagService.findById(tagId);
+        question.removeTag(tag);
         return ResponseEntity.ok(
                 QuestionTagSummaryDto.listOf(
                         question.getTags()
