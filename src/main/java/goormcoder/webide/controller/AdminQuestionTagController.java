@@ -1,9 +1,7 @@
 package goormcoder.webide.controller;
 
-import goormcoder.webide.domain.Question;
-import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
-import goormcoder.webide.dto.request.QuestionTagsUpdateDto;
+import goormcoder.webide.dto.request.QuestionTagIdsDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.QuestionTagService;
@@ -58,7 +56,7 @@ public class AdminQuestionTagController {
     @PatchMapping("/questions/{questionId}/tags")
     public ResponseEntity<List<QuestionTagSummaryDto>> modifyQuestionTags(
             @PathVariable Long questionId,
-            @RequestBody QuestionTagsUpdateDto updateDto
+            @RequestBody QuestionTagIdsDto updateDto
     ) {
         return ResponseEntity.ok(
                 questionTagService.modifyQuestionTags(questionId, updateDto)

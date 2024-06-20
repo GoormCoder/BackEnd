@@ -4,11 +4,16 @@ import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
-import goormcoder.webide.dto.request.QuestionTagsUpdateDto;
+import goormcoder.webide.dto.request.QuestionTagIdsDto;
+import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +73,15 @@ public class QuestionTagService {
         questionService.save(question);
         List<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
+    }
+
+    public List<Question> findAllQuestionsByTagIds(List<Long> tagIds) {
+        return tagIds.stream()
+                .map(this::findById)
+                .map(QuestionTag::getQuestions)
+                .flatMap(List::stream)
+                .distinct()
+                .toList();
     }
 
 }
