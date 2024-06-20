@@ -45,6 +45,14 @@ public class Question extends BaseTimeEntity {
     @JsonManagedReference
     private List<Solve> solves = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "t_question_tag",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<QuestionTag> tags = new ArrayList<>();
+
     public Question(String title, int level, String content) {
         this.title = title;
         this.level = level;
