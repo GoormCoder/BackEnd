@@ -1,4 +1,4 @@
-package goormcoder.webide.dto.request;
+package goormcoder.webide.dto.response;
 
 import goormcoder.webide.domain.QuestionTag;
 

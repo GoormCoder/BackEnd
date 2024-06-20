@@ -2,7 +2,7 @@ package goormcoder.webide.service;
 
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
-import goormcoder.webide.dto.request.QuestionTagSummaryDto;
+import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

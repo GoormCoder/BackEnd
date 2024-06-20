@@ -1,7 +1,7 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
-import goormcoder.webide.dto.request.QuestionTagSummaryDto;
+import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.service.QuestionTagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
