@@ -7,6 +7,7 @@ import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.ChatMessageService;
+import goormcoder.webide.service.ChatRoomMemberService;
 import goormcoder.webide.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,6 +55,13 @@ public class ChatController {
     public ResponseEntity<List<ChatRoomFindAllDto>> getMyChatRooms() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(chatRoomService.getMyChatRooms(principalHandler.getMemberLoginId()));
+    }
+
+    @DeleteMapping("/chats/rooms/{chatRoomId}")
+    @Operation(summary = "채팅방 삭제", description = "사용자의 특정 채팅방을 삭제합니다.")
+    public ResponseEntity<String> deleteMyChatRoom(@PathVariable Long chatRoomId) {
+        chatRoomService.deleteMyChatRoom(chatRoomId, principalHandler.getMemberLoginId());
+        return ResponseEntity.status(HttpStatus.OK).body("채팅방이 삭제되었습니다.");
     }
 
     @GetMapping("/chats/rooms/{chatRoomId}")

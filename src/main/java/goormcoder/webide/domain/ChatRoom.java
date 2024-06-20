@@ -31,7 +31,7 @@ public class ChatRoom extends BaseTimeEntity {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.PERSIST)
     private final Set<ChatRoomMember> chatRoomMembers = new HashSet<>();
 
-    @OneToMany(mappedBy = "chatRoom", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.PERSIST)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
 
     @Builder
@@ -55,4 +55,9 @@ public class ChatRoom extends BaseTimeEntity {
         chatMessages.add(chatMessage);
     }
 
+    @Override
+    public void markAsDeleted() {
+        super.markAsDeleted();
+        chatMessages.forEach(ChatMessage::markAsDeleted);
+    }
 }

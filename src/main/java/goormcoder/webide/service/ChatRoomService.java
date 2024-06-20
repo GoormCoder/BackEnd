@@ -8,6 +8,7 @@ import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
+import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -77,6 +78,32 @@ public class ChatRoomService {
                     return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteMyChatRoom(Long chatRoomId, String loginId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+
+        ChatRoomMember chatRoomMember = chatRoom.getChatRoomMembers().stream()
+                .filter(roomMember -> roomMember.getMember().getLoginId().equals(loginId))
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException(ErrorMessages.FORBIDDEN_CHATROOM_ACCESS));
+
+        chatRoomMember.markAsDeleted();
+        chatRoomRepository.save(chatRoom);
+
+        deleteChatRoom(chatRoom);
+    }
+
+    private void deleteChatRoom(ChatRoom chatRoom) {
+        boolean allMembersDeleted = chatRoom.getChatRoomMembers().stream()
+                .allMatch(ChatRoomMember::isDeleted);
+
+        if(allMembersDeleted) {
+            chatRoom.markAsDeleted();
+            chatRoomRepository.save(chatRoom);
+        }
     }
 
 }

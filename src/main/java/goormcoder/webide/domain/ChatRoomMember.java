@@ -28,7 +28,6 @@ public class ChatRoomMember {
     @Column(name = "read_at", nullable = false)
     private LocalDateTime readAt;
 
-    @Setter
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
@@ -49,6 +48,10 @@ public class ChatRoomMember {
 
     public boolean isDeleted() {
         return deletedAt != null;
+    }
+
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
     }
 
 }
