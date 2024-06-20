@@ -42,4 +42,12 @@ public class QuestionTagController {
         return ResponseEntity.ok(dtos);
     }
 
+    @Operation(summary = "모든 태그 조회")
+    @GetMapping("/tags")
+    public ResponseEntity<List<QuestionTagSummaryDto>> findAllTags() {
+        List<QuestionTag> tags = questionTagService.findAll();
+        List<QuestionTagSummaryDto> dtos = QuestionTagSummaryDto.listOf(tags);
+        return ResponseEntity.ok(dtos);
+    }
+
 }

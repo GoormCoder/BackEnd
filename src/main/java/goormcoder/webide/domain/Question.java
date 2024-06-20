@@ -71,7 +71,7 @@ public class Question extends BaseTimeEntity {
 
     public void removeTag(QuestionTag tag) {
         tags = tags.stream()
-                .filter(t -> t != tag)
+                .filter(t -> !t.equals(tag))
                 .toList();
     }
 

@@ -5,15 +5,10 @@ import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
 import goormcoder.webide.dto.request.QuestionTagIdsDto;
-import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +38,9 @@ public class QuestionTagService {
         return QuestionTagSummaryDto.of(tag);
     }
 
-    public List<QuestionTagSummaryDto> findAll() {
+    public List<QuestionTag> findAll() {
         List<QuestionTag> tags = questionTagRepository.findAll();
-        return (QuestionTagSummaryDto.listOf(tags));
+        return (tags);
     }
 
     public List<QuestionTagSummaryDto> addTagToQuestion(Long questionId, Long tagId) {
