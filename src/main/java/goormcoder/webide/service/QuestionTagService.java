@@ -1,8 +1,10 @@
 package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
+import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
+import goormcoder.webide.dto.request.QuestionTagsUpdateDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionTagService {
 
     private final QuestionTagRepository questionTagRepository;
+    private final QuestionService questionService;
 
     public QuestionTag findById(Long id) {
         return questionTagRepository.findById(id)
@@ -38,6 +41,33 @@ public class QuestionTagService {
     public List<QuestionTagSummaryDto> findAll() {
         List<QuestionTag> tags = questionTagRepository.findAll();
         return (QuestionTagSummaryDto.listOf(tags));
+    }
+
+    public List<QuestionTagSummaryDto> addTagToQuestion(Long questionId, Long tagId) {
+        Question question = questionService.findById(questionId);
+        QuestionTag tag = this.findById(tagId);
+        question.addTag(tag);
+        questionService.save(question);
+        List<QuestionTag> tags = question.getTags();
+        return QuestionTagSummaryDto.listOf(tags);
+    }
+
+    public List<QuestionTagSummaryDto> removeTagFromQuestion(Long questionId, Long tagId) {
+        Question question = questionService.findById(questionId);
+        QuestionTag tag = this.findById(tagId);
+        question.removeTag(tag);
+        questionService.save(question);
+        List<QuestionTag> tags = question.getTags();
+        return QuestionTagSummaryDto.listOf(tags);
+    }
+
+    public List<QuestionTagSummaryDto> modifyQuestionTags(Long questionId, QuestionTagIdsDto updateDto) {
+        List<QuestionTag> newTags = this.findAllByIds(updateDto.tagIds());
+        Question question = questionService.findById(questionId);
+        question.replaceTags(newTags);
+        questionService.save(question);
+        List<QuestionTag> tags = question.getTags();
+        return QuestionTagSummaryDto.listOf(tags);
     }
 
 }

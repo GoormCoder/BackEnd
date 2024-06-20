@@ -41,6 +41,10 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage()));
     }
 
+    public void save(Question question) {
+        questionRepository.save(question);
+    }
+
     public List<SolveSummaryDto> findSolvesById(Long id) {
         return this.findById(id)
                 .getSolves()

@@ -41,26 +41,16 @@ public class AdminQuestionTagController {
     @Operation(summary = "문제에 태그 추가")
     @PostMapping("/questions/{questionId}/tags/{tagId}")
     public ResponseEntity<List<QuestionTagSummaryDto>> addTagToQuestion(@PathVariable Long questionId, @PathVariable Long tagId) {
-        Question question = questionService.findById(questionId);
-        QuestionTag tag = questionTagService.findById(tagId);
-        question.addTag(tag);
         return ResponseEntity.ok(
-                QuestionTagSummaryDto.listOf(
-                        question.getTags()
-                )
+                questionTagService.addTagToQuestion(questionId, tagId)
         );
     }
 
     @Operation(summary = "문제에서 태그 삭제")
     @DeleteMapping("/questions/{questionId}/tags/{tagId}")
     public ResponseEntity<List<QuestionTagSummaryDto>> removeTagFromQuestion(@PathVariable Long questionId, @PathVariable Long tagId) {
-        Question question = questionService.findById(questionId);
-        QuestionTag tag = questionTagService.findById(tagId);
-        question.removeTag(tag);
         return ResponseEntity.ok(
-                QuestionTagSummaryDto.listOf(
-                        question.getTags()
-                )
+                questionTagService.removeTagFromQuestion(questionId, tagId)
         );
     }
 
@@ -70,13 +60,8 @@ public class AdminQuestionTagController {
             @PathVariable Long questionId,
             @RequestBody QuestionTagsUpdateDto updateDto
     ) {
-        Question question = questionService.findById(questionId);
-        List<QuestionTag> newTags = questionTagService.findAllByIds(updateDto.tagIds());
-        question.replaceTags(newTags);
         return ResponseEntity.ok(
-                QuestionTagSummaryDto.listOf(
-                        question.getTags()
-                )
+                questionTagService.modifyQuestionTags(questionId, updateDto)
         );
     }
 
