@@ -45,7 +45,7 @@ public class QuestionTagService {
 
     @Transactional
     public QuestionTagSummaryDto update(Long tagId, QuestionTagUpdateDto updateDto) {
-        QuestionTag tag = new QuestionTag(updateDto.name());
+        QuestionTag tag = this.findById(tagId);
         tag.rename(updateDto.name());
         questionTagRepository.save(tag);
         return QuestionTagSummaryDto.of(tag);
