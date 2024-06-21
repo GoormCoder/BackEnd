@@ -71,12 +71,10 @@ public class Question extends BaseTimeEntity {
 
     public void addTag(QuestionTag tag) {
         tags.add(tag);
-        tag.addQuestion(this);
     }
 
     public void removeTag(QuestionTag tag) {
         tags.remove(tag);
-        tag.removeQuestion(this);
     }
 
 }

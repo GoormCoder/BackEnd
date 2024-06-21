@@ -54,6 +54,10 @@ public class QuestionTagService {
     @Transactional
     public void delete(Long id) {
         QuestionTag tag = this.findById(id);
+        for (Question question : tag.getQuestions()) {
+            question.removeTag(tag);
+            questionService.save(question);
+        }
         questionTagRepository.delete(tag);
     }
 
@@ -78,6 +82,7 @@ public class QuestionTagService {
         Question question = questionService.findById(questionId);
         QuestionTag tag = this.findById(tagId);
         question.removeTag(tag);
+        tag.removeQuestion(question);
         questionService.save(question);
         questionTagRepository.save(tag);
         Collection<QuestionTag> tags = question.getTags();
@@ -100,9 +105,11 @@ public class QuestionTagService {
 
         for (QuestionTag removedTag : removedTags) {
             question.removeTag(removedTag);
+            removedTag.removeQuestion(question);
         }
         for (QuestionTag addedTag : addedTags) {
             question.addTag(addedTag);
+            addedTag.removeQuestion(question);
         }
 
         questionService.save(question);
