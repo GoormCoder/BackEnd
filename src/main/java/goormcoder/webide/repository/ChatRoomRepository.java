@@ -14,6 +14,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     boolean existsByUniqueKey(String uniqueKey);
 
+    ChatRoom findByUniqueKey(String uniqueKey);
+
     @Query("SELECT cr FROM ChatRoom cr JOIN cr.chatRoomMembers crm JOIN crm.member m WHERE m.loginId = :loginId AND crm.deletedAt IS NULL")
     List<ChatRoom> findChatRoomsByMemberLoginId(@Param("loginId") String loginId);
 

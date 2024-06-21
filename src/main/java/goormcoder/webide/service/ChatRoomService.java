@@ -1,24 +1,24 @@
 package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
+import goormcoder.webide.domain.ChatMessage;
 import goormcoder.webide.domain.ChatRoom;
 import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
-import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.dto.response.ChatRoomFindDto;
+import goormcoder.webide.dto.response.ChatRoomInfoDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
-import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,56 +30,43 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomMemberService chatRoomMemberService;
+    private final MemberService memberService;
 
     @Transactional
-    public ChatRoomFindDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
-        Member owner = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
-        Member guest = memberRepository.findByLoginId(chatRoomCreateDto.invitedMemberLoginId())
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+    public ChatRoomInfoDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
+        Member owner = memberService.findByLoginId(loginId);
+        Member guest = memberService.findByLoginId(chatRoomCreateDto.invitedMemberLoginId());
 
         // 로그인한 사용자와 초대된 사용자가 같은 경우
-        if(owner == guest) {
-            throw new IllegalArgumentException(ErrorMessages.BAD_REQUEST_INVITED_ID.getMessage());
-        }
+        validateSameUser(owner, guest);
 
-        // 해당 사용자와의 채팅방이 이미 개설되어 있는 경우
-        String uniqueKey = Stream.of(owner.getLoginId(), guest.getLoginId())
-                .sorted()
-                .map(String::valueOf)
-                .collect(Collectors.joining(""));
-
+        // 채팅방 중복 개설 확인 및 재입장 처리
+        String uniqueKey = generateUniqueKey(owner, guest);
         if(chatRoomRepository.existsByUniqueKey(uniqueKey)) {
-            throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
+            return handleExistingChatRoom(uniqueKey, owner);
         }
 
-        ChatRoom chatRoom = ChatRoom.of(chatRoomCreateDto.chatRoomName(), uniqueKey);
-        chatRoom.addChatRoomMember(ChatRoomMember.of(owner, chatRoom));
-        chatRoom.addChatRoomMember(ChatRoomMember.of(guest, chatRoom));
+        ChatRoom chatRoom = ChatRoom.of(uniqueKey);
+        chatRoom.addChatRoomMember(ChatRoomMember.of(guest.getName(), owner, chatRoom));
+        chatRoom.addChatRoomMember(ChatRoomMember.of(owner.getName(), guest, chatRoom));
 
         chatRoomRepository.save(chatRoom);
 
-        return ChatRoomFindDto.of(chatRoom);
+        return ChatRoomInfoDto.of(chatRoom);
     }
 
     @Transactional
-    public List<ChatRoomFindAllDto> getMyChatRooms(String loginId) {
+    public List<ChatRoomFindDto> getMyChatRooms(String loginId) {
         List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByMemberLoginId(loginId);
 
         return chatRooms.stream()
                 .map(chatRoom -> {
-                    // 채팅방 이름이 없는 경우 상대방 아이디로 지정
-                    String chatRoomName = chatRoom.getChatRoomName();
-                    if(chatRoomName == null || chatRoomName.trim().isEmpty()) {
-                        chatRoomName = chatRoomRepository.findChatRoomOtherMemberUsername(chatRoom.getId(), loginId);
-                    }
-                    ChatMessageFindDto lastMessageDto = chatMessageService.getLastMessage(chatRoom.getId())
-                            .map(lastMessage -> new ChatMessageFindDto(
-                                    lastMessage.getMessage(),
-                                    lastMessage.getCreatedAt(),
-                                    MessageSenderFindDto.from(lastMessage.getMember()))
-                            ).orElse(null);
-                    return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
+                    ChatRoomMember chatRoomMember = findChatRoomMember(chatRoom, memberService.findByLoginId(loginId));
+                    ChatMessage lastMessage = chatMessageService.getLastMessage(chatRoom.getId(), chatRoomMember);
+                    boolean hasUnreadMessages = chatRoom.getChatMessages().stream()
+                            .anyMatch(message -> message.getCreatedAt().isAfter(chatRoomMember.getReadAt()));
+                    return ChatRoomFindDto.of(chatRoom, chatRoomMember,
+                            ChatMessageFindDto.of(lastMessage), hasUnreadMessages);
                 })
                 .collect(Collectors.toList());
     }
@@ -106,6 +93,41 @@ public class ChatRoomService {
             chatRoom.deleteUniqueKey();
             chatRoomRepository.save(chatRoom);
         }
+    }
+
+    private void validateSameUser(Member owner, Member guest) {
+        if(owner == guest) {
+            throw new IllegalArgumentException(ErrorMessages.BAD_REQUEST_INVITED_ID.getMessage());
+        }
+    }
+
+    private String generateUniqueKey(Member owner, Member guest) {
+        return Stream.of(owner.getLoginId(), guest.getLoginId())
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining(""));
+    }
+
+    private ChatRoomMember findChatRoomMember(ChatRoom chatRoom, Member member) {
+        return chatRoom.getChatRoomMembers().stream()
+                .filter(roomMember -> roomMember.getMember().equals(member))
+                .findFirst()
+                .orElseThrow(() ->new EntityNotFoundException(ErrorMessages.CHATROOM_MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    private ChatRoomInfoDto handleExistingChatRoom(String uniqueKey, Member owner) {
+        ChatRoom existingChatRoom = chatRoomRepository.findByUniqueKey(uniqueKey);
+
+        ChatRoomMember ownerMember = findChatRoomMember(existingChatRoom, owner);
+        boolean ownerDeleted = ownerMember.isDeleted();
+
+        if(ownerDeleted) {
+            ownerMember.markAsReJoined();
+            chatRoomRepository.save(existingChatRoom);
+            return ChatRoomInfoDto.of(existingChatRoom);
+        }
+
+        return ChatRoomInfoDto.of(existingChatRoom, ErrorMessages.CHATROOM_CONFLICT.getMessage());
     }
 
 }
