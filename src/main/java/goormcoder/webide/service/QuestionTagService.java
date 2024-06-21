@@ -85,24 +85,45 @@ public class QuestionTagService {
     }
 
     @Transactional
-    public List<QuestionTagSummaryDto> modifyQuestionTags(Long questionId, QuestionTagIdsDto updateDto) {
-        List<QuestionTag> newTags = this.findAllByIds(updateDto.tagIds());
+    public List<QuestionTagSummaryDto> modifyQuestionTags(Long questionId, QuestionTagIdsDto tagIdsDto) {
         Question question = questionService.findById(questionId);
-        question.replaceTags(newTags);
+
+        List<QuestionTag> newTags = this.findAllByIds(tagIdsDto.tagIds());
+
+        // 기존의 태그들과 비교하여 새로 추가된 태그들과 제거된 태그들을 필터
+        List<QuestionTag> removedTags = question.getTags().stream()
+                .filter(tag -> !newTags.contains(tag))
+                .toList();
+        List<QuestionTag> addedTags = newTags.stream()
+                .filter(tag -> !question.getTags().contains(tag))
+                .toList();
+
+        for (QuestionTag removedTag : removedTags) {
+            question.removeTag(removedTag);
+        }
+        for (QuestionTag addedTag : addedTags) {
+            question.addTag(addedTag);
+        }
+
         questionService.save(question);
+        questionTagRepository.saveAll(newTags);
+
         Set<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
     }
 
     public List<Question> findAllQuestionsByTagIds(Collection<Long> tagIds) {
-        List<Question> filteredQuestions = new ArrayList<>();
 
         List<Set<Question>> foundQuestions = tagIds.stream()
                 .map(this::findById)
                 .map(QuestionTag::getQuestions)
                 .toList();
+        int tagCount = tagIds.size();
+        if (tagCount == 1) {
+            return foundQuestions.get(0).stream().toList();
+        }
 
-        int tagCount = foundQuestions.size();
+        List<Question> filteredQuestions = new ArrayList<>();
         for (Question question : foundQuestions.get(0)) {
             for (int i = 1; i < tagCount; i++) {
                 if (!foundQuestions.get(i).contains(question)) {

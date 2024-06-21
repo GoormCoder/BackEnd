@@ -49,7 +49,7 @@ public class Question extends BaseTimeEntity {
     @JsonManagedReference
     private List<Solve> solves = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "t_question_tag",
             joinColumns = @JoinColumn(name = "question_id"),
@@ -77,10 +77,6 @@ public class Question extends BaseTimeEntity {
     public void removeTag(QuestionTag tag) {
         tags.remove(tag);
         tag.removeQuestion(this);
-    }
-
-    public void replaceTags(List<QuestionTag> tags) {
-        this.tags = new HashSet<>(tags);
     }
 
 }

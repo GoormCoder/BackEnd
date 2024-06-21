@@ -68,14 +68,14 @@ public class AdminQuestionTagController {
         );
     }
 
-    @Operation(summary = "문제 태그 수정")
+    @Operation(summary = "문제의 태그 일괄 수정")
     @PatchMapping("/questions/{questionId}/tags")
     public ResponseEntity<List<QuestionTagSummaryDto>> modifyQuestionTags(
             @PathVariable Long questionId,
-            @RequestBody QuestionTagIdsDto updateDto
+            @RequestBody QuestionTagIdsDto tagIdsDto
     ) {
         return ResponseEntity.ok(
-                questionTagService.modifyQuestionTags(questionId, updateDto)
+                questionTagService.modifyQuestionTags(questionId, tagIdsDto)
         );
     }
 
