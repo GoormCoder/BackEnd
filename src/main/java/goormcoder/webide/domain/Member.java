@@ -106,10 +106,14 @@ public class Member {
         this.praiseScore -= 5;
     }
 
+    public void incrementBattleScore() {
+        this.battleScore += 100;
+    }
+
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
 
 
-    
+
 }

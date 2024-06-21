@@ -51,4 +51,8 @@ public class Battle extends BaseTimeEntity{
         this.winner = winner;
         this.question = question;
     }
+
+    public void saveWinner(Member member) {
+        this.winner = member;
+    }
 }
