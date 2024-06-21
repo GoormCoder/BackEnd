@@ -47,9 +47,13 @@ public class ChatController {
     @PostMapping("/chats/rooms")
     @Operation(summary = "채팅방 생성", description = "채팅방을 생성합니다.")
     public ResponseEntity<ChatRoomFindDto> createChatRoom(@Valid @RequestBody ChatRoomCreateDto chatRoomCreateDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto)
-        );
+        ChatRoomFindDto chatRoomFindDto = chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto);
+
+        if(chatRoomFindDto.message() != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(chatRoomFindDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(chatRoomFindDto);
     }
 
     @GetMapping("/chats/rooms")

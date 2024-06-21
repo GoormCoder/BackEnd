@@ -9,12 +9,10 @@ import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.dto.response.ChatRoomFindDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
-import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,7 +133,7 @@ public class ChatRoomService {
             }
         }
 
-        throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
+        return ChatRoomFindDto.of(existingChatRoom, ErrorMessages.CHATROOM_CONFLICT.getMessage());
     }
 
 }
