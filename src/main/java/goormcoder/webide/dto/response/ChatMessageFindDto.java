@@ -24,6 +24,10 @@ public record ChatMessageFindDto(
     }
 
     public static ChatMessageFindDto of(ChatMessage chatMessage) {
+        if(chatMessage == null) {
+            return null;
+        }
+        
         return new ChatMessageFindDto(
                 chatMessage.getMessage(),
                 chatMessage.getCreatedAt(),

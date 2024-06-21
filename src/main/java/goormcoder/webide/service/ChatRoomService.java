@@ -61,8 +61,8 @@ public class ChatRoomService {
 
         return chatRooms.stream()
                 .map(chatRoom -> {
-                    ChatMessage lastMessage = chatMessageService.getLastMessage(chatRoom.getId());
                     ChatRoomMember chatRoomMember = findChatRoomMember(chatRoom, memberService.findByLoginId(loginId));
+                    ChatMessage lastMessage = chatMessageService.getLastMessage(chatRoom.getId(), chatRoomMember);
                     boolean hasUnreadMessages = chatRoom.getChatMessages().stream()
                             .anyMatch(message -> message.getCreatedAt().isAfter(chatRoomMember.getReadAt()));
                     return ChatRoomFindDto.of(chatRoom, chatRoomMember,

@@ -50,7 +50,10 @@ public class ChatMessageService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
         ChatRoomMember chatRoomMember = chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
         chatRoomMember.markAsRead(LocalDateTime.now());
-        return ChatMessageFindDto.listOf(chatMessageRepository.findMessageByChatRoomId(chatRoomId));
+
+        LocalDateTime rejoinedAt = chatRoomMember.getReJoinedAt();
+        List<ChatMessage> messages = chatMessageRepository.findMessageByChatRoomId(chatRoomId, rejoinedAt);
+        return ChatMessageFindDto.listOf(messages);
     }
 
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
@@ -58,8 +61,9 @@ public class ChatMessageService {
         chatRoomMember.markAsRead(chatMessage.getCreatedAt());
     }
 
-    public ChatMessage getLastMessage(Long chatRoomId) {
-        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId)
+    public ChatMessage getLastMessage(Long chatRoomId, ChatRoomMember chatRoomMember) {
+        LocalDateTime rejoinedAt = chatRoomMember.getReJoinedAt();
+        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId, rejoinedAt)
                 .stream()
                 .findFirst()
                 .orElse(null);
