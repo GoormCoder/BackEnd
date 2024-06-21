@@ -10,7 +10,9 @@ public final class AuthConstants {
     public final static String NAME_IS_BLANK = "이름을 입력해주세요.";
     public final static String AGE_IS_BLANK = "나이를 입력해주세요.";
     public final static String GENDER_IS_BLANK = "성별을 입력해주세요.";
-    public final static String ADDRESS_IS_BLANK = "주소를 입력해주세요.";
+    // public final static String ADDRESS_IS_BLANK = "주소를 입력해주세요.";
+    public final static String NICKNAME_IS_BLANK = "닉네임을 입력해주세요.";
+
 
 
     public final static String TOKEN_IS_NULL = "토큰 정보가 존재하지 않습니다.";

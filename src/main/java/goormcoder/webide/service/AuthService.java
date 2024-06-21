@@ -1,11 +1,13 @@
 package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
+import goormcoder.webide.domain.Member;
 import goormcoder.webide.domain.RefreshToken;
 import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.response.AccessTokenDto;
 import goormcoder.webide.dto.response.JwtTokenDto;
 import goormcoder.webide.jwt.JwtProvider;
+import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.repository.RefreshTokenRepository;
 import goormcoder.webide.security.MemberDetails;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,6 +31,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberService memberService;
 
     public JwtTokenDto authenticate(MemberLoginDto loginDto) {
         try {
@@ -37,12 +40,13 @@ public class AuthService {
             Authentication authResult = authenticationManager.authenticate(token);
             String loginId = ((MemberDetails) authResult.getPrincipal()).getUsername();
 
+            Member member = memberService.findByLoginId(loginId);
+
             String accessToken = jwtProvider.issueAccessToken(authResult);
             String refreshToken = jwtProvider.issueRefreshToken(authResult);
 
             saveRefreshToken(refreshToken);
-
-            return JwtTokenDto.of(loginId, accessToken, refreshToken);
+            return JwtTokenDto.of(member, accessToken, refreshToken);
         } catch (AuthenticationException e) {
             if(e instanceof BadCredentialsException) {
                 throw new AccessDeniedException(ErrorMessages.JWT_BAD_CREDENTIAL_EXCEPTION.getMessage());

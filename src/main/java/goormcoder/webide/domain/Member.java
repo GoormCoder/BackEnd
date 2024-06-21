@@ -109,4 +109,11 @@ public class Member {
     public void incrementBattleScore() {
         this.battleScore += 100;
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+
+
 }
