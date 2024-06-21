@@ -70,7 +70,7 @@ public class BattleService {
     }
 
     //배틀 취소 및 대기방 삭제
-    @Transactional(readOnly = true)
+    @Transactional
     public void cancelBattleWait(String memberLoginId, Long roomId) {
         Member member = memberRepository.findByLoginIdOrThrow(memberLoginId);
         BattleWait battleWait = findByRoomIdOrThrow(roomId);
