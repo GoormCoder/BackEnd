@@ -69,6 +69,23 @@ public class BattleService {
         return BattleWaitFindDto.of(battleWait.getId(), battleWait.getGivenMember(), battleWait.getReceivedMember(), battleWait.isFull());
     }
 
+    //배틀 취소 및 대기방 삭제
+    @Transactional(readOnly = true)
+    public void cancelBattleWait(String memberLoginId, Long roomId) {
+        Member member = memberRepository.findByLoginIdOrThrow(memberLoginId);
+        BattleWait battleWait = findByRoomIdOrThrow(roomId);
+
+        //사용자 권한 검증
+        validateMemberAccessToBattleWait(member, battleWait);
+
+        //대기방 상태 검증
+        if (battleWait.isFull()) {
+            throw new ConflictException(ErrorMessages.BATTLE_CANCEL_CONFLICT);
+        }
+
+        battleWait.markAsDeleted();
+    }
+
     //배틀 시작
     @Transactional
     public BattleInfoDto startBattle(String memberLoginId, Long roomId) {

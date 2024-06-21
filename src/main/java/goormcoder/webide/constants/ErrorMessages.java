@@ -26,6 +26,7 @@ public enum ErrorMessages {
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
     BATTLE_MEMBER_CONFLICT("같은 사용자가 두 명의 역할을 맡을 수 없습니다."),
+    BATTLE_CANCEL_CONFLICT("이미 배틀이 시작되어 취소할 수 없습니다."),
     CHATROOM_CONFLICT("해당 사용자와의 채팅방이 이미 존재합니다."),
 
     //401 UNAUTHORIZED
