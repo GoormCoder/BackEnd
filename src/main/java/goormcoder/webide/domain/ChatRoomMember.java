@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "t_chat_room_members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatRoomMember {
+public class ChatRoomMember extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,8 @@ public class ChatRoomMember {
     @Column(name = "read_at", nullable = false)
     private LocalDateTime readAt;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @Column(name = "rejoined_at")
+    private LocalDateTime reJoinedAt;
 
     @Builder
     private ChatRoomMember(Member member, ChatRoom chatRoom, LocalDateTime readAt) {
@@ -45,16 +45,12 @@ public class ChatRoomMember {
                 .build();
     }
 
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
-
-    public void markAsDeleted() {
-        this.deletedAt = LocalDateTime.now();
-    }
-
     public void markAsRead(LocalDateTime readAt) {
         this.readAt = readAt;
+    }
+
+    public void markAsReJoined(LocalDateTime reJoinedAt) {
+        this.reJoinedAt = reJoinedAt;
     }
 
 }
