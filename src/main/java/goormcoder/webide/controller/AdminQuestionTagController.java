@@ -36,6 +36,13 @@ public class AdminQuestionTagController {
                 .body(questionTagService.create(createDto));
     }
 
+    @DeleteMapping("/tags/{tagId}")
+    @Operation(summary = "태그 제거")
+    public ResponseEntity<?> deleteTag(@PathVariable Long tagId) {
+        questionTagService.delete(tagId);
+        return ResponseEntity.ok(null);
+    }
+
     @Operation(summary = "문제에 태그 추가")
     @PostMapping("/questions/{questionId}/tags/{tagId}")
     public ResponseEntity<List<QuestionTagSummaryDto>> addTagToQuestion(@PathVariable Long questionId, @PathVariable Long tagId) {

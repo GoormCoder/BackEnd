@@ -42,6 +42,12 @@ public class QuestionTagService {
         return QuestionTagSummaryDto.of(tag);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        QuestionTag tag = this.findById(id);
+        questionTagRepository.delete(tag);
+    }
+
     public List<QuestionTag> findAll() {
         List<QuestionTag> tags = questionTagRepository.findAll();
         return (tags);
