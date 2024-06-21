@@ -47,9 +47,9 @@ public class ChatRoomService {
             return handleExistingChatRoom(uniqueKey, owner, guest);
         }
 
-        ChatRoom chatRoom = ChatRoom.of(chatRoomCreateDto.chatRoomName(), uniqueKey);
-        chatRoom.addChatRoomMember(ChatRoomMember.of(owner, chatRoom));
-        chatRoom.addChatRoomMember(ChatRoomMember.of(guest, chatRoom));
+        ChatRoom chatRoom = ChatRoom.of(uniqueKey);
+        chatRoom.addChatRoomMember(ChatRoomMember.of(guest.getName(), owner, chatRoom));
+        chatRoom.addChatRoomMember(ChatRoomMember.of(owner.getName(), guest, chatRoom));
 
         chatRoomRepository.save(chatRoom);
 
@@ -62,17 +62,17 @@ public class ChatRoomService {
 
         return chatRooms.stream()
                 .map(chatRoom -> {
-                    // 채팅방 이름이 없는 경우 상대방 아이디로 지정
-                    String chatRoomName = chatRoom.getChatRoomName();
-                    if(chatRoomName == null || chatRoomName.trim().isEmpty()) {
-                        chatRoomName = chatRoomRepository.findChatRoomOtherMemberUsername(chatRoom.getId(), loginId);
-                    }
                     ChatMessageFindDto lastMessageDto = chatMessageService.getLastMessage(chatRoom.getId())
                             .map(lastMessage -> new ChatMessageFindDto(
                                     lastMessage.getMessage(),
                                     lastMessage.getCreatedAt(),
                                     MessageSenderFindDto.from(lastMessage.getMember()))
                             ).orElse(null);
+
+                    String chatRoomName = findChatRoomMember(chatRoom, memberService.findByLoginId(loginId))
+                            .map(ChatRoomMember::getChatRoomName)
+                            .orElse("알수없음");
+
                     return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
                 })
                 .collect(Collectors.toList());

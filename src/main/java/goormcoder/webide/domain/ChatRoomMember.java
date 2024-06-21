@@ -16,6 +16,9 @@ public class ChatRoomMember extends BaseTimeEntity {
     @Column(name = "chat_room_member_id", nullable = false)
     private Long id;
 
+    @Column(name = "chat_room_name", nullable = false)
+    private String chatRoomName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -31,14 +34,16 @@ public class ChatRoomMember extends BaseTimeEntity {
     private LocalDateTime reJoinedAt;
 
     @Builder
-    private ChatRoomMember(Member member, ChatRoom chatRoom, LocalDateTime readAt) {
+    private ChatRoomMember(String chatRoomName, Member member, ChatRoom chatRoom, LocalDateTime readAt) {
+        this.chatRoomName = chatRoomName;
         this.member = member;
         this.chatRoom = chatRoom;
         this.readAt = readAt;
     }
 
-    public static ChatRoomMember of(Member member, ChatRoom chatRoom) {
+    public static ChatRoomMember of(String chatRoomName, Member member, ChatRoom chatRoom) {
         return ChatRoomMember.builder()
+                .chatRoomName(chatRoomName)
                 .member(member)
                 .chatRoom(chatRoom)
                 .readAt(LocalDateTime.now())
