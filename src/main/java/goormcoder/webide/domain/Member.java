@@ -114,6 +114,18 @@ public class Member {
         this.password = newPassword;
     }
 
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
 
 
 }
