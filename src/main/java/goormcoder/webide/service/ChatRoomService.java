@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,27 +31,20 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageService chatMessageService;
     private final ChatRoomMemberService chatRoomMemberService;
+    private final MemberService memberService;
 
     @Transactional
     public ChatRoomFindDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
-        Member owner = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
-        Member guest = memberRepository.findByLoginId(chatRoomCreateDto.invitedMemberLoginId())
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
+        Member owner = memberService.findByLoginId(loginId);
+        Member guest = memberService.findByLoginId(chatRoomCreateDto.invitedMemberLoginId());
 
         // 로그인한 사용자와 초대된 사용자가 같은 경우
-        if(owner == guest) {
-            throw new IllegalArgumentException(ErrorMessages.BAD_REQUEST_INVITED_ID.getMessage());
-        }
+        validateSameUser(owner, guest);
 
-        // 해당 사용자와의 채팅방이 이미 개설되어 있는 경우
-        String uniqueKey = Stream.of(owner.getLoginId(), guest.getLoginId())
-                .sorted()
-                .map(String::valueOf)
-                .collect(Collectors.joining(""));
-
+        // 채팅방 중복 개설 확인 및 재입장 처리
+        String uniqueKey = generateUniqueKey(owner, guest);
         if(chatRoomRepository.existsByUniqueKey(uniqueKey)) {
-            throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
+            return handleExistingChatRoom(uniqueKey, owner, guest);
         }
 
         ChatRoom chatRoom = ChatRoom.of(chatRoomCreateDto.chatRoomName(), uniqueKey);
@@ -106,6 +100,49 @@ public class ChatRoomService {
             chatRoom.deleteUniqueKey();
             chatRoomRepository.save(chatRoom);
         }
+    }
+
+    private void validateSameUser(Member owner, Member guest) {
+        if(owner == guest) {
+            throw new IllegalArgumentException(ErrorMessages.BAD_REQUEST_INVITED_ID.getMessage());
+        }
+    }
+
+    private String generateUniqueKey(Member owner, Member guest) {
+        return Stream.of(owner.getLoginId(), guest.getLoginId())
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining(""));
+    }
+
+    private Optional<ChatRoomMember> findChatRoomMember(ChatRoom chatRoom, Member member) {
+        return chatRoom.getChatRoomMembers().stream()
+                .filter(roomMember -> roomMember.getMember().equals(member))
+                .findFirst();
+    }
+
+    private ChatRoomFindDto handleExistingChatRoom(String uniqueKey, Member owner, Member guest) {
+        ChatRoom existingChatRoom = chatRoomRepository.findByUniqueKey(uniqueKey);
+
+        Optional<ChatRoomMember> ownerMember = findChatRoomMember(existingChatRoom, owner);
+        Optional<ChatRoomMember> guestMember = findChatRoomMember(existingChatRoom, guest);
+
+        if(ownerMember.isPresent() && guestMember.isPresent()) {
+            boolean ownerDeleted = ownerMember.get().isDeleted();
+            boolean guestDeleted = guestMember.get().isDeleted();
+
+            if(ownerDeleted && guestDeleted) {
+                throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
+            }
+
+            if(ownerDeleted) {
+                ownerMember.get().markAsReJoined();
+                chatRoomRepository.save(existingChatRoom);
+                return ChatRoomFindDto.of(existingChatRoom);
+            }
+        }
+
+        throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
     }
 
 }

@@ -49,8 +49,9 @@ public class ChatRoomMember extends BaseTimeEntity {
         this.readAt = readAt;
     }
 
-    public void markAsReJoined(LocalDateTime reJoinedAt) {
-        this.reJoinedAt = reJoinedAt;
+    public void markAsReJoined() {
+        this.reJoinedAt = LocalDateTime.now();
+        resetDeleted();
     }
 
 }
