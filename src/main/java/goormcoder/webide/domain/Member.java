@@ -105,4 +105,8 @@ public class Member {
     public void decrementPraiseScore() {
         this.praiseScore -= 5;
     }
+
+    public void incrementBattleScore() {
+        this.battleScore += 100;
+    }
 }

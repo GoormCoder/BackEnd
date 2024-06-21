@@ -1,10 +1,8 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
-import goormcoder.webide.dto.response.BattleInfoDto;
-import goormcoder.webide.dto.response.BattleRecordFindAllDto;
-import goormcoder.webide.dto.response.BattleWaitFindDto;
-import goormcoder.webide.dto.response.BattleWaitSimpleDto;
+import goormcoder.webide.dto.request.SolveCreateDto;
+import goormcoder.webide.dto.response.*;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.BattleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +43,11 @@ public class BattleController {
     }
 
     //풀이 제출 및 결과 확인
-
+    @PostMapping("/battles/submit/{battleId}/{questionId}")
+    @Operation(summary = "배틀 풀이 제출 및 결과 확인", description = "배틀 풀이를 제출하고, 결과(승패 여부)를 확인합니다.")
+    public ResponseEntity<BattleSubmitDto> submitSolution(@PathVariable Long battleId, @PathVariable Long questionId, @RequestBody SolveCreateDto solveCreateDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(battleService.submitSolution(principalHandler.getMemberLoginId(), battleId, questionId, solveCreateDto));
+    }
 
     //사용자 배틀 전적 조회
     @GetMapping("/battles/record")

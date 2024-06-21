@@ -15,6 +15,7 @@ public enum ErrorMessages {
     LIKE_NOT_FOUND("해당하는 좋아요가 존재하지 않습니다."),
     TESTCASE_NOT_FOUND("해당하는 테스트케이스가 존재하지 않습니다."),
     BATTLE_WAIT_NOT_FOUND("해당하는 대기방이 존재하지 않습니다."),
+    BATTLE_NOT_FOUND("해당하는 대결이 존재하지 않습니다."),
     SOLVE_NOT_FOUND("해당하는 제출이 존재하지 않습니다."),
     CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
