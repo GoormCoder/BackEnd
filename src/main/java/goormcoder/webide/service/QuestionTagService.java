@@ -5,6 +5,7 @@ import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.QuestionTag;
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
 import goormcoder.webide.dto.request.QuestionTagIdsDto;
+import goormcoder.webide.dto.request.QuestionTagUpdateDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,6 +39,14 @@ public class QuestionTagService {
     @Transactional
     public QuestionTagSummaryDto create(QuestionTagCreateDto createDto) {
         QuestionTag tag = new QuestionTag(createDto.name());
+        questionTagRepository.save(tag);
+        return QuestionTagSummaryDto.of(tag);
+    }
+
+    @Transactional
+    public QuestionTagSummaryDto update(Long tagId, QuestionTagUpdateDto updateDto) {
+        QuestionTag tag = new QuestionTag(updateDto.name());
+        tag.rename(updateDto.name());
         questionTagRepository.save(tag);
         return QuestionTagSummaryDto.of(tag);
     }

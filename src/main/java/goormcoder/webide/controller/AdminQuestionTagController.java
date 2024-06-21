@@ -2,6 +2,7 @@ package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.QuestionTagCreateDto;
 import goormcoder.webide.dto.request.QuestionTagIdsDto;
+import goormcoder.webide.dto.request.QuestionTagUpdateDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.QuestionTagService;
@@ -34,6 +35,14 @@ public class AdminQuestionTagController {
     public ResponseEntity<QuestionTagSummaryDto> createTag(@RequestBody @Valid QuestionTagCreateDto createDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(questionTagService.create(createDto));
+    }
+
+    @PatchMapping("/tags/{tagId}")
+    @Operation(summary = "태그 수정")
+    public ResponseEntity<?> deleteTag(@PathVariable Long tagId, @RequestBody@Valid QuestionTagUpdateDto updateDto) {
+        return ResponseEntity.ok(
+                questionTagService.update(tagId, updateDto)
+        );
     }
 
     @DeleteMapping("/tags/{tagId}")

@@ -42,5 +42,8 @@ public class QuestionTag {
         questions.remove(question);
     }
 
+    public void rename(String name) {
+        this.name = name;
+    }
 
 }
