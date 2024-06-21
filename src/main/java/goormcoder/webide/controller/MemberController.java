@@ -23,7 +23,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/members")
 @Tag(name = "Member", description = "회원 관련 API")
-@CrossOrigin(origins = "http://localhost:3000") // React 개발 서버의 주소
 @RequiredArgsConstructor
 public class MemberController {
 
