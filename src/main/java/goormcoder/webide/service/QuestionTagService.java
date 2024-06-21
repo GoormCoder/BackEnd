@@ -8,7 +8,11 @@ import goormcoder.webide.dto.request.QuestionTagIdsDto;
 import goormcoder.webide.dto.response.QuestionTagSummaryDto;
 import goormcoder.webide.repository.QuestionTagRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +52,8 @@ public class QuestionTagService {
         QuestionTag tag = this.findById(tagId);
         question.addTag(tag);
         questionService.save(question);
-        List<QuestionTag> tags = question.getTags();
+        questionTagRepository.save(tag);
+        Collection<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
     }
 
@@ -57,7 +62,8 @@ public class QuestionTagService {
         QuestionTag tag = this.findById(tagId);
         question.removeTag(tag);
         questionService.save(question);
-        List<QuestionTag> tags = question.getTags();
+        questionTagRepository.save(tag);
+        Collection<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
     }
 
@@ -66,17 +72,28 @@ public class QuestionTagService {
         Question question = questionService.findById(questionId);
         question.replaceTags(newTags);
         questionService.save(question);
-        List<QuestionTag> tags = question.getTags();
+        Set<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
     }
+    public List<Question> findAllQuestionsByTagIds(Collection<Long> tagIds) {
+        List<Question> filteredQuestions = new ArrayList<>();
 
-    public List<Question> findAllQuestionsByTagIds(List<Long> tagIds) {
-        return tagIds.stream()
+        List<Set<Question>> foundQuestions = tagIds.stream()
                 .map(this::findById)
                 .map(QuestionTag::getQuestions)
-                .flatMap(List::stream)
-                .distinct()
                 .toList();
+
+        int tagCount = foundQuestions.size();
+        for (Question question : foundQuestions.get(0)) {
+            for (int i = 1; i < tagCount; i++) {
+                if (!foundQuestions.get(i).contains(question)) {
+                    continue;
+                }
+                filteredQuestions.add(question);
+            }
+        }
+
+        return filteredQuestions.stream().toList();
     }
 
 }

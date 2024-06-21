@@ -9,11 +9,13 @@ import goormcoder.webide.service.QuestionService;
 import goormcoder.webide.service.QuestionTagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,13 +31,13 @@ public class QuestionTagController {
     @GetMapping("/questions/{questionId}/tags")
     public ResponseEntity<List<QuestionTagSummaryDto>> findAllTags(@PathVariable Long questionId) {
         Question question = questionService.findById(questionId);
-        List<QuestionTag> tags = question.getTags();
+        Collection<QuestionTag> tags = question.getTags();
         List<QuestionTagSummaryDto> tagDtos = QuestionTagSummaryDto.listOf(tags);
         return ResponseEntity.ok(tagDtos);
     }
 
     @Operation(summary = "해당 태그들을 가진 문제 조회")
-    @GetMapping("/questions/tags")
+    @PostMapping("/questions/tags")
     public ResponseEntity<List<QuestionSummaryDto>> findAllQuestionsByTags(@RequestBody QuestionTagIdsDto tagIdsDto) {
         List<Question> questions = questionTagService.findAllQuestionsByTagIds(tagIdsDto.tagIds());
         List<QuestionSummaryDto> dtos = QuestionSummaryDto.listOf(questions);
