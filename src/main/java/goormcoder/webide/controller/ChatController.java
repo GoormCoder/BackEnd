@@ -40,7 +40,7 @@ public class ChatController {
         ChatMessage savedMessage = chatMessageService.saveMessage(chatMessageSendDto);
         messagingTemplate.convertAndSend(
                 "/sub/chats/room/" + savedMessage.getChatRoom().getId(),
-                savedMessage.getMessage()
+                ChatMessageFindDto.of(savedMessage)
         );
     }
 

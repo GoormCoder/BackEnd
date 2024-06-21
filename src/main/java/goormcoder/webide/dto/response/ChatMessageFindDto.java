@@ -23,4 +23,12 @@ public record ChatMessageFindDto(
                 )).toList();
     }
 
+    public static ChatMessageFindDto of(ChatMessage chatMessage) {
+        return new ChatMessageFindDto(
+                chatMessage.getMessage(),
+                chatMessage.getCreatedAt(),
+                MessageSenderFindDto.from(chatMessage.getMember())
+        );
+    }
+
 }
