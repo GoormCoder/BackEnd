@@ -35,6 +35,14 @@ public class BattleController {
         return ResponseEntity.status(HttpStatus.OK).body(battleService.findBattleWait(principalHandler.getMemberLoginId(), roomId));
     }
 
+    //대기방 취소
+    @PostMapping("/battles/cancel/{roomId}")
+    @Operation(summary = "배틀 대기방 취소", description = "매칭 되지 않을 시 랜덤 매칭 버튼을 한 번 더 누르면 배틀 대기가 취소됩니다.")
+    public ResponseEntity<String> cancelBattleWait(@PathVariable Long roomId) {
+        battleService.cancelBattleWait(principalHandler.getMemberLoginId(), roomId);
+        return ResponseEntity.status(HttpStatus.OK).body("배틀 취소 및 대기방이 삭제되었습니다.");
+    }
+
     //배틀 시작
     @PostMapping("/battles/start/{roomId}")
     @Operation(summary = "배틀 시작", description = "대결할 회원이 다 모였으면 대결을 시작합니다.")
