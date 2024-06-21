@@ -21,6 +21,7 @@ public enum ErrorMessages {
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
     TAG_NOT_FOUND("해당하는 태그가 존재하지 않습니다."),
     WRONG_INPUT_DATA("잘못된 입력입니다."),
+    CHATROOM_MEMBER_NOT_FOUND("해당하는 사용자가 채팅방에 존재하지 않습니다."),
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),

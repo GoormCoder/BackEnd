@@ -58,8 +58,11 @@ public class ChatMessageService {
         chatRoomMember.markAsRead(chatMessage.getCreatedAt());
     }
 
-    public Optional<ChatMessage> getLastMessage(Long chatRoomId) {
-        return chatMessageRepository.findMessageByChatRoomId(chatRoomId).stream().findFirst();
+    public ChatMessage getLastMessage(Long chatRoomId) {
+        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
 }

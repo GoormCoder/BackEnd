@@ -1,6 +1,7 @@
 package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
+import goormcoder.webide.domain.ChatMessage;
 import goormcoder.webide.domain.ChatRoom;
 import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
@@ -60,18 +61,12 @@ public class ChatRoomService {
 
         return chatRooms.stream()
                 .map(chatRoom -> {
-                    ChatMessageFindDto lastMessageDto = chatMessageService.getLastMessage(chatRoom.getId())
-                            .map(lastMessage -> new ChatMessageFindDto(
-                                    lastMessage.getMessage(),
-                                    lastMessage.getCreatedAt(),
-                                    MessageSenderFindDto.from(lastMessage.getMember()))
-                            ).orElse(null);
-
-                    String chatRoomName = findChatRoomMember(chatRoom, memberService.findByLoginId(loginId))
-                            .map(ChatRoomMember::getChatRoomName)
-                            .orElse("알수없음");
-
-                    return new ChatRoomFindDto(chatRoom.getId(), chatRoomName, lastMessageDto);
+                    ChatMessage lastMessage = chatMessageService.getLastMessage(chatRoom.getId());
+                    ChatRoomMember chatRoomMember = findChatRoomMember(chatRoom, memberService.findByLoginId(loginId));
+                    boolean hasUnreadMessages = chatRoom.getChatMessages().stream()
+                            .anyMatch(message -> message.getCreatedAt().isAfter(chatRoomMember.getReadAt()));
+                    return ChatRoomFindDto.of(chatRoom, chatRoomMember,
+                            ChatMessageFindDto.of(lastMessage), hasUnreadMessages);
                 })
                 .collect(Collectors.toList());
     }
@@ -113,24 +108,23 @@ public class ChatRoomService {
                 .collect(Collectors.joining(""));
     }
 
-    private Optional<ChatRoomMember> findChatRoomMember(ChatRoom chatRoom, Member member) {
+    private ChatRoomMember findChatRoomMember(ChatRoom chatRoom, Member member) {
         return chatRoom.getChatRoomMembers().stream()
                 .filter(roomMember -> roomMember.getMember().equals(member))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() ->new EntityNotFoundException(ErrorMessages.CHATROOM_MEMBER_NOT_FOUND.getMessage()));
     }
 
     private ChatRoomInfoDto handleExistingChatRoom(String uniqueKey, Member owner) {
         ChatRoom existingChatRoom = chatRoomRepository.findByUniqueKey(uniqueKey);
 
-        Optional<ChatRoomMember> ownerMember = findChatRoomMember(existingChatRoom, owner);
-        if(ownerMember.isPresent()) {
-            boolean ownerDeleted = ownerMember.get().isDeleted();
+        ChatRoomMember ownerMember = findChatRoomMember(existingChatRoom, owner);
+        boolean ownerDeleted = ownerMember.isDeleted();
 
-            if(ownerDeleted) {
-                ownerMember.get().markAsReJoined();
-                chatRoomRepository.save(existingChatRoom);
-                return ChatRoomInfoDto.of(existingChatRoom);
-            }
+        if(ownerDeleted) {
+            ownerMember.markAsReJoined();
+            chatRoomRepository.save(existingChatRoom);
+            return ChatRoomInfoDto.of(existingChatRoom);
         }
 
         return ChatRoomInfoDto.of(existingChatRoom, ErrorMessages.CHATROOM_CONFLICT.getMessage());
