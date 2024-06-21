@@ -6,8 +6,8 @@ import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
-import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.dto.response.ChatRoomFindDto;
+import goormcoder.webide.dto.response.ChatRoomInfoDto;
 import goormcoder.webide.dto.response.MessageSenderFindDto;
 import goormcoder.webide.repository.ChatRoomRepository;
 import goormcoder.webide.repository.MemberRepository;
@@ -32,7 +32,7 @@ public class ChatRoomService {
     private final MemberService memberService;
 
     @Transactional
-    public ChatRoomFindDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
+    public ChatRoomInfoDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
         Member owner = memberService.findByLoginId(loginId);
         Member guest = memberService.findByLoginId(chatRoomCreateDto.invitedMemberLoginId());
 
@@ -51,11 +51,11 @@ public class ChatRoomService {
 
         chatRoomRepository.save(chatRoom);
 
-        return ChatRoomFindDto.of(chatRoom);
+        return ChatRoomInfoDto.of(chatRoom);
     }
 
     @Transactional
-    public List<ChatRoomFindAllDto> getMyChatRooms(String loginId) {
+    public List<ChatRoomFindDto> getMyChatRooms(String loginId) {
         List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByMemberLoginId(loginId);
 
         return chatRooms.stream()
@@ -71,7 +71,7 @@ public class ChatRoomService {
                             .map(ChatRoomMember::getChatRoomName)
                             .orElse("알수없음");
 
-                    return new ChatRoomFindAllDto(chatRoom.getId(), chatRoomName, lastMessageDto);
+                    return new ChatRoomFindDto(chatRoom.getId(), chatRoomName, lastMessageDto);
                 })
                 .collect(Collectors.toList());
     }
@@ -119,7 +119,7 @@ public class ChatRoomService {
                 .findFirst();
     }
 
-    private ChatRoomFindDto handleExistingChatRoom(String uniqueKey, Member owner) {
+    private ChatRoomInfoDto handleExistingChatRoom(String uniqueKey, Member owner) {
         ChatRoom existingChatRoom = chatRoomRepository.findByUniqueKey(uniqueKey);
 
         Optional<ChatRoomMember> ownerMember = findChatRoomMember(existingChatRoom, owner);
@@ -129,11 +129,11 @@ public class ChatRoomService {
             if(ownerDeleted) {
                 ownerMember.get().markAsReJoined();
                 chatRoomRepository.save(existingChatRoom);
-                return ChatRoomFindDto.of(existingChatRoom);
+                return ChatRoomInfoDto.of(existingChatRoom);
             }
         }
 
-        return ChatRoomFindDto.of(existingChatRoom, ErrorMessages.CHATROOM_CONFLICT.getMessage());
+        return ChatRoomInfoDto.of(existingChatRoom, ErrorMessages.CHATROOM_CONFLICT.getMessage());
     }
 
 }

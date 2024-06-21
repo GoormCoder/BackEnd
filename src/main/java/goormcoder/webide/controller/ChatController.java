@@ -4,11 +4,10 @@ import goormcoder.webide.domain.ChatMessage;
 import goormcoder.webide.dto.request.ChatMessageSendDto;
 import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
-import goormcoder.webide.dto.response.ChatRoomFindAllDto;
 import goormcoder.webide.dto.response.ChatRoomFindDto;
+import goormcoder.webide.dto.response.ChatRoomInfoDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.ChatMessageService;
-import goormcoder.webide.service.ChatRoomMemberService;
 import goormcoder.webide.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,19 +45,19 @@ public class ChatController {
 
     @PostMapping("/chats/rooms")
     @Operation(summary = "채팅방 생성", description = "채팅방을 생성합니다.")
-    public ResponseEntity<ChatRoomFindDto> createChatRoom(@Valid @RequestBody ChatRoomCreateDto chatRoomCreateDto) {
-        ChatRoomFindDto chatRoomFindDto = chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto);
+    public ResponseEntity<ChatRoomInfoDto> createChatRoom(@Valid @RequestBody ChatRoomCreateDto chatRoomCreateDto) {
+        ChatRoomInfoDto chatRoomInfoDto = chatRoomService.createChatRoom(principalHandler.getMemberLoginId(), chatRoomCreateDto);
 
-        if(chatRoomFindDto.message() != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(chatRoomFindDto);
+        if(chatRoomInfoDto.message() != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(chatRoomInfoDto);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(chatRoomFindDto);
+        return ResponseEntity.status(HttpStatus.OK).body(chatRoomInfoDto);
     }
 
     @GetMapping("/chats/rooms")
     @Operation(summary = "채팅방 조회", description = "사용자가 참여하고 있는 전체 채팅방을 조회합니다.")
-    public ResponseEntity<List<ChatRoomFindAllDto>> getMyChatRooms() {
+    public ResponseEntity<List<ChatRoomFindDto>> getMyChatRooms() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(chatRoomService.getMyChatRooms(principalHandler.getMemberLoginId()));
     }
