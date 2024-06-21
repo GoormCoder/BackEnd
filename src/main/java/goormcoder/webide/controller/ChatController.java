@@ -67,7 +67,7 @@ public class ChatController {
     }
 
     @GetMapping("/chats/rooms/{chatRoomId}")
-    @Operation(summary = "메시지 조회", description = "특정 채팅방의 메시지를 조회합니다. 메시지는 생성일 기준 내림차순 정렬되어있습니다.")
+    @Operation(summary = "메시지 조회", description = "특정 채팅방의 메시지를 조회합니다. 메시지는 생성일 기준 오름차순 정렬되어있습니다.")
     public ResponseEntity<List<ChatMessageFindDto>> getChatRoomMessages(@PathVariable Long chatRoomId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(chatMessageService.getChatRoomMessages(chatRoomId, principalHandler.getMemberLoginId()));
