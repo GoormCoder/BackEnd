@@ -62,6 +62,7 @@ public class QuestionTagService {
         return (tags);
     }
 
+    @Transactional
     public List<QuestionTagSummaryDto> addTagToQuestion(Long questionId, Long tagId) {
         Question question = questionService.findById(questionId);
         QuestionTag tag = this.findById(tagId);
@@ -72,6 +73,7 @@ public class QuestionTagService {
         return QuestionTagSummaryDto.listOf(tags);
     }
 
+    @Transactional
     public List<QuestionTagSummaryDto> removeTagFromQuestion(Long questionId, Long tagId) {
         Question question = questionService.findById(questionId);
         QuestionTag tag = this.findById(tagId);
@@ -82,6 +84,7 @@ public class QuestionTagService {
         return QuestionTagSummaryDto.listOf(tags);
     }
 
+    @Transactional
     public List<QuestionTagSummaryDto> modifyQuestionTags(Long questionId, QuestionTagIdsDto updateDto) {
         List<QuestionTag> newTags = this.findAllByIds(updateDto.tagIds());
         Question question = questionService.findById(questionId);
@@ -90,6 +93,7 @@ public class QuestionTagService {
         Set<QuestionTag> tags = question.getTags();
         return QuestionTagSummaryDto.listOf(tags);
     }
+
     public List<Question> findAllQuestionsByTagIds(Collection<Long> tagIds) {
         List<Question> filteredQuestions = new ArrayList<>();
 

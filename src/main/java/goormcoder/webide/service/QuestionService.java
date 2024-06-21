@@ -41,6 +41,7 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage()));
     }
 
+    @Transactional
     public void save(Question question) {
         questionRepository.save(question);
     }
