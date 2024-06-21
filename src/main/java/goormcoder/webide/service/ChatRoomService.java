@@ -44,7 +44,7 @@ public class ChatRoomService {
         // 채팅방 중복 개설 확인 및 재입장 처리
         String uniqueKey = generateUniqueKey(owner, guest);
         if(chatRoomRepository.existsByUniqueKey(uniqueKey)) {
-            return handleExistingChatRoom(uniqueKey, owner, guest);
+            return handleExistingChatRoom(uniqueKey, owner);
         }
 
         ChatRoom chatRoom = ChatRoom.of(uniqueKey);
@@ -121,19 +121,12 @@ public class ChatRoomService {
                 .findFirst();
     }
 
-    private ChatRoomFindDto handleExistingChatRoom(String uniqueKey, Member owner, Member guest) {
+    private ChatRoomFindDto handleExistingChatRoom(String uniqueKey, Member owner) {
         ChatRoom existingChatRoom = chatRoomRepository.findByUniqueKey(uniqueKey);
 
         Optional<ChatRoomMember> ownerMember = findChatRoomMember(existingChatRoom, owner);
-        Optional<ChatRoomMember> guestMember = findChatRoomMember(existingChatRoom, guest);
-
-        if(ownerMember.isPresent() && guestMember.isPresent()) {
+        if(ownerMember.isPresent()) {
             boolean ownerDeleted = ownerMember.get().isDeleted();
-            boolean guestDeleted = guestMember.get().isDeleted();
-
-            if(ownerDeleted && guestDeleted) {
-                throw new DataIntegrityViolationException(ErrorMessages.CHATROOM_CONFLICT.getMessage());
-            }
 
             if(ownerDeleted) {
                 ownerMember.get().markAsReJoined();
