@@ -3,36 +3,35 @@ package goormcoder.webide.service;
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.ChatRoom;
 import goormcoder.webide.domain.ChatRoomMember;
+import goormcoder.webide.domain.Member;
 import goormcoder.webide.exception.ForbiddenException;
+import goormcoder.webide.repository.ChatRoomMemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomMemberService {
 
+    private final ChatRoomMemberRepository chatRoomMemberRepository;
+
+    public ChatRoomMember findByChatRoomAndMember(ChatRoom chatRoom, Member sender) {
+        return chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
+    }
+
     public ChatRoomMember checkChatRoomMember(ChatRoom chatRoom, String loginId) {
-        Optional<ChatRoomMember> roomMember = chatRoom.getChatRoomMembers()
+        ChatRoomMember roomMember = chatRoom.getChatRoomMembers()
                 .stream()
                 .filter(member -> member.getMember().getLoginId().equals(loginId))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException(ErrorMessages.FORBIDDEN_CHATROOM_ACCESS));
 
-        boolean isMember = roomMember.isPresent();
-
-        boolean isDeleted = roomMember
-                .map(member -> member.getDeletedAt() != null)
-                .orElse(false);
-
-        if(!isMember) {
-            throw new ForbiddenException(ErrorMessages.FORBIDDEN_CHATROOM_ACCESS);
-        } else if(isDeleted) {
+        if(roomMember.isDeleted()) {
             throw new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage());
         }
 
-        return roomMember.get();
+        return roomMember;
     }
 
 }
