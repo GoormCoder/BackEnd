@@ -7,6 +7,7 @@ import java.util.List;
 
 public record ChatMessageFindDto(
 
+        Long messageId,
         String message,
         LocalDateTime createdAt,
         MessageSenderFindDto sender
@@ -25,6 +26,7 @@ public record ChatMessageFindDto(
         }
         
         return new ChatMessageFindDto(
+                chatMessage.getId(),
                 chatMessage.getMessage(),
                 chatMessage.getCreatedAt(),
                 MessageSenderFindDto.from(chatMessage.getMember())

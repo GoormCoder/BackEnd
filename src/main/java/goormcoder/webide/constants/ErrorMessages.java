@@ -22,6 +22,7 @@ public enum ErrorMessages {
     TAG_NOT_FOUND("해당하는 태그가 존재하지 않습니다."),
     WRONG_INPUT_DATA("잘못된 입력입니다."),
     CHATROOM_MEMBER_NOT_FOUND("해당하는 사용자가 채팅방에 존재하지 않습니다."),
+    CHAT_MESSAGE_NOT_FOUND("해당하는 메시지가 존재하지 않습니다."),
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
@@ -42,6 +43,7 @@ public enum ErrorMessages {
     FORBIDDEN_SOLVE_ACCESS("해당 제출에 대한 접근 권한이 없습니다."),
     FORBIDDEN_FRIEND_REQUEST_ACCESS("해당 친구 요청에 대한 접근 권한이 없습니다."),
     FORBIDDEN_CHATROOM_ACCESS("해당 채팅방에 대한 접근 권한이 없습니다."),
+    FORBIDDEN_MESSAGE_ACCESS("해당 메시지에 대한 접근 권한이 없습니다."),
 
     //400 BAD_REQUEST
     BAD_REQUEST_INVITED_ID("본인과의 채팅방은 생성할 수 없습니다."),

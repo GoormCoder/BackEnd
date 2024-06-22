@@ -76,4 +76,11 @@ public class ChatController {
                 .body(chatMessageService.getChatRoomMessages(chatRoomId, principalHandler.getMemberLoginId()));
     }
 
+    @DeleteMapping("/chats/rooms/{chatRoomId}/{chatMessageId}")
+    @Operation(summary = "메시지 삭제", description = "메시지를 삭제합니다.")
+    public ResponseEntity<String> deleteChatMessage(@PathVariable Long chatRoomId, @PathVariable Long chatMessageId) {
+        chatMessageService.deleteChatMessage(chatRoomId, chatMessageId, principalHandler.getMemberLoginId());
+        return ResponseEntity.status(HttpStatus.OK).body("메시지가 삭제되었습니다.");
+    }
+
 }

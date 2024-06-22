@@ -7,6 +7,7 @@ import goormcoder.webide.domain.ChatRoomMember;
 import goormcoder.webide.domain.Member;
 import goormcoder.webide.dto.request.ChatMessageSendDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
+import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.ChatMessageRepository;
 import goormcoder.webide.repository.ChatRoomRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -52,6 +53,17 @@ public class ChatMessageService {
         return ChatMessageFindDto.listOf(messages);
     }
 
+    @Transactional
+    public void deleteChatMessage(Long chatRoomId, Long chatMessageId, String loginId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
+        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
+
+        ChatMessage chatMessage = checkChatMessage(chatRoomId, chatMessageId, loginId);
+        chatMessage.updateMessage();
+        chatRoomRepository.save(chatRoom);
+    }
+
     private void updateReadAt(ChatRoom chatRoom, Member sender, ChatMessage chatMessage) {
         ChatRoomMember chatRoomMember = chatRoomMemberService.findByChatRoomAndMember(chatRoom, sender);
         chatRoomMember.markAsRead(chatMessage.getCreatedAt());
@@ -63,6 +75,21 @@ public class ChatMessageService {
                 .stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    private ChatMessage checkChatMessage(Long chatRoomId, Long chatMessageId, String loginId) {
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHAT_MESSAGE_NOT_FOUND.getMessage()));
+
+        if(!chatMessage.getChatRoom().getId().equals(chatRoomId)) {
+            throw new EntityNotFoundException(ErrorMessages.CHAT_MESSAGE_NOT_FOUND.getMessage());
+        }
+
+        if(!chatMessage.getMember().getLoginId().equals(loginId)) {
+            throw new ForbiddenException(ErrorMessages.FORBIDDEN_MESSAGE_ACCESS);
+        }
+
+        return chatMessage;
     }
 
 }

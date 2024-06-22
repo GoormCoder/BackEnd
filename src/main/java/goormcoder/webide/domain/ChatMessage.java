@@ -1,5 +1,6 @@
 package goormcoder.webide.domain;
 
+import goormcoder.webide.constants.ChatConstants;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,6 +44,10 @@ public class ChatMessage extends BaseTimeEntity {
                 .member(member)
                 .chatRoom(chatRoom)
                 .build();
+    }
+
+    public void updateMessage() {
+        this.message = ChatConstants.DELETED_MESSAGE;
     }
 
 }
