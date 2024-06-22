@@ -7,13 +7,16 @@ import java.util.List;
 public record SolveSummaryDto(
     QuestionSummaryDto questionSummaryDto,
     MemberSummaryDto memberSummaryDto,
+    Long solveId,
     SolveResult solveResult
 ) {
     public static SolveSummaryDto of(Solve solve) {
         return new SolveSummaryDto(
                 QuestionSummaryDto.of(solve.getQuestion()),
                 MemberSummaryDto.of(solve.getMember()),
+                solve.getId(),
                 solve.getSolveResult()
+
         );
     }
 
