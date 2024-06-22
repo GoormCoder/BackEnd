@@ -30,10 +30,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         return findById(memberId).orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MEMBER_NOT_FOUND.getMessage()));
     }
 
-    @Query("SELECT m FROM Member m WHERE m.loginId LIKE %:keyword%")
-    List<Member> findAllByLoginIdContaining(@Param("keyword") String keyword);
-
+    @Query("SELECT m FROM Member m WHERE m.loginId LIKE %:keyword% AND m.loginId <> :loginId")
+    List<Member> findAllByLoginIdContaining(@Param("keyword") String keyword, @Param("loginId") String loginId);
+  
     List<Member> findAllByOrderByPraiseScoreDesc();
 
     List<Member> findAllByOrderByBattleScoreDesc();
+
 }

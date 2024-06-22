@@ -1,12 +1,16 @@
 package goormcoder.webide.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import goormcoder.webide.constants.QuestionConstants;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import jakarta.validation.constraints.NotBlank;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +49,14 @@ public class Question extends BaseTimeEntity {
     @JsonManagedReference
     private List<Solve> solves = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "t_question_tag",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<QuestionTag> tags = new HashSet<>();
+
     public Question(String title, int level, String content) {
         this.title = title;
         this.level = level;
@@ -55,6 +67,14 @@ public class Question extends BaseTimeEntity {
         this.title = title;
         this.level = level;
         this.content = content;
+    }
+
+    public void addTag(QuestionTag tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(QuestionTag tag) {
+        tags.remove(tag);
     }
 
 }

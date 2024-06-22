@@ -1,6 +1,5 @@
 package goormcoder.webide.dto.response;
 
-import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.ChatMessage;
 
 import java.time.LocalDateTime;
@@ -8,6 +7,7 @@ import java.util.List;
 
 public record ChatMessageFindDto(
 
+        Long messageId,
         String message,
         LocalDateTime createdAt,
         MessageSenderFindDto sender
@@ -16,11 +16,21 @@ public record ChatMessageFindDto(
 
     public static List<ChatMessageFindDto> listOf(List<ChatMessage> chatMessages) {
         return chatMessages.stream()
-                .map(chatMessage -> new ChatMessageFindDto(
-                        chatMessage.getMessage(),
-                        chatMessage.getCreatedAt(),
-                        MessageSenderFindDto.from(chatMessage.getMember())
-                )).toList();
+                .map(ChatMessageFindDto::of)
+                .toList();
+    }
+
+    public static ChatMessageFindDto of(ChatMessage chatMessage) {
+        if(chatMessage == null) {
+            return null;
+        }
+        
+        return new ChatMessageFindDto(
+                chatMessage.getId(),
+                chatMessage.getMessage(),
+                chatMessage.getCreatedAt(),
+                MessageSenderFindDto.from(chatMessage.getMember())
+        );
     }
 
 }

@@ -22,9 +22,6 @@ public class ChatRoom extends BaseTimeEntity {
     @Column(name = "chat_room_id")
     private Long id;
 
-    @Column(name = "chat_room_name")
-    private String chatRoomName;
-
     @Column(name = "chat_room_unique_key", unique = true)
     private String uniqueKey;
 
@@ -35,14 +32,12 @@ public class ChatRoom extends BaseTimeEntity {
     private final List<ChatMessage> chatMessages = new ArrayList<>();
 
     @Builder
-    private ChatRoom(String chatRoomName, String uniqueKey) {
-        this.chatRoomName = chatRoomName;
+    private ChatRoom(String uniqueKey) {
         this.uniqueKey = uniqueKey;
     }
 
-    public static ChatRoom of(String chatRoomName, String uniqueKey) {
+    public static ChatRoom of(String uniqueKey) {
         return ChatRoom.builder()
-                .chatRoomName(chatRoomName)
                 .uniqueKey(uniqueKey)
                 .build();
     }

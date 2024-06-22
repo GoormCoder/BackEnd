@@ -8,4 +8,6 @@ public class ChatConstants {
 
     public final static String MESSAGE_IS_NULL = "메세지가 존재하지 않습니다.";
 
+    public final static String DELETED_MESSAGE = "삭제된 메시지입니다.";
+
 }

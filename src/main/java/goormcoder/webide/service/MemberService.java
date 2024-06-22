@@ -38,8 +38,8 @@ public class MemberService {
     }
 
     @Transactional
-    public List<MemberFindAllDto> getAllMembersByLoginIdContaining(String keyword) {
-        return MemberFindAllDto.listOf(memberRepository.findAllByLoginIdContaining(keyword));
+    public List<MemberFindAllDto> getAllMembersByLoginIdContaining(String keyword, String loginId) {
+        return MemberFindAllDto.listOf(memberRepository.findAllByLoginIdContaining(keyword, loginId));
     }
 
     @Transactional
@@ -97,6 +97,7 @@ public class MemberService {
         return member.isPresent();
     }
 
+    @Transactional
     public void resetPassword(String userId, String newPassword) {
         Member member = memberRepository.findByLoginId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 회원을 찾을 수 없습니다."));

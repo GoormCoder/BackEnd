@@ -15,14 +15,19 @@ public enum ErrorMessages {
     LIKE_NOT_FOUND("해당하는 좋아요가 존재하지 않습니다."),
     TESTCASE_NOT_FOUND("해당하는 테스트케이스가 존재하지 않습니다."),
     BATTLE_WAIT_NOT_FOUND("해당하는 대기방이 존재하지 않습니다."),
+    BATTLE_NOT_FOUND("해당하는 대결이 존재하지 않습니다."),
     SOLVE_NOT_FOUND("해당하는 제출이 존재하지 않습니다."),
     CHATROOM_NOT_FOUND("해당하는 채팅방이 존재하지 않습니다."),
     FRIEND_REQUEST_NOT_FOUND("해당하는 친구요청이 존재하지 않습니다."),
+    TAG_NOT_FOUND("해당하는 태그가 존재하지 않습니다."),
     WRONG_INPUT_DATA("잘못된 입력입니다."),
+    CHATROOM_MEMBER_NOT_FOUND("해당하는 사용자가 채팅방에 존재하지 않습니다."),
+    CHAT_MESSAGE_NOT_FOUND("해당하는 메시지가 존재하지 않습니다."),
     
     //409 CONFLICT
     LIKE_CONFLICT("이미 좋아요를 누르셨습니다."),
     BATTLE_MEMBER_CONFLICT("같은 사용자가 두 명의 역할을 맡을 수 없습니다."),
+    BATTLE_CANCEL_CONFLICT("이미 배틀이 시작되어 취소할 수 없습니다."),
     CHATROOM_CONFLICT("해당 사용자와의 채팅방이 이미 존재합니다."),
 
     //401 UNAUTHORIZED
@@ -38,6 +43,7 @@ public enum ErrorMessages {
     FORBIDDEN_SOLVE_ACCESS("해당 제출에 대한 접근 권한이 없습니다."),
     FORBIDDEN_FRIEND_REQUEST_ACCESS("해당 친구 요청에 대한 접근 권한이 없습니다."),
     FORBIDDEN_CHATROOM_ACCESS("해당 채팅방에 대한 접근 권한이 없습니다."),
+    FORBIDDEN_MESSAGE_ACCESS("해당 메시지에 대한 접근 권한이 없습니다."),
 
     //400 BAD_REQUEST
     BAD_REQUEST_INVITED_ID("본인과의 채팅방은 생성할 수 없습니다."),

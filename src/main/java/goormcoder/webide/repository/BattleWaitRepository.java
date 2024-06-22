@@ -13,7 +13,7 @@ import java.util.List;
 public interface BattleWaitRepository extends JpaRepository<BattleWait, Long> {
 
     @Query("select bw from BattleWait bw " +
-            "where bw.level = :level and bw.language = :language and bw.isFull = false " +
+            "where bw.level = :level and bw.language = :language and bw.isFull = false and bw.deletedAt IS NULL " +
             "order by bw.createdAt asc")
     List<BattleWait> findByLevelAndLanguage(
             @Param("level") Integer level,

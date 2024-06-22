@@ -1,10 +1,8 @@
 package goormcoder.webide.controller;
 
 import goormcoder.webide.dto.request.BattleWaitCreateDto;
-import goormcoder.webide.dto.response.BattleInfoDto;
-import goormcoder.webide.dto.response.BattleRecordFindAllDto;
-import goormcoder.webide.dto.response.BattleWaitFindDto;
-import goormcoder.webide.dto.response.BattleWaitSimpleDto;
+import goormcoder.webide.dto.request.SolveCreateDto;
+import goormcoder.webide.dto.response.*;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.BattleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +35,14 @@ public class BattleController {
         return ResponseEntity.status(HttpStatus.OK).body(battleService.findBattleWait(principalHandler.getMemberLoginId(), roomId));
     }
 
+    //대기방 취소
+    @PostMapping("/battles/cancel/{roomId}")
+    @Operation(summary = "배틀 대기방 취소", description = "매칭 되지 않을 시 랜덤 매칭 버튼을 한 번 더 누르면 배틀 대기가 취소됩니다.")
+    public ResponseEntity<String> cancelBattleWait(@PathVariable Long roomId) {
+        battleService.cancelBattleWait(principalHandler.getMemberLoginId(), roomId);
+        return ResponseEntity.status(HttpStatus.OK).body("배틀 취소 및 대기방이 삭제되었습니다.");
+    }
+
     //배틀 시작
     @PostMapping("/battles/start/{roomId}")
     @Operation(summary = "배틀 시작", description = "대결할 회원이 다 모였으면 대결을 시작합니다.")
@@ -45,7 +51,11 @@ public class BattleController {
     }
 
     //풀이 제출 및 결과 확인
-
+    @PostMapping("/battles/submit/{battleId}/{questionId}")
+    @Operation(summary = "배틀 풀이 제출 및 결과 확인", description = "배틀 풀이를 제출하고, 결과(승패 여부)를 확인합니다.")
+    public ResponseEntity<BattleSubmitDto> submitSolution(@PathVariable Long battleId, @PathVariable Long questionId, @RequestBody SolveCreateDto solveCreateDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(battleService.submitSolution(principalHandler.getMemberLoginId(), battleId, questionId, solveCreateDto));
+    }
 
     //사용자 배틀 전적 조회
     @GetMapping("/battles/record")

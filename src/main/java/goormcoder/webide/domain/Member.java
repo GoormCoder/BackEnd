@@ -106,10 +106,26 @@ public class Member {
         this.praiseScore -= 5;
     }
 
+    public void incrementBattleScore() {
+        this.battleScore += 100;
+    }
+
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
 
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
 
-    
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+
+
 }
