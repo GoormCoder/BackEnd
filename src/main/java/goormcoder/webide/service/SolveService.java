@@ -78,4 +78,11 @@ public class SolveService {
         ).map(SolveSummaryDto::of);
     }
 
+    public Page<SolveSummaryDto> findAllByMemberId(Long memberId, Pageable pageable) {
+        return solveRepository.findAllByMemberId(
+                memberId,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
+        ).map(SolveSummaryDto::of);
+    }
+
 }

@@ -67,12 +67,6 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId).isPresent();
     }
 
-    public List<SolveSummaryDto> findSolvesByLoginId(String loginId) {
-        return SolveSummaryDto.listOf(
-                this.findByLoginId(loginId).getSolves()
-        );
-    }
-
     @Transactional(readOnly = true)
     public String findLoginIdByEmailAndName(String email, String name) {
         return memberRepository.findByEmailAndName(email, name)

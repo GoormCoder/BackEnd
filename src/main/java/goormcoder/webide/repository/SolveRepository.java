@@ -13,6 +13,8 @@ public interface SolveRepository extends JpaRepository<Solve, Long> {
 
     Page<Solve> findAllByQuestionId(Long questionId, PageRequest pageRequest);
 
+    Page<Solve> findAllByMemberId(Long memberId, PageRequest pageRequest);
+
     List<Solve> findAllByIdAndMember(Long id, Member member);
 
 }

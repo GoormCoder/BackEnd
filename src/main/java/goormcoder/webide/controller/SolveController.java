@@ -57,9 +57,10 @@ public class SolveController {
     }
 
     @GetMapping("/members/{loginId}/solves")
-    @Operation(summary = "사용자의 풀이 전체 조회", description = "loginId로 조회")
-    public ResponseEntity<List<SolveSummaryDto>> getAllSolvesByMember(@PathVariable String loginId) {
-        return ResponseEntity.ok(memberService.findSolvesByLoginId(loginId));
+    @Operation(summary = "사용자의 전체 풀이 조회", description = "loginId로 조회")
+    public ResponseEntity<Page<SolveSummaryDto>> getAllSolvesByMember(@PathVariable String loginId, Pageable pageable) {
+        Member member = memberService.findByLoginId(loginId);
+        return ResponseEntity.ok(solveService.findAllByMemberId(member.getId(), pageable));
     }
 
 }
