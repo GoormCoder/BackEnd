@@ -58,10 +58,10 @@ public class MemberController {
     
 
     // 유저 검색
-    @GetMapping("/{keyword}")
+    @GetMapping("/{keyword}/{loginId}")
     @Operation(summary = "loginId 키워드로 맴버 조회", description = "로그인 아이디에 키워드가 포함된 맴버를 모두 조회합니다.")
-    public ResponseEntity<List<MemberFindAllDto>> getMember(@PathVariable String keyword) {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllMembersByLoginIdContaining(keyword));
+    public ResponseEntity<List<MemberFindAllDto>> getMember(@PathVariable String keyword, @PathVariable String loginId) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllMembersByLoginIdContaining(keyword, loginId));
     }
 
     // 예외 처리메시지 상황별 수정 필요
