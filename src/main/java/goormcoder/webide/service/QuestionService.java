@@ -4,12 +4,15 @@ import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
-import goormcoder.webide.dto.response.QuestionFindAllDto;
+import goormcoder.webide.dto.response.QuestionFindDto;
 import goormcoder.webide.dto.response.QuestionSummaryDto;
 import goormcoder.webide.dto.response.SolveSummaryDto;
 import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,16 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     @Transactional(readOnly = true)
-    public List<QuestionFindAllDto> getAllQuestions() {
-        return QuestionFindAllDto.listOf(questionRepository.findAll());
+    public Page<QuestionSummaryDto> getAllQuestions(Pageable pageable) {
+        return questionRepository
+                .findAll(
+                        PageRequest.of(
+                                pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                pageable.getSort()
+                        )
+                )
+                .map(QuestionSummaryDto::of);
     }
 
     @Transactional
