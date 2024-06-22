@@ -32,5 +32,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.loginId LIKE %:keyword%")
     List<Member> findAllByLoginIdContaining(@Param("keyword") String keyword);
-  
+
+    List<Member> findAllByOrderByPraiseScoreDesc();
+
+    List<Member> findAllByOrderByBattleScoreDesc();
 }
