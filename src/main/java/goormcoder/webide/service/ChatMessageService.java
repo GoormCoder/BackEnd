@@ -29,10 +29,11 @@ public class ChatMessageService {
     private final ChatRoomMemberService chatRoomMemberService;
 
     @Transactional
-    public ChatMessage saveMessage(ChatMessageSendDto chatMessageSendDto) {
+    public ChatMessage saveMessage(ChatMessageSendDto chatMessageSendDto, String loginId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatMessageSendDto.chatRoomId())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.CHATROOM_NOT_FOUND.getMessage()));
-        Member sender = memberService.findByLoginId(chatMessageSendDto.senderLoginId());
+        Member sender = memberService.findByLoginId(loginId);
+        chatRoomMemberService.checkChatRoomMember(chatRoom, loginId);
 
         ChatMessage chatMessage = ChatMessage.of(chatMessageSendDto.message(), sender, chatRoom);
         chatRoom.addChatMessage(chatMessage);

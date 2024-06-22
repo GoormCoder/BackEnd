@@ -17,10 +17,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Tag(name = "Chat", description = "1:1 채팅 관련 API")
@@ -35,8 +39,9 @@ public class ChatController {
 
     // Web Socket Connection URL - ws://localhost:8080/ws
     @MessageMapping("/send")
-    public void sendMessage(@Payload ChatMessageSendDto chatMessageSendDto) {
-        ChatMessage savedMessage = chatMessageService.saveMessage(chatMessageSendDto);
+    public void sendMessage(@Payload ChatMessageSendDto chatMessageSendDto, SimpMessageHeaderAccessor headerAccessor) {
+        String loginId = Objects.requireNonNull(headerAccessor.getUser()).getName();
+        ChatMessage savedMessage = chatMessageService.saveMessage(chatMessageSendDto, loginId);
         messagingTemplate.convertAndSend(
                 "/sub/chats/room/" + savedMessage.getChatRoom().getId(),
                 ChatMessageFindDto.of(savedMessage)
