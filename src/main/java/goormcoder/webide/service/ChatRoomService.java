@@ -9,16 +9,13 @@ import goormcoder.webide.dto.request.ChatRoomCreateDto;
 import goormcoder.webide.dto.response.ChatMessageFindDto;
 import goormcoder.webide.dto.response.ChatRoomFindDto;
 import goormcoder.webide.dto.response.ChatRoomInfoDto;
-import goormcoder.webide.dto.response.MessageSenderFindDto;
 import goormcoder.webide.repository.ChatRoomRepository;
-import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,11 +23,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
+
+    private final MemberService memberService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomMemberService chatRoomMemberService;
-    private final MemberService memberService;
 
     @Transactional
     public ChatRoomInfoDto createChatRoom(String loginId, ChatRoomCreateDto chatRoomCreateDto) {
@@ -80,7 +77,6 @@ public class ChatRoomService {
 
         chatRoomMember.markAsDeleted();
         chatRoomRepository.save(chatRoom);
-
         deleteChatRoom(chatRoom);
     }
 
