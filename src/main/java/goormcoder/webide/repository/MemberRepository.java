@@ -33,4 +33,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m WHERE m.loginId LIKE %:keyword% AND m.loginId <> :loginId")
     List<Member> findAllByLoginIdContaining(@Param("keyword") String keyword, @Param("loginId") String loginId);
   
+    List<Member> findAllByOrderByPraiseScoreDesc();
+
+    List<Member> findAllByOrderByBattleScoreDesc();
+
 }

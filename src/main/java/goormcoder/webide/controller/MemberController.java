@@ -10,6 +10,8 @@ import goormcoder.webide.dto.request.MemberLoginDto;
 import goormcoder.webide.dto.request.RefreshTokenDto;
 import goormcoder.webide.dto.response.JwtTokenDto;
 import goormcoder.webide.dto.response.MemberFindAllDto;
+import goormcoder.webide.dto.response.BattleRankFindAllDto;
+import goormcoder.webide.dto.response.PraiseRankFindAllDto;
 import goormcoder.webide.service.AuthService;
 import goormcoder.webide.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +64,20 @@ public class MemberController {
     @Operation(summary = "loginId 키워드로 맴버 조회", description = "로그인 아이디에 키워드가 포함된 맴버를 모두 조회합니다.")
     public ResponseEntity<List<MemberFindAllDto>> getMember(@PathVariable String keyword, @PathVariable String loginId) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllMembersByLoginIdContaining(keyword, loginId));
+    }
+
+    // 모든 유저 대결 점수 조회
+    @GetMapping("/rank/battle")
+    @Operation(summary = "모든 유저 점수 및 순위 조회")
+    public ResponseEntity<List<BattleRankFindAllDto>> getBattleRanks() {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllBattleRanks());
+    }
+
+    // 모든 유저 칭찬 점수 조회
+    @GetMapping("/rank/praise")
+    @Operation(summary = "모든 유저 점수 및 순위 조회")
+    public ResponseEntity<List<PraiseRankFindAllDto>> getPraiseRanks() {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAllPraiseRanks());
     }
 
     // 예외 처리메시지 상황별 수정 필요

@@ -2,7 +2,8 @@ package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Member;
-import goormcoder.webide.domain.Solve;
+import goormcoder.webide.dto.response.BattleRankFindAllDto;
+import goormcoder.webide.dto.response.PraiseRankFindAllDto;
 import goormcoder.webide.dto.response.SolveSummaryDto;
 import goormcoder.webide.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,6 +40,16 @@ public class MemberService {
     @Transactional
     public List<MemberFindAllDto> getAllMembersByLoginIdContaining(String keyword, String loginId) {
         return MemberFindAllDto.listOf(memberRepository.findAllByLoginIdContaining(keyword, loginId));
+    }
+
+    @Transactional
+    public List<BattleRankFindAllDto> getAllBattleRanks() {
+        return BattleRankFindAllDto.listOf(memberRepository.findAllByOrderByBattleScoreDesc());
+    }
+
+    @Transactional
+    public List<PraiseRankFindAllDto> getAllPraiseRanks() {
+        return PraiseRankFindAllDto.listOf(memberRepository.findAllByOrderByPraiseScoreDesc());
     }
 
     public Member registerMember(MemberJoinDto memberJoinDto) {
