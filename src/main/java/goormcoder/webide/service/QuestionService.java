@@ -2,6 +2,7 @@ package goormcoder.webide.service;
 
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Question;
+import goormcoder.webide.domain.enumeration.SolveResult;
 import goormcoder.webide.dto.request.QuestionCreateDto;
 import goormcoder.webide.dto.request.QuestionUpdateDto;
 import goormcoder.webide.dto.response.QuestionFindAllDto;
@@ -22,10 +23,12 @@ import java.util.List;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final MemberService memberService;
 
     @Transactional(readOnly = true)
-    public List<QuestionFindAllDto> getAllQuestions() {
-        return QuestionFindAllDto.listOf(questionRepository.findAll());
+    public List<QuestionFindAllDto> getAllQuestions(String loginId) {
+        List<SolveSummaryDto> solvesByMember = memberService.findSolvesByLoginId(loginId);
+        return QuestionFindAllDto.listOf(questionRepository.findAll(), solvesByMember, this);
     }
 
     @Transactional
