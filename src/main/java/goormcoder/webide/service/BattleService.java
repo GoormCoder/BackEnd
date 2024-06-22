@@ -51,10 +51,21 @@ public class BattleService {
             return BattleWaitSimpleDto.of(room.getId(), room.isFull());
         } else {
             Member givenMember = memberRepository.findByLoginIdOrThrow(memberLoginId);
-            BattleWait newRoom = BattleWait.of(battleWaitCreateDto.level(), battleWaitCreateDto.language(), givenMember);
+
+            //난이도에 맞는 것들 중 랜덤으로 하나
+            List<Question> questions = questionRepository.findByLevel(battleWaitCreateDto.level());
+            if (questions.isEmpty()) {
+                throw new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage());
+            }
+            Random random = new Random();
+            Question selectedQuestion = questions.get(random.nextInt(questions.size()));
+
+            BattleWait newRoom = BattleWait.of(battleWaitCreateDto.level(), battleWaitCreateDto.language(), givenMember, selectedQuestion);
             battleWaitRepository.save(newRoom);
             return BattleWaitSimpleDto.of(newRoom.getId(), newRoom.isFull());
         }
+
+
     }
 
     //대기방 조회
@@ -92,26 +103,21 @@ public class BattleService {
         BattleWait battleWait = findByRoomIdOrThrow(roomId);
 
         Member member = memberRepository.findByLoginIdOrThrow(memberLoginId);
-
         validateMemberAccessToBattleWait(member, battleWait);
 
-        //난이도에 맞는 것들 중 랜덤으로 하나
-        List<Question> questions = questionRepository.findByLevel(battleWait.getLevel());
-
-        if (questions.isEmpty()) {
-            throw new EntityNotFoundException(ErrorMessages.QUESTION_NOT_FOUND.getMessage());
+        // 이미 시작된 배틀이 있는지 확인
+        if (battleWait.getBattle() != null) {
+            battleWait.markAsDeleted();
+            return BattleInfoDto.of(battleWait.getBattle(), battleWait.getQuestion());
         }
 
-        Random random = new Random();
-        int randomIndex = random.nextInt(questions.size());
-        Question randomQuestion = questions.get(randomIndex);
+        Question question = battleWait.getQuestion();
 
-        Battle battle = Battle.of(battleWait.getGivenMember(), battleWait.getReceivedMember(), randomQuestion);
+        Battle battle = Battle.of(battleWait.getGivenMember(), battleWait.getReceivedMember(), question);
         battleRepository.save(battle);
+        battleWait.assignBattle(battle);
 
-        battleWait.markAsDeleted();
-
-        return BattleInfoDto.of(battle, battle.getQuestion());
+        return BattleInfoDto.of(battle, question);
     }
 
     //풀이 제출 및 결과 확인
