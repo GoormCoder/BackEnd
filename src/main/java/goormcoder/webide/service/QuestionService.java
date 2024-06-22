@@ -57,14 +57,6 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public List<SolveSummaryDto> findSolvesById(Long id) {
-        return this.findById(id)
-                .getSolves()
-                .stream()
-                .map(SolveSummaryDto::of)
-                .toList();
-    }
-
     @Transactional
     public QuestionSummaryDto update(Long id, QuestionUpdateDto updateDto) {
         Question question = this.findById(id);
