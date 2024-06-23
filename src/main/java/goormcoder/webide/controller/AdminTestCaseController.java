@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,11 +55,10 @@ public class AdminTestCaseController {
         return ResponseEntity.ok("deleted");
     }
 
-    @Operation(summary = "테스트케이스 전체 조회")
+    @Operation(summary = "문제의 전체 테스트케이스 조회")
     @GetMapping("/questions/{questionId}/testcases")
-    public ResponseEntity<List<TestCaseFindDto>> findAllTestCases(@PathVariable Long questionId) {
-        List<TestCaseFindDto> response = questionService.findAllTestCasesById(questionId);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Page<TestCaseFindDto>> findAllTestCasesByQuestionId(@PathVariable Long questionId, Pageable pageable) {
+        return ResponseEntity.ok(testCaseService.findAllByQuestionId(questionId, pageable));
     }
 
 }

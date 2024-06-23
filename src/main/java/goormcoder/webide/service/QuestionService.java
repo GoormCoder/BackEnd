@@ -72,12 +72,4 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public List<TestCaseFindDto> findAllTestCasesById(Long id) {
-        return this.findById(id)
-                .getTestCases()
-                .stream()
-                .map(TestCaseFindDto::of)
-                .toList();
-    }
-
 }

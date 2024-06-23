@@ -3,10 +3,14 @@ package goormcoder.webide.service;
 import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Question;
 import goormcoder.webide.domain.TestCase;
+import goormcoder.webide.dto.response.TestCaseFindDto;
 import goormcoder.webide.repository.TestCaseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +42,15 @@ public class TestCaseService {
     @Transactional
     public void deleteById(Long id) {
         testCaseRepository.deleteById(id);
+    }
+
+    public Page<TestCaseFindDto> findAllByQuestionId(Long id, Pageable pageable) {
+        return testCaseRepository
+                .findAllByQuestionId(
+                        id,
+                        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
+                )
+                .map(TestCaseFindDto::of);
     }
 
 }
