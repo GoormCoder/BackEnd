@@ -46,8 +46,8 @@ public class BoardController {
     //게시글 유형별 조회
     @GetMapping("/boards")
     @Operation(summary = "게시글 유형별 조회", description = "게시글 유형(FREE_BOARD, QUESTION_BOARD)에 따라 조회합니다.")
-    public ResponseEntity<List<BoardFindAllDto>> getBoardsByType(@RequestParam BoardType boardType) {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardsByType(boardType));
+    public ResponseEntity<Page<BoardSummaryDto>> getBoardsByType(@RequestParam BoardType boardType, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardsByType(boardType, pageable));
     }
 
     //게시글 열람

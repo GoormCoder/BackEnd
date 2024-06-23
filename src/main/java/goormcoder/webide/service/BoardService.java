@@ -58,8 +58,13 @@ public class BoardService {
 
     //게시글 유형별 조회
     @Transactional(readOnly = true)
-    public List<BoardFindAllDto> getBoardsByType(BoardType boardType) {
-        return BoardFindAllDto.listOf(boardRepository.findAllByDeletedAtIsNullAndBoardType(boardType));
+    public Page<BoardSummaryDto> getBoardsByType(BoardType boardType, Pageable pageable) {
+        return boardRepository
+                .findAllByDeletedAtIsNullAndBoardType(
+                        boardType,
+                        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
+                )
+                .map(BoardSummaryDto::of);
     }
 
     //게시글 열람

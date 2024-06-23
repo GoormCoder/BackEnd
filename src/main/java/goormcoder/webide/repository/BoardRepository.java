@@ -23,5 +23,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findAllByDeletedAt(Boolean deletedAt, PageRequest pageRequest);
 
-    List<Board> findAllByDeletedAtIsNullAndBoardType(BoardType boardType);
+    Page<Board> findAllByDeletedAtIsNullAndBoardType(BoardType boardType, PageRequest pageRequest);
 }
