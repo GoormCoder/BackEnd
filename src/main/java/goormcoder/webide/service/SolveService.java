@@ -16,6 +16,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SolveService {
@@ -58,7 +60,8 @@ public class SolveService {
     }
 
     public void checkCanAccess(Solve solve, Member member) {
-        if (member.equals(solve.getMember()) || member.getRole().equals(MemberRole.ROLE_ADMIN)) {
+        List<Solve> correct = solveRepository.findCorrectByMemberIdAndQuestId(member, solve.getQuestion());
+        if (member.equals(solve.getMember()) || !correct.isEmpty() || member.getRole().equals(MemberRole.ROLE_ADMIN)) {
             return;
         }
         if (solveRepository.findAllByIdAndMember(solve.getId(), member).isEmpty()) {
