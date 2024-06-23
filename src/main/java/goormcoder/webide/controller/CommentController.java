@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +35,9 @@ public class CommentController {
 
     //댓글 조회
     @GetMapping("/boards/{boardId}/comments")
-    @Operation(summary = "댓글 조회", description = "전체 댓글을 조회합니다.")
-    public ResponseEntity<List<CommentFindAllDto>> getComments(@PathVariable Long boardId) {
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.getComments(boardId));
+    @Operation(summary = "댓글 전체 조회", description = "전체 댓글을 조회합니다.")
+    public ResponseEntity<Page<CommentFindAllDto>> getComments(@PathVariable Long boardId, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.getComments(boardId, pageable));
     }
 
     //댓글 수정

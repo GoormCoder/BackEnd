@@ -12,6 +12,9 @@ import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.CommentRepository;
 import goormcoder.webide.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +38,12 @@ public class CommentService {
 
     //댓글 조회
     @Transactional(readOnly = true)
-    public List<CommentFindAllDto> getComments(Long boardId) {
-        List<Comment> comments = commentRepository.findAllByBoardId(boardId);
-        return CommentFindAllDto.listOf(comments);
+    public Page<CommentFindAllDto> getComments(Long boardId, Pageable pageable) {
+        return commentRepository.findAllByDeletedAtIsNullAndBoardId(
+                        boardId,
+                        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
+                )
+                .map(CommentFindAllDto::of);
     }
 
     //댓글 수정

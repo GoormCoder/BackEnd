@@ -22,4 +22,12 @@ public record CommentFindAllDto(
                         MemberFindDto.from(comment.getMember())
                 )).toList();
     }
+    public static CommentFindAllDto of(Comment comment) {
+        return new CommentFindAllDto(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getCreatedAt(),
+                        MemberFindDto.from(comment.getMember())
+                );
+    }
 }
