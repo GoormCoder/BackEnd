@@ -49,8 +49,7 @@ public class BoardService {
     //게시글 조회
     @Transactional(readOnly = true)
     public Page<BoardSummaryDto> getAllBoards(Pageable pageable) {
-        return boardRepository.findAllByDeletedAt(
-                    null,
+        return boardRepository.findAllByDeletedAtIsNull(
                     PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
                 )
                 .map(BoardSummaryDto::of);
