@@ -5,12 +5,15 @@ import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.request.BoardUpdateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
 import goormcoder.webide.dto.response.BoardFindDto;
+import goormcoder.webide.dto.response.BoardSummaryDto;
 import goormcoder.webide.jwt.PrincipalHandler;
 import goormcoder.webide.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +38,9 @@ public class BoardController {
 
     //게시글 조회
     @GetMapping("/boards/all")
-    @Operation(summary = "게시글 조회", description = "전체 게시글을 조회합니다.")
-    public ResponseEntity<List<BoardFindAllDto>> getAllBoards() {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoards());
+    @Operation(summary = "게시글 전체 조회", description = "전체 게시글을 조회합니다.")
+    public ResponseEntity<Page<BoardSummaryDto>> getAllBoards(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoards(pageable));
     }
 
     //게시글 유형별 조회

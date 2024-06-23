@@ -4,6 +4,8 @@ import goormcoder.webide.constants.ErrorMessages;
 import goormcoder.webide.domain.Board;
 import goormcoder.webide.domain.enumeration.BoardType;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +21,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findByIdAndDeletedAtIsNull(Long boardId);
 
-    List<Board> findAllByDeletedAtIsNull();
+    Page<Board> findAllByDeletedAt(Boolean deletedAt, PageRequest pageRequest);
 
     List<Board> findAllByDeletedAtIsNullAndBoardType(BoardType boardType);
 }

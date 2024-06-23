@@ -9,12 +9,16 @@ import goormcoder.webide.dto.request.BoardCreateDto;
 import goormcoder.webide.dto.request.BoardUpdateDto;
 import goormcoder.webide.dto.response.BoardFindAllDto;
 import goormcoder.webide.dto.response.BoardFindDto;
+import goormcoder.webide.dto.response.BoardSummaryDto;
 import goormcoder.webide.exception.ForbiddenException;
 import goormcoder.webide.repository.BoardRepository;
 import goormcoder.webide.repository.MemberRepository;
 import goormcoder.webide.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +48,12 @@ public class BoardService {
 
     //게시글 조회
     @Transactional(readOnly = true)
-    public List<BoardFindAllDto> getAllBoards() {
-        return BoardFindAllDto.listOf(boardRepository.findAllByDeletedAtIsNull());
+    public Page<BoardSummaryDto> getAllBoards(Pageable pageable) {
+        return boardRepository.findAllByDeletedAt(
+                    null,
+                    PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort())
+                )
+                .map(BoardSummaryDto::of);
     }
 
     //게시글 유형별 조회
