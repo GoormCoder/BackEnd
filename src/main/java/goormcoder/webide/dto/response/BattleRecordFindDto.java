@@ -13,7 +13,12 @@ public record BattleRecordFindDto(
     public static List<BattleRecordFindDto> listOf(Member member, List<Battle> battles) {
         return battles.stream()
                 .map(battle -> {
-                    String result = battle.getWinner().getId().equals(member.getId()) ? "WIN" : "LOSE";
+                    String result;
+                    if (battle.getWinner() == null) {
+                        result = "DRAW";
+                    } else {
+                        result = battle.getWinner().getId().equals(member.getId()) ? "WIN" : "LOSE";
+                    }
                     return new BattleRecordFindDto(
                             battle.getGivenMember().getNick(),
                             battle.getReceivedMember().getNick(),
